@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OTP Verification Form</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #023020; /* Soft color for background */
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        max-width: 400px; /* Set max-width for the container */
+        margin: 50px auto;
+        padding: 40px; /* Increased padding for a larger card */
+        background-color: #0d1840; /* Dark blue color for the card */
+        border-radius: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        position: relative; /* Add relative positioning for absolute timer */
+        text-align: center; /* Center align content */
+        color: #ff0000;
+    }
+
+    h2 {
+        margin-bottom: 20px;
+        color: #fff; /* White color for text */
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+        color: #fff; /* White color for text */
+    }
+
+    input[type="text"],
+    input[type="submit"] {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    input[type="submit"] {
+        background-color: #fff; /* White color for the button */
+        color: #000000; /* Green color for the text */
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 50%; /* Set width to 50% */
+    }
+
+    input[type="submit"]:hover {
+        background-color: #f8f9fa; /* Lighter color on hover */
+    }
+
+    #timer {
+        margin-bottom: 20px;
+        color: #fff;
+        font-size: 24px; /* Font size for the timer */
+        font-weight: bold;
+    }
+
+</style>
+</head>
+<body>
+  
+
+<div class="container">
+    <h2>OTP Verification</h2>
+
+    <% if (locals.message) { %>
+        <p id="message"><%= message %></p>
+    <% } %>
+    
+   
+    <form action="/verifyOtp" method="post">
+        <label for="otp">Enter OTP:</label>
+        <input type="text" id="otp" name="otp" maxlength="4" pattern="\d{4}" required><br>
+        <input type="submit" value="Verify OTP"  >
+        <a href="/getOtp"><button type="button" id="resend-btn" onclick="resendOTP()" hidden>Resend OTP</button></a>
+        <!-- <button type="button" id="resend-btn" onclick="resendOTP()" hidden>Resend OTP</button> -->
+        <p id="timer">Time remaining: <span id="time">30</span> seconds</p>
+        <span id="otpExpired" class="text-danger"></span>
+        <span class="text-danger" id="incorrectOtp"></span>
+        
+    </form>
+</div>
+
+<script>
+    // Hide the message after 5 seconds
+    setTimeout(() => {
+        const messageElement = document.getElementById('message');
+        if (messageElement) {
+            messageElement.style.display = 'none';
+        }
+    }, 3000); // 5000 milliseconds = 5 seconds
+</script>
+
+<script>
+    // Function to handle OTP resend and timer
+    function startTimer() {
+        // Set the timer for 60 seconds
+        let seconds = 30;
+        const timerElement = document.getElementById('time');
+        const timerInterval = setInterval(function () {
+            seconds--;
+            timerElement.textContent = seconds;
+
+            if (seconds <= 0) {
+                // Timer expired, call the specified function
+                timerExpired();
+                clearInterval(timerInterval);
+            }
+        }, 1000);
+    }
+
+    // Function to handle what happens when the timer expires
+    function timerExpired() {
+        document.getElementById('otpExpired').innerText = "OTP Expired";
+        document.getElementById('resend-btn').hidden = false;
+    }
+
+    // Function to handle OTP resend
+    function resendOTP() {
+        document.getElementById('otpExpired').innerText = "";
+        document.getElementById('resend-btn').hidden = true;
+
+        // Perform OTP resend logic here (e.g., make an API call)
+        // Start the 60-second timer
+        startTimer();
+    }
+
+    var incorrectOtpDiv = document.getElementById('incorrectOtp');
+    var message = incorrectOtpDiv.innerText.trim();
+
+    if (message) {
+        // Set a timeout to clear the content after 10 seconds
+        setTimeout(function () {
+            incorrectOtpDiv.innerHTML = ''; // Clear the content
+        }, 10000);
+    }
+
+    startTimer();
+</script>
+
+</body>
+</html>

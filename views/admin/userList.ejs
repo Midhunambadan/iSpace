@@ -1,0 +1,276 @@
+
+
+    <%- include('../layouts/header.ejs') %>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script src="sweetalert2.min.js"></script>
+<link rel="stylesheet" href="sweetalert2.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js" integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<body>
+    <%- include('../partials/admin-left.ejs') %>
+
+    <main class="main-wrap">
+        
+        <header class="main-header navbar">
+            <div class="col-search">
+                <form class="searchform">
+                    <div class="input-group">
+                        <input list="search_terms" type="text" class="form-control" placeholder="Search term">
+                        <button class="btn btn-light bg" type="button"> <i class="material-icons md-search"></i></button>
+                    </div>
+                    <datalist id="search_terms">
+                        <option value="Products">
+                        <option value="New orders">
+                        <option value="Apple iphone">
+                        <option value="Ahmed Hassan">
+                    </datalist>
+                </form>
+            </div>
+            <div class="col-nav">
+                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i class="material-icons md-apps"></i> </button>
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a class="nav-link btn-icon" href="#">
+                            <i class="material-icons md-notifications animation-shake"></i>
+                            <span class="badge rounded-pill">3</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i> </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="requestfullscreen nav-link btn-icon"><i class="material-icons md-cast"></i></a>
+                    </li>
+                    <li class="dropdown nav-item">
+                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownLanguage" aria-expanded="false"><i class="material-icons md-public"></i></a>
+                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownLanguage">
+                            <a class="dropdown-item text-brand" href="#"><img src="/adminAssets/imgs/theme/flag-us.png" alt="English">English</a>
+                            <a class="dropdown-item" href="#"><img src="/adminAssets/imgs/theme/flag-fr.png" alt="Français">Français</a>
+                            <a class="dropdown-item" href="#"><img src="/adminAssets/imgs/theme/flag-jp.png" alt="Français">日本語</a>
+                            <a class="dropdown-item" href="#"><img src="/adminAssets/imgs/theme/flag-cn.png" alt="Français">中国人</a>
+                        </div>
+                    </li>
+                    <li class="dropdown nav-item">
+                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false"> <img class="img-xs rounded-circle" src="/adminAssets/imgs/people/avatar2.jpg" alt="User"></a>
+                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
+                            <a class="dropdown-item" href="#"><i class="material-icons md-perm_identity"></i>Edit Profile</a>
+                            <a class="dropdown-item" href="#"><i class="material-icons md-settings"></i>Account Settings</a>
+                            <a class="dropdown-item" href="#"><i class="material-icons md-account_balance_wallet"></i>Wallet</a>
+                            <a class="dropdown-item" href="#"><i class="material-icons md-receipt"></i>Billing</a>
+                            <a class="dropdown-item" href="#"><i class="material-icons md-help_outline"></i>Help center</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item text-danger" href="/admin/logout"><i class="material-icons md-exit_to_app"></i>Logout</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </header>
+
+        <section class="content-main">
+            <div class="content-header">
+                <div>
+                    <h2 class="content-title card-title">Users List</h2>
+                    <p>All users are listed below</p>
+                </div>
+                <div>
+                    <a href="#" class="btn btn-light rounded font-md">Export</a>
+                    <a href="#" class="btn btn-light rounded  font-md">Import</a>
+                    <a href="#" class="btn btn-primary btn-sm rounded">Create new</a>
+                </div>
+            </div>
+            <div class="card mb-4">
+                
+            </div>
+
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    background-color: #f4f4f4;
+                    margin: 0;
+                    padding: 0;
+                }
+            
+                .container {
+                    max-width: 1400px; /* Increased max-width */
+                    margin: 20px auto;
+                    padding: 20px;
+                    background-color: #fff;
+                    border-radius: 5px;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                }
+            
+                .btn {
+                    padding: 8px 16px;
+                    border-radius: 3px;
+                }
+            
+                .btn-primary {
+                    background-color: #007bff;
+                    color: #fff;
+                    border: none;
+                }
+            
+                .btn-primary:hover {
+                    background-color: #0056b3;
+                }
+            
+                .btn-danger {
+                    background-color: #dc3545;
+                    color: #fff;
+                    border: none;
+                }
+            
+                .btn-danger:hover {
+                    background-color: #c82333;
+                }
+            
+                th {
+                    color: #131414; /* Blue color for headings */
+                }
+            </style>
+            
+                </head>
+                <body>
+
+                <div class="container">
+                    <!-- <h2>Admin User Management</h2> -->
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Seal Number</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Mobile</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if(users.length > 0){ %>
+                            <% for(let i=0; i< users.length; i++){ %>
+                            <tr>
+                                <td><%= i+1 %></td>
+                                <td><%= users[i].name %></td>
+                                <td><%= users[i].email %></td>
+                                <td><%= users[i].mobile %></td>
+                                <td><span class="badge <%= users[i].isActive ? 'badge-success' : 'badge-danger' %>"><%= users[i].isActive ? 'Active' : 'Blocked' %></span></td>
+                                <td>
+                                    <% if(users[i].isActive){ %>
+                                        <button type="button" class="btn btn-danger btn-sm unblock-btn" data-id="<%= users[i]._id %>" onclick="confirmBlock('<%= users[i]._id %>')">Block</button>
+                                    <% } else { %>
+                                        <button type="button" class="btn btn-primary btn-sm block-btn" data-id="<%= users[i]._id %>" onclick="confirmUnblock('<%= users[i]._id %>')">Unblock</button>
+                                    <% } %>
+                                </td>
+                                
+                            </tr>
+                            <% } %>
+                            <% } else { %>
+                            <tr>
+                                <td colspan="6">Users not found</td>
+                            </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                    
+                    <!-- <button class="btn btn-primary" href="/admin/adduser" >Add New user</button> -->
+                    <!-- <a href="/admin/adduser">Add new user</a> -->
+                </div>
+                
+
+
+            <div class="pagination-area mt-30 mb-50">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-start">
+                        <li class="page-item active"><a class="page-link" href="#">01</a></li>
+                        <li class="page-item"><a class="page-link" href="#">02</a></li>
+                        <li class="page-item"><a class="page-link" href="#">03</a></li>
+                        <li class="page-item"><a class="page-link dot" href="#">...</a></li>
+                        <li class="page-item"><a class="page-link" href="#">16</a></li>
+                        <li class="page-item"><a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a></li>
+                    </ul>
+                </nav>
+            </div>
+        </section> <!-- content-main end// -->
+    <script>
+        function confirmBlock(userId) {
+    Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Block it!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+                // window.location.href="/admin/userlist" // Reload the page
+            fetch(`/admin/block-user?id=${userId}`, {
+                method: 'GET',
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to block user');
+                }
+                window.location.href="/admin/userlist" // Reload the page
+
+                return response.json();
+            })
+            // .then(data => {
+            //     console.log('User blocked successfully:', data);
+            //     Swal.fire({
+            //         title: "Blocked!",
+            //         text: "The user has been blocked.",
+            //         icon: "success"
+            //     }).then(() => {
+            //         window.location.reload(); // Reload the page
+            //     });
+            // })
+            .catch(error => {
+                console.error('Error blocking user:', error);
+            });
+        }
+    });
+}
+
+function confirmUnblock(userId) {
+    Swal.fire({
+        title: "Are you sure?",
+        text: "You want to unblock this user?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Unblock it!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // window.location.reload();
+            fetch(`/admin/unblock-user?id=${userId}`, {
+                method: 'GET',
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to unblock user');
+                }
+                window.location.href="/admin/userlist" // Reload the page
+
+                return response.json();
+            })
+            // .then(data => {
+            //     console.log('User unblocked successfully:', data);
+            //     Swal.fire({
+            //         title: "Unblocked!",
+            //         text: "The user has been unblocked.",
+            //         icon: "success"
+            //     }).then(() => {
+            //         window.location.reload(); // Reload the page
+            //     });
+            // })
+            .catch(error => {
+                console.error('Error unblocking user:', error);
+            });
+        }
+    });
+}
+
+    </script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <%- include('../layouts/footer.ejs') %>
