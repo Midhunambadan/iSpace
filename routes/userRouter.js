@@ -45,7 +45,7 @@ router.post('/verify-password-reset',userController.VerifyPasswordReset)
 
 router.get("/home",auth.isLogin, userController.loaduserHome);
 router.get("/wishlist", auth.isLogin, userController.loaduserWishlist);
-router.get("/show-product",userController.showProduct)
+router.get("/show-product",auth.isLogin,userController.showProduct)
 router.get("/all-product",userController.loadAllProduct)
 
 // ------------------User Cart------------------------------------------------------
@@ -56,12 +56,15 @@ router.post('/update-cart',userCartController.updateCart)
 router.post('/update-quantity',userCartController.updateQuantity)
 
 //----------------------Address Start---------------------------------------
-router.get("/userDashboard", userController.loaduserDashboard);
+router.get("/userDashboard", auth.isLogin,userController.loaduserDashboard);
 
 router.post('/insert-Address',addressController.insertAddress)
-router.get('/edit-Address',addressController.editAddress)
+router.get('/edit-Address',addressController.loadEditAddress)
+router.get('/delete-Address',addressController.deleteAddress)
+router.post('/edit-Address',addressController.verifyEditAddress)
 
 //----------------------Checkout page Start---------------------------------------
+
 
 router.get('/checkout',userCartController.userCheckout)
 
@@ -76,6 +79,11 @@ router.get('/new-Arrivals',userController.newArrivals)
 
 // /------------------------Sort Start----------------------------------------------
 
+
+//-----------Account-Profile--------------------------------------------------------
+
+router.get('/change-password',userController.loadChangePassword)
+router.post('/change-password',userController.verifyChangePassword)
 
 
 module.exports = router;

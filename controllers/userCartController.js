@@ -1,6 +1,7 @@
  const Cart=require('../models/cartModel')
  const Product=require('../models/productModel')
  const User=require('../models/userModel')
+ const Address=require('../models/addressModel')
 
 
  // userCart
@@ -105,8 +106,6 @@ const loadUserCart = async (req, res) => {
 
 
 
-
-
   const updateQuantity=async(req,res)=>{
 
     try {
@@ -120,9 +119,37 @@ const loadUserCart = async (req, res) => {
 
   }
 
+
+
+//   app.post('/update-cart', (req, res) => {
+//     const productId = req.query.id;
+//     const quantity = req.query.quantity;
+
+//     // Update the quantity in your cart or database
+//     // Example: cart[productId].quantity = quantity;
+
+//     // Send a success response
+//     res.sendStatus(200);
+// });
+
+
+
   const updateCart=async(req,res)=>{
     try {
-      
+      const productId = req.body.productId;
+      const quantityChange = req.body.quantity;
+
+    console.log('-------------------productId',productId);
+    console.log('-------------------quantityChange',quantityChange);
+
+    // const updateCart=await Cart.findOne({productId})
+
+//     const updateCart=await Cart.findByIdAndUpdate(productId,{$set:{quantity:quantityChange}})
+// await updateCart.save()
+
+    console.log('-------updatecarrt',updateCart);
+
+
 
     } catch (error) {
       console.log(error);
@@ -131,22 +158,25 @@ const loadUserCart = async (req, res) => {
 
   
 
-
-
-
-
   
 const userCheckout=async(req,res)=>{
   try {
 
-    const total=req.body.grandTotalValue
-    console.log('----------------total',total);
+    const userId=req.session.user_id
+    // const total=req.body.grandTotalValue
+    console.log('---------------------userId',userId);
+    // const address=await Address.findOne({userId})
+    // console.log('---------------------address',address);
+
+
 
     res.render('checkOut')
   } catch (error) {
     
   }
 }
+
+
 
 
 

@@ -426,10 +426,14 @@ const VerifyPasswordReset=async(req,res)=>{
 const loaduserDashboard = async (req, res) => {
   try {
     
-    const addressData=await Address.find()
-    const userData = await User.findById({ _id: req.session.user_id });
+    const userId=req.session.user_id
 
-    console.log('--------------------addressData',addressData);
+    const userData = await User.findById({ _id: userId});
+    const addressData=await Address.find({user:userId})
+
+
+
+    console.log('--------------------addressData',addressData.name);
 
     res.render("userDashboard", { user: userData,address:addressData });
   } catch (error) {
@@ -607,6 +611,47 @@ const priceHighToLow=async(req,res)=>{
  }
 
 
+ const loadChangePassword=async(req,res)=>{
+  try {
+    res.render('changePassword',{message:"Enter Your Current password and Reset!!!"})
+    
+    
+  } catch (error) {
+    
+  }
+ }
+
+
+
+const verifyChangePassword=async(req,res)=>{
+  try {
+    const userId=req.session.user_id
+
+    const password=req.body.currentPassword
+    const newPassword=req.body.password
+
+    const userData=await User.findById(userId)
+
+    // console.log('----------userData',userData);
+
+    const spassword=await securePassword(newPassword)
+
+    const isMatch = await bcrypt.compare(password, userData.password);
+    if (isMatch) {
+    await User.findByIdAndUpdate(userId, { password: spassword });
+    res.render('changePassword',{message:"Password changed successfully!"})
+    } else {
+      res.redirect('/change-password')
+    }
+
+    
+
+    // console.log('password-------------',userData);
+    // console.log('----------oldpassword',oldpassword);
+  } catch (error) {
+    console.log(error.message);
+  }
+}
  
 
 
@@ -634,7 +679,10 @@ module.exports = {
   priceHighToLow,
   sortAtoZ,
   sortZtoA,
-  newArrivals
+  newArrivals,
+
+  loadChangePassword,
+  verifyChangePassword
  
 
 };

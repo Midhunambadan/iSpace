@@ -12,8 +12,18 @@ const config = require("../config/config");
 const session = require("express-session");
 const multer=require('multer')
 
-admin_router.use(session({ secret: config.sessionSecret }));
+admin_router.use(session({
+  secret:config.sessionSecret,
+  resave:false,
+  saveUninitialized:true
+}))
+
+// admin_router.use(session({ secret: config.sessionSecret }));
 const adminAuth = require("../middleware/adminAuth");
+const { default: mongoose } = require("mongoose");
+
+
+
 
 
 admin_router.use(express.json())
@@ -82,5 +92,6 @@ admin_router.get('/product-unblock',adminAuth.isLogin,productController.UnBlockP
 admin_router.get("*", function (req, res) {
   res.redirect("/admin/home");
 });
+
 
 module.exports = admin_router;

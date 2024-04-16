@@ -44,9 +44,52 @@ const insertAddress = async (req, res) => {
 }
 
 
-const editAddress=async(req,res)=>{
+const loadEditAddress=async(req,res)=>{
     try {
-        res.render('addressEdit')
+        const id =req.query.id
+
+        const addressData=await Address.find({_id:id})
+
+        console.log('--------------------jfsafdj',addressData);
+        res.render('addressEdit',{address:addressData})
+    } catch (error) {
+        
+    }
+}
+
+// try {
+//     const { name, mobile, houseName, city, state, pinCode } = req.body;
+//     const userId = req.session.user;
+//     const updated = await Address.findByIdAndUpdate({ _id: req.query.id }, { $set: { name, mobile, houseName, city, state, pinCode } });
+//     res.redirect('/loadCheckOut');
+// } catch (error) {
+//     console.error(error);
+// }
+
+
+const verifyEditAddress=async(req,res)=>{
+    try {
+
+        const { name, mobile, houseName, street, city, state, pincode } = req.body;
+    const userId = req.session.user_id;
+    const id =req.query.id
+    const updatedAddress=await Address.findByIdAndUpdate({_id:id},{$set:{name, mobile, houseName, street, city, state, pincode}})
+
+    res.redirect("/userDashboard")
+        // res.render('addressEdit',{address:addressData})
+    } catch (error) {
+        
+    }
+}
+
+
+const deleteAddress=async(req,res)=>{
+    try {
+        
+        const id =req.query.id
+        console.log('--------------------id',id);
+        await Address.findByIdAndDelete(id);
+        res.redirect('/userDashboard')
     } catch (error) {
         
     }
@@ -54,9 +97,10 @@ const editAddress=async(req,res)=>{
 
 
 
-
 module.exports={
     insertAddress,
-    editAddress
+    loadEditAddress,
+    verifyEditAddress,
+    deleteAddress
 
 }
