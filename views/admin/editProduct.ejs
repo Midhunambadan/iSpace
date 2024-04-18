@@ -91,19 +91,24 @@
 
 
 
+                  
+
                     <% if (locals.category) { %>
                         <div class="col-lg-4">
                             <div class="mb-4">
                                 <label class="form-label">Category</label>
                                 <select class="form-select form-select-lg" name="category" style="width: 300px;" required>
-                                    <option value="<%= products.categoryId %>" selected disabled id="product_category" name=""><%= products.categoryId.category %> </option>
-                                   <% category.forEach((cate)=>{ %>
-                                    <option value="<%= cate._id %>"><%= cate.category %></option>
-                                   <% }) %>
+                                    <% if (products.categoryId) { %>
+                                        <option value="<%= products.categoryId %>" selected disabled id="product_category" name=""><%= products.categoryId.category %> </option>
+                                    <% } %>
+                                    <% category.forEach((cate)=>{ %>
+                                        <option value="<%= cate._id %>"><%= cate.category %></option>
+                                    <% }) %>
                                 </select>   
                             </div>
                         </div>
                     <% } %>
+                    
                     
 
                
@@ -125,37 +130,45 @@
                     
                    
 
+                   
                     <!-- <div class="card-body" style="align-items: center;">
                         <div class="input-upload">
                             <div id="image-preview-container">
-                                <% if (products.productImages) { %>
-                                    
-                                    <img id="previewImage" src="/productImage/<%= products.productImages %>" alt="Product Image">
-                                    <button class="btn btn-danger" onclick="deleteImage()">Delete</button>
+                                <% if (products.productImages.length > 0) { %>
+                                    <% for (let i=0; i< products.productImages.length; i++) { %>
+                                        <div>
+                                            <img id="previewImage<%= i %>" src="/productImage/<%= products.productImages[i] %>"  alt="Product Image">
+                                            <button class="btn btn-danger" onclick="deleteImage(event)">Delete</button>
+                                        </div>
+                                    <% } %>
+                                <% } else { %>
+                                    <img id="previewImage" src="" alt="Product Image">
                                 <% } %>
                             </div>
                             <input class="form-control" type="file" multiple accept="image/*" name="productImages" onchange="previewImages(event)" required>
                         </div>
                     </div> -->
-
+                    
                     <div class="card-body" style="align-items: center;">
                         <div class="input-upload">
                             <div id="image-preview-container">
-                                <% for (let i=0; i< products.productImages.length; i++) { %>
-                                    <div>
-                                        <img id="previewImage<%= i %>" src="/productImage/<%= products.productImages[i] %>"  alt="Product Image">
-                                        <!-- <button class="btn btn-danger" onclick="deleteImage()">Delete</button> -->
-                                        <button class="btn btn-danger" onclick="deleteImage(event)">Delete</button>
-
-                                    </div>
-                                <% } %>
-                                <% if (products.productImages.length === 0) { %>
+                                <% if (products.productImages.length > 0) { %>
+                                    <% for (let i=0; i< products.productImages.length; i++) { %>
+                                        <div>
+                                            <img id="previewImage<%= i %>" src="/productImage/<%= products.productImages[i] %>"  alt="Product Image">
+                                            <button class="btn btn-danger" onclick="deleteImage(event)">Delete</button>
+                                        </div>
+                                    <% } %>
+                                <% } else { %>
                                     <img id="previewImage" src="" alt="Product Image">
                                 <% } %>
                             </div>
                             <input class="form-control" type="file" multiple accept="image/*" name="productImages" onchange="previewImages(event)" required>
                         </div>
                     </div>
+
+
+                    
                     
                     <input type="hidden" name="id" value="<%= products._id %>" >
 
@@ -210,7 +223,7 @@
 </script> -->
 
 
-        <script>
+        <!-- <script>
             function previewImages(event) {
                 const previewContainer = document.getElementById('image-preview-container');
                 previewContainer.innerHTML = '';
@@ -240,6 +253,41 @@
                     reader.readAsDataURL(file);
                 }
             }
+        </script> -->
+        <script>
+            function previewImages(event) {
+    const previewContainer = document.getElementById('image-preview-container');
+    const existingImages = previewContainer.querySelectorAll('img');
+    
+    // Remove existing images
+    existingImages.forEach(img => img.remove());
+
+    const files = event.target.files;
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+            const imageSrc = e.target.result;
+            const imagePreview = document.createElement('img');
+            imagePreview.src = imageSrc;
+            imagePreview.className = 'img-thumbnail';
+            previewContainer.appendChild(imagePreview);
+
+            const deleteButton = document.createElement('button');
+            deleteButton.innerText = 'Delete';
+            deleteButton.className = 'btn btn-danger';
+            deleteButton.onclick = function () {
+                previewContainer.removeChild(imagePreview);
+                previewContainer.removeChild(deleteButton);
+            };
+            previewContainer.appendChild(deleteButton);
+        };
+
+        reader.readAsDataURL(file);
+    }
+}
+
         </script>
 
         </main>

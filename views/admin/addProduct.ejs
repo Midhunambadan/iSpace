@@ -220,6 +220,50 @@
         
     </main>
 
+
+    <script>
+   document.addEventListener('DOMContentLoaded', function () {
+    const form = document.querySelector('form');
+
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+
+        fetch('/admin/add-product', {
+            method: 'POST',
+            body: formData
+        })
+        
+        .then(data => {
+            if (data.success) {
+                console.log("sdddddddddddddddddddddddddd")
+                Swal.fire({
+                    title: 'Success!',
+                    text: data.message,
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    window.location.href = '/admin/products';
+                });
+            } else {
+                throw new Error(data.message || 'Failed to add product');
+            }
+        })
+        .catch(error => {
+            console.error(error);
+            Swal.fire({
+                title: 'Error!',
+                text: error.message || 'Failed to add product',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        });
+    });
+});
+
+
+    </script>
     
 
     <script src="/adminAssets/js/vendors/jquery-3.6.0.min.js"></script>

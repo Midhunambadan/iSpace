@@ -1,5 +1,20 @@
 <%- include('../layouts/user/header.ejs') %>
 
+<style>
+    #profileForm {
+        display: none;
+    }
+</style>
+
+<style>
+    .error {
+        color: red;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+</style>
+
+
 
 <body>
     <%- include('../partials/user/navbar.ejs') %>
@@ -199,7 +214,7 @@
                                                     <!-- <p>Already have an account? <a href='page-login.html'>Log in instead!</a></p> -->
     
     
-                                                    <form method="post" action="/insert-Address" name="enq">
+                                                    <!-- <form method="post" action="/insert-Address" name="enq">
                                                         <div class="row">
                                                             <div class="form-group col-md-12">
                                                                 <label>Full Name <span class="required">*</span></label>
@@ -233,7 +248,131 @@
                                                                 <button type="submit" class="btn btn-fill-out submit font-weight-bold" name="submit" value="Submit">Save Address </button>
                                                             </div>
                                                         </div>
+                                                    </form> -->
+
+                                                    <form method="post" action="/insert-Address" name="enq" onsubmit="return validateForm()">
+                                                        <div class="row">
+                                                            <div class="form-group col-md-12">
+                                                                <label>Full Name <span class="required">*</span></label>
+                                                                <input required="" class="form-control" name="name" id="name" type="text" />
+                                                                <div id="name-error" class="error"></div>
+                                                            </div> <br>
+                                                            <div class="form-group col-md-6">
+                                                                <label>Mobile Number <span class="required">*</span></label>
+                                                                <input required="" class="form-control" name="mobile" id="mobile" />
+                                                                <div id="mobile-error" class="error"></div>
+                                                            </div>
+                                                            <!-- Add other form fields here -->
+
+                                                            <div class="form-group col-md-12">
+                                                                <label>House Name <span class="required">*</span></label>
+                                                                <input required="" class="form-control" name="houseName" type="text" />
+                                                                <div id="houseName-error" class="error"></div>
+                                                            </div>
+
+                                
+
+                                                            <div class="form-group col-md-6">
+                                                                <label>Street <span class="required">*</span></label>
+                                                                <input required="" class="form-control" name="street" type="text" />
+                                                                <div id="street-error" class="error"></div>
+
+                                                            </div>
+                                                            <div class="form-group col-md-6">
+                                                                <label>City <span class="required">*</span></label>
+                                                                <input required="" class="form-control" name="city" type="text" />
+                                                                <div id="city-error" class="error"></div>
+
+                                                            </div>
+                                                            <div class="form-group col-md-6">
+                                                                <label>State <span class="required">*</span></label>
+                                                                <input required="" class="form-control" name="state" type="text" />
+                                                                <div id="state-error" class="error"></div>
+
+                                                            </div>
+                                                            <div class="form-group col-md-6">
+                                                                <label>Pin code <span class="required">*</span></label>
+                                                                <input required="" class="form-control" name="pincode" type="text" />
+                                                                <div id="pincode-error" class="error"></div>
+
+                                                            </div>
+                                                            <div class="col-md-12">
+                                                                <button type="submit" class="btn btn-fill-out submit font-weight-bold" name="submit" value="Submit">Save Address</button>
+                                                            </div>
+                                                        </div>
                                                     </form>
+                                                    
+                                                    <script>
+                                                        function validateForm() {
+                                                            var name = document.getElementById('name').value;
+                                                            var mobile = document.getElementById('mobile').value;
+                                                            var houseName = document.getElementsByName('houseName')[0].value;
+                                                            var street = document.getElementsByName('street')[0].value;
+                                                            var city = document.getElementsByName('city')[0].value;
+                                                            var state = document.getElementsByName('state')[0].value;
+                                                            var pincode = document.getElementsByName('pincode')[0].value;
+                                                    
+                                                            var namePattern = /^[a-zA-Z]*$/;
+                                                            var mobilePattern = /^[0-9]+$/;
+                                                            var alphaPattern = /^[a-zA-Z]*$/;
+                                                            var pincodePattern = /^[0-9]+$/;
+                                                    
+                                                            var isValid = true;
+                                                    
+                                                            if (!namePattern.test(name)) {
+                                                                document.getElementById('name-error').innerHTML = 'Name must contain only alphabets';
+                                                                isValid = false;
+                                                            } else {
+                                                                document.getElementById('name-error').innerHTML = '';
+                                                            }
+                                                    
+                                                            if (!mobilePattern.test(mobile)) {
+                                                                document.getElementById('mobile-error').innerHTML = 'Mobile number must contain only numbers';
+                                                                isValid = false;
+                                                            } else {
+                                                                document.getElementById('mobile-error').innerHTML = '';
+                                                            }
+                                                    
+                                                            if (!alphaPattern.test(houseName)) {
+                                                                document.getElementById('houseName-error').innerHTML = 'House name must contain only alphabets';
+                                                                isValid = false;
+                                                            } else {
+                                                                document.getElementById('houseName-error').innerHTML = '';
+                                                            }
+                                                    
+                                                            if (!alphaPattern.test(street)) {
+                                                                document.getElementById('street-error').innerHTML = 'Street must contain only alphabets';
+                                                                isValid = false;
+                                                            } else {
+                                                                document.getElementById('street-error').innerHTML = '';
+                                                            }
+                                                    
+                                                            if (!alphaPattern.test(city)) {
+                                                                document.getElementById('city-error').innerHTML = 'City must contain only alphabets';
+                                                                isValid = false;
+                                                            } else {
+                                                                document.getElementById('city-error').innerHTML = '';
+                                                            }
+                                                    
+                                                            if (!alphaPattern.test(state)) {
+                                                                document.getElementById('state-error').innerHTML = 'State must contain only alphabets';
+                                                                isValid = false;
+                                                            } else {
+                                                                document.getElementById('state-error').innerHTML = '';
+                                                            }
+                                                    
+                                                            if (!pincodePattern.test(pincode)) {
+                                                                document.getElementById('pincode-error').innerHTML = 'Pin code must contain only numbers';
+                                                                isValid = false;
+                                                            } else {
+                                                                document.getElementById('pincode-error').innerHTML = '';
+                                                            }
+                                                    
+                                                            return isValid;
+                                                        }
+                                                    </script>
+                                                    
+                                                    
     
     
     
@@ -249,48 +388,59 @@
 
 
                                     <div class="tab-pane fade" id="account-detail" role="tabpanel" aria-labelledby="account-detail-tab">
+                                        <% if(locals.user) { %>
                                         <div class="card">
                                             <div class="card-header">
                                                 <h5>Account Details </h5>
                                             </div>
+                                          
                                             <div class="card-body">    
-                                                <p>Already have an account? <a href='page-login.html'>Log in instead!</a></p>
-                                                
+                                                <p><%=user.name%></p>
+                                                <p><%=user.mobile%></p>
+                                                <p><%=user.email%></p>
+                                                <!-- <a href="/profile-edit">Edit profile?</a> -->
+                                                <a href="#" id="editProfileBtn">Edit Profile?</a>
+
+                                                <!-- <p>Already have an account? <a href='page-login.html'>Log in instead!</a></p> -->
+                                                <br><br>
                                                 <a href="/change-password">Edit Password?</a>
 
 
-                                                <form method="post" name="enq">
-                                                    <div class="row">
-                                                        <div class="form-group col-md-12">
-                                                            <label>Full Name <span class="required"></span></label>
-                                                            <input required="" class="form-control" name="name" type="text" />
-                                                        </div> <br>
-                                                        <div class="form-group col-md-6">
-                                                            <label>Mobile Number <span class="required"></span></label>
-                                                            <input required="" class="form-control" name="mobile" />
+                                                <br>
+                                             
+                                                    <form method="post" action="/profile-edit"  name="enq" id="profileForm">
+                                                        <div class="row">
+                                                            <div class="form-group col-md-12">
+                                                                <label>Full Name <span class="required" ></span></span></label>
+                                                                <input required="" class="form-control" name="name" type="text" value="<%=user.name%>" />
+                                                            </div>
+                                                            <div class="form-group col-md-6">
+                                                                <label>Mobile Number <span class="required"></span></label>
+                                                                <input required="" class="form-control" name="mobile" value="<%=user.mobile%>" />
+                                                            </div>
+                                                            <div class="form-group col-md-12">
+                                                                <label>Email <span class="required"></span></label>
+                                                                <input required="" class="form-control" name="email" type="text" value="<%=user.email%>" />
+                                                            </div>
+                                                            <!-- <div class="form-group col-md-12">
+                                                                <label>Password <span class="required"></span></label>
+                                                                <input required="" class="form-control" name="password" type="text" value="**********" />
+                                                            </div> -->
+                                                            <div class="col-md-12">
+                                                                <button type="submit" class="btn btn-fill-out submit font-weight-bold" name="submit" value="Submit">Save</button>
+                                                            </div>
                                                         </div>
-                                                        <div class="form-group col-md-12">
-                                                            <label>Email <span class="required"></span></label>
-                                                            <input required="" class="form-control" name="email" type="text" />
-                                                        </div>
-                                                        <div class="form-group col-md-12">
-                                                            <label>Password <span class="required"></span></label>
-                                                            <input required="" class="form-control" name="password" type="text" />
-                                                        </div>
-                                                       
-                                                        <div class="col-md-12">
-                                                            <button type="submit" class="btn btn-fill-out submit font-weight-bold" name="submit" value="Submit">Save </button>
-                                                        </div>
-                                                        
-                                                    </div>
-                                                    
-                                                </form>
+                                                    </form>
+                                               
+                                                
                                                 <hr>
 
                                                
 
                                             </div>
+                                            
                                         </div>
+                                        <% } %>
                                     </div>
                                 </div>
                             </div>
@@ -515,6 +665,26 @@
             </div>
         </div>
     </div>
+   
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const editProfileBtn = document.getElementById('editProfileBtn');
+            const profileForm = document.getElementById('profileForm');
+    
+            editProfileBtn.addEventListener('click', function(event) {
+                event.preventDefault();
+                if (profileForm.style.display === 'none') {
+                    profileForm.style.display = 'block'; // Show the form
+                } else {
+                    profileForm.style.display = 'none'; // Hide the form
+                }
+            });
+        });
+    </script>
+    
+
+    
     <!-- Vendor JS-->
     <script src="user-assets/js/vendor/modernizr-3.6.0.min.js"></script>
     <script src="user-assets/js/vendor/jquery-3.6.0.min.js"></script>

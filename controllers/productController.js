@@ -89,14 +89,20 @@ const insertProduct  =  async (req,res)=>{
 
     if(products){
 
-      res.render('addProduct',{proData:products})
+      res.status(200).json({ success: true, message: 'Product added successfully' });
+
+
     }else{
 
       res.send('not found')
     }
+    res.render('addProduct',{proData:products})
+
     
   } catch (error) {
     console.log(error.message);
+    res.status(500).json({ success: false, message: 'Failed to add product' });
+
   }
 }
 
@@ -178,6 +184,7 @@ for (const file of req.files) {
       }
   })
 
+  // await proData.save()
 res.redirect('/admin/products')
 
   } catch (error) {

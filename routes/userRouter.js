@@ -47,7 +47,7 @@ router.get("/home",auth.isLogin, userController.loaduserHome);
 router.get("/wishlist", auth.isLogin, userController.loaduserWishlist);
 router.get("/show-product",auth.isLogin,userController.showProduct)
 router.get("/all-product",userController.loadAllProduct)
-
+router.post('/all-product',userController.loadAllProduct)
 // ------------------User Cart------------------------------------------------------
 router.get("/user-cart",auth.isLogin, userCartController.loadUserCart);
 router.post('/add-to-cart',auth.isLogin,userCartController.addToCart)
@@ -84,6 +84,7 @@ router.get('/new-Arrivals',userController.newArrivals)
 
 router.get('/change-password',userController.loadChangePassword)
 router.post('/change-password',userController.verifyChangePassword)
+router.post('/profile-edit',userController.verifyProfileEdit)
 
 
 module.exports = router;

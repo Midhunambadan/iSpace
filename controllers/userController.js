@@ -483,6 +483,14 @@ const loadAllProduct = async (req, res) => {
   try {
 
 
+    const reqProduct=req.body.searchProduct
+
+    // console.log('hiiiiiiiiiiiiiiiiiiiiiiiii',reqProduct);
+
+    // const searchProduct = await Product.find({ name: { $regex: new RegExp('^' + reqProduct + '$', 'i') } });
+
+    // console.log('hiiiiiiiiiiiiiiiiiiiiiiiiisearchProduct',searchProduct);
+
     
     const productData = await Product.find({ isActive: true }).populate({
       path: 'categoryId',
@@ -641,10 +649,8 @@ const verifyChangePassword=async(req,res)=>{
     await User.findByIdAndUpdate(userId, { password: spassword });
     res.render('changePassword',{message:"Password changed successfully!"})
     } else {
-      res.redirect('/change-password')
+      res.redirect('/change-password?incorrect=true')
     }
-
-    
 
     // console.log('password-------------',userData);
     // console.log('----------oldpassword',oldpassword);
@@ -653,6 +659,37 @@ const verifyChangePassword=async(req,res)=>{
   }
 }
  
+const verifyProfileEdit=async(req,res)=>{
+  try {
+    
+    const userId=req.session.user_id
+    const{name,mobile,email}=req.body
+
+    const update=await User.findByIdAndUpdate(userId,{name:name,mobile:mobile,email:email})
+    if(update){
+    res.redirect('/userDashboard')
+  }
+
+    // res.redirect('/userDashboard')
+
+    res.redirect("/admin/category?categoryAdd=true",);
+
+
+  } catch (error) {
+    
+  }
+}
+
+// const searchProduct=async(req,res)=>{
+//   try {
+//     const searchProduct=req.body.searchProduct
+//     console.log('-----------------',searchProduct);
+//   } catch (error) {
+    
+//   }
+// }
+
+
 
 
 
@@ -682,7 +719,10 @@ module.exports = {
   newArrivals,
 
   loadChangePassword,
-  verifyChangePassword
+  verifyChangePassword,
+  verifyProfileEdit,
+
+  // searchProduct
  
 
 };
