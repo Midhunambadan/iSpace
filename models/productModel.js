@@ -9,7 +9,10 @@ const product= new mongoose.Schema({
     product_name: String,
     discription:String,
     MRP:Number,
-    stock: Number,
+    stock: {
+        type:Number,
+        required:true
+    },
     productImages:{
         type:Array
     }, 

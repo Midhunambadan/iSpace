@@ -18,6 +18,8 @@
                 
          <!-- Sweetalert -->
          <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11">
+
 
 
         <!-- Boxicons CSS -->
@@ -331,6 +333,69 @@ a.google span{
                       <span>Already have an account? <a href="#" class="link login-link">Login</a></span>
                     </div>
                   </div>
+
+
+
+                  <!-- <script>
+
+document.getElementById('signupForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent default form submission
+
+    const username = document.getElementById('username').value;
+    const email = document.getElementById('email').value;
+    const mobile = document.getElementById('mobile').value;
+    const password = document.getElementById('password').value;
+    const password2 = document.getElementById('password2').value;
+
+    // Validate password match
+    if (password !== password2) {
+        document.getElementById('password2Error').innerText = 'Passwords do not match';
+        return;
+    }
+
+    // Your fetch request
+    fetch('/verifyOtp', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            email: email,
+            name: username,
+            mobile: mobile,
+            password: password
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Registration Success',
+                text: data.message,
+                onClose: () => {
+                    window.location.href = '/login'; // Redirect to login page
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Registration Failed',
+                text: 'An error occurred during registration'
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Registration Failed',
+            text: 'An error occurred during registration'
+        });
+    });
+});
+
+                  </script> -->
                   
 
                 <!-- <div class="line"></div> -->

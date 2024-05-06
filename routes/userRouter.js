@@ -35,7 +35,7 @@ router.get("/", auth.isLogout, userController.loaduserHome);
 router.get('/forgot',userController.loadForgotPassword)
 router.post('/forgot',userController.getForgotOtp)
 
-router.get('/verify-forgot-otp',userController.verifyForgotOtp)
+router.post('/verify-forgot-otp',userController.verifyForgotOtp)
 router.post('/verify-forgot-otp',userController.loadPasswordReset)
 
 router.get('/password-reset',userController.loadPasswordReset)
@@ -45,6 +45,8 @@ router.post('/verify-password-reset',userController.VerifyPasswordReset)
 
 router.get("/home",auth.isLogin, userController.loaduserHome);
 router.get("/wishlist", auth.isLogin, userController.loaduserWishlist);
+router.get('/add-to-wishlist',auth.isLogin,userController.addToWishlist)
+
 router.get("/show-product",auth.isLogin,userController.showProduct)
 router.get("/all-product",userController.loadAllProduct)
 router.post('/all-product',userController.loadAllProduct)
@@ -55,18 +57,26 @@ router.get('/delete-cart',userCartController.deleteCart)
 router.post('/update-cart',userCartController.updateCart)
 router.post('/update-quantity',userCartController.updateQuantity)
 
+
 //----------------------Address Start---------------------------------------
 router.get("/userDashboard", auth.isLogin,userController.loaduserDashboard);
 
 router.post('/insert-Address',addressController.insertAddress)
 router.get('/edit-Address',addressController.loadEditAddress)
-router.get('/delete-Address',addressController.deleteAddress)
+router.get('/delete-address/:id',addressController.deleteAddress)
 router.post('/edit-Address',addressController.verifyEditAddress)
 
 //----------------------Checkout page Start---------------------------------------
 
 
-router.get('/checkout',userCartController.userCheckout)
+router.get('/checkout',auth.isLogin,userCartController.userCheckout)
+router.post('/place-order',userCartController.placeOrder)
+router.get('/continue-shop',userCartController.continueShop)
+
+router.post('/insert-checkout-address',userCartController.insertCheckoutAddress)
+router.get('/delete-checkout-address/:id',userCartController.deleteCheckoutAddress)
+// router.post('/edit-Address',addressController.verifyEditAddress)
+
 
 
 // /------------------------Sort Start----------------------------------------------
@@ -77,7 +87,11 @@ router.get('/a-z',userController.sortAtoZ)
 router.get('/z-a',userController.sortZtoA)
 router.get('/new-Arrivals',userController.newArrivals)
 
+
+router.post('/search-product',userController.searchProduct)
+
 // /------------------------Sort Start----------------------------------------------
+
 
 
 //-----------Account-Profile--------------------------------------------------------

@@ -5,6 +5,10 @@
 <body>
 <%- include('../partials/admin-left.ejs') %>
 
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+
 <main class="main-wrap">
     
     <header class="main-header navbar">
@@ -73,7 +77,8 @@
     <div class="card-body">
         <div class="row justify-content-center"> <!-- Center the form -->
             <div class="col-md-6"> <!-- Adjust the column width as needed -->
-                <form method="post" action="" enctype="multipart/form-data">
+                <form method="post" action="" enctype="multipart/form-data" >
+                 <!-- <form method="post" action="" enctype="multipart/form-data" onsubmit="event.preventDefault()"> -->
                     <div class="mb-4">
                         <label for="product_name" class="form-label" >Product title</label>
                         <input type="text" placeholder="Type here" class="form-control" id="product_name" name="pname" value="<%= products.product_name %>" required/>
@@ -83,15 +88,6 @@
                         <label class="form-label"  >Description</label>
                         <textarea type="text" placeholder="Type Description here" class="form-control" name="pdescription" required><%= products.discription %></textarea>
                     </div>
-
-                    <!-- <div class="mb-4">
-                        <label for="product_mrp" class="form-label" >Category</label>
-                        <input type="text" placeholder="Type here" class="form-control" id="product_category" name="category" value="<%= products.category %>" required/>
-                    </div> -->
-
-
-
-                  
 
                     <% if (locals.category) { %>
                         <div class="col-lg-4">
@@ -109,10 +105,6 @@
                         </div>
                     <% } %>
                     
-                    
-
-               
-
                     <div class="mb-4">
                         <label for="product_mrp" class="form-label" >MRP</label>
                         <input type="text" placeholder="Type here" class="form-control" id="product_mrp" name="mrp" value="<%= products.MRP %>" min="1" required/>
@@ -127,27 +119,6 @@
                         <label for="product_stock" class="form-label" >Stock</label>
                         <input type="text" placeholder="Type here" class="form-control" id="product_stock" name="stock" value="<%= products.stock %>" min="1" required/>
                     </div>
-                    
-                   
-
-                   
-                    <!-- <div class="card-body" style="align-items: center;">
-                        <div class="input-upload">
-                            <div id="image-preview-container">
-                                <% if (products.productImages.length > 0) { %>
-                                    <% for (let i=0; i< products.productImages.length; i++) { %>
-                                        <div>
-                                            <img id="previewImage<%= i %>" src="/productImage/<%= products.productImages[i] %>"  alt="Product Image">
-                                            <button class="btn btn-danger" onclick="deleteImage(event)">Delete</button>
-                                        </div>
-                                    <% } %>
-                                <% } else { %>
-                                    <img id="previewImage" src="" alt="Product Image">
-                                <% } %>
-                            </div>
-                            <input class="form-control" type="file" multiple accept="image/*" name="productImages" onchange="previewImages(event)" required>
-                        </div>
-                    </div> -->
                     
                     <div class="card-body" style="align-items: center;">
                         <div class="input-upload">
@@ -173,10 +144,12 @@
                     <input type="hidden" name="id" value="<%= products._id %>" >
 
                     <div class="d-grid">
-                        <button class="btn btn-primary" >Update Product</button>
+                        <button class="btn btn-primary" onclick="updateProduct()"  >Update Product</button>
                     </div>
                     
                 </form>
+
+
             </div>
         </div>
     </div>
@@ -184,8 +157,6 @@
 
             <!-- card .// -->
         </section> <!-- content-main end// -->
-
-
 
         <footer class="main-footer font-xs">
             <div class="row pb-30 pt-15">
@@ -210,50 +181,9 @@
     const imageContainer = event.target.parentNode;
     imageContainer.parentNode.removeChild(imageContainer);
 }
-
         </script>
 
 
-<!-- <script>
-
-    function deleteImage() {
-    // Remove the existing image and delete button from the preview container
-    document.getElementById('image-preview-container').innerHTML = '';
-}
-</script> -->
-
-
-        <!-- <script>
-            function previewImages(event) {
-                const previewContainer = document.getElementById('image-preview-container');
-                previewContainer.innerHTML = '';
-        
-                const files = event.target.files;
-                for (let i = 0; i < files.length; i++) {
-                    const file = files[i];
-                    const reader = new FileReader();
-        
-                    reader.onload = function (e) {
-                        const imageSrc = e.target.result;
-                        const imagePreview = document.createElement('img');
-                        imagePreview.src = imageSrc;
-                        imagePreview.className = 'img-thumbnail';
-                        previewContainer.appendChild(imagePreview);
-        
-                        const deleteButton = document.createElement('button');
-                        deleteButton.innerText = 'Delete';
-                        deleteButton.className = 'btn btn-danger';
-                        deleteButton.onclick = function () {
-                            previewContainer.removeChild(imagePreview);
-                            previewContainer.removeChild(deleteButton);
-                        };
-                        previewContainer.appendChild(deleteButton);
-                    };
-        
-                    reader.readAsDataURL(file);
-                }
-            }
-        </script> -->
         <script>
             function previewImages(event) {
     const previewContainer = document.getElementById('image-preview-container');
@@ -292,7 +222,11 @@
 
         </main>
         
-        
+
+
+
+
+         
     
         <script src="/adminAssets/js/vendors/jquery-3.6.0.min.js"></script>
         <script src="/adminAssets/js/vendors/bootstrap.bundle.min.js"></script>

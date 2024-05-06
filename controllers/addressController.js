@@ -35,6 +35,7 @@ const insertAddress = async (req, res) => {
         // Save the address to the database
         await address.save();
 
+        // res.redirect('/checkout')
         res.redirect('/userDashboard')
 
     } catch (error) {
@@ -86,10 +87,14 @@ const verifyEditAddress=async(req,res)=>{
 const deleteAddress=async(req,res)=>{
     try {
         
-        const id =req.query.id
+        const id =req.params.id
         console.log('--------------------id',id);
-        await Address.findByIdAndDelete(id);
-        res.redirect('/userDashboard')
+      const updateAddress=  await Address.findByIdAndDelete(id);
+
+      
+        res.json({success : true})
+     
+        // res.redirect('/userDashboard')
     } catch (error) {
         
     }

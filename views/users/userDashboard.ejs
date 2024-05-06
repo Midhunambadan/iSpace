@@ -12,7 +12,12 @@
         font-size: 14px;
         margin-top: 5px;
     }
+    .status-processing {
+    color: blue; /* Choose your desired color */
+}
+
 </style>
+
 
 
 
@@ -36,7 +41,7 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="dashboard-menu">
-                                    <ul class="nav flex-column" role="tablist">
+                                    <ul class="nav flex-column" role="tablist">￼
                                         <li class="nav-item">
                                             <a class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" href="#dashboard" role="tab" aria-controls="dashboard" aria-selected="false"><i class="fi-rs-settings-sliders mr-10"></i>Dashboard</a>
                                         </li>
@@ -75,56 +80,58 @@
                                         </div>
                                     </div>
 
+                                    <style>
+                                        .status-processing {
+    color: blue; /* Choose your desired color */
+}
+
+                                    </style>
 
 
-
-                                    <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab">
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <h3 class="mb-0">Your Orders</h3>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="table-responsive">
-                                                    <table class="table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Order</th>
-                                                                <th>Date</th>
-                                                                <th>Status</th>
-                                                                <th>Total</th>
-                                                                <th>Actions</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>#1357</td>
-                                                                <td>March 45, 2020</td>
-                                                                <td>Processing</td>
-                                                                <td>$125.00 for 2 item</td>
-                                                                <td><a href="#" class="btn-small d-block">View</a></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>#2468</td>
-                                                                <td>June 29, 2020</td>
-                                                                <td>Completed</td>
-                                                                <td>$364.00 for 5 item</td>
-                                                                <td><a href="#" class="btn-small d-block">View</a></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>#2366</td>
-                                                                <td>August 02, 2020</td>
-                                                                <td>Completed</td>
-                                                                <td>$280.00 for 3 item</td>
-                                                                <td><a href="#" class="btn-small d-block">View</a></td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
+                                    <% if(orders && orders.length > 0) { %>
+                                        <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h3 class="mb-0">Your Orders</h3>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="table-responsive">
+                                                        <table class="table">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>No</th>
+                                                                    <th>ID</th>
+                                                                    <th>Date</th>
+                                                                    <th>Status</th>
+                                                                    <th>Total</th>
+                                                                    <th>Payment</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <% for(let i=0; i < orders.length; i++) { %>
+                                                                    <tr>
+                                                                        <td><%= i+1 %></td>
+                                                                        <td>
+                                                                            <% for(let j=0; j < orders[i].products.length; j++) { %>
+                                                                                <%= orders[i].products[j].productId %><br>
+                                                                            <% } %>
+                                                                        </td>
+                                                                        <td><%= orders[i].orderDate.toDateString() %></td>
+                                                                        <td class="status-processing" style="color: blue;">Processing</td>
+                                                                        <td>₹ <%= orders[i].totalAmount %> for <%= orders[i].products.length %> items</td>
+                                                                        <td><%= orders[i].paymentMethod %></td>
+                                                                    </tr>
+                                                                <% } %>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-
-
+                                    <% } %>
+                                    
+                                    
+                                    
 
                                     <div class="tab-pane fade" id="track-orders" role="tabpanel" aria-labelledby="track-orders-tab">
                                         <div class="card">
@@ -156,52 +163,31 @@
                                     <div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="address-tab">
                                         <div class="row">
                                             <% if (locals.address && locals.address.length > 0) { %>
-                                                <div class="col-lg-6">
-                                                    <div class="card mb-3 mb-lg-0">
-                                                        <div class="card-header">
-                                                            <h3 class="mb-0">Default Address</h3>
-                                                        </div>
-                                                        <div class="card-body">
-                                                            <address>
-                                                                <a><%= address[0].name %></a>
-                                                                <p><%= address[0].houseName %></p>
-                                                                <p><%= address[0].street %></p>
-                                                                <p><%= address[0].city %></p>
-                                                                <p><%= address[0].state %></p>
-                                                                <p><%= address[0].mobile %></p>
-                                                                <p><%= address[0].pincode %></p>
-                                                            </address>
-                                                            <p>India</p>
-                                                            <a href="/edit-Address?id=<%= address[0]._id %>" class="btn-small">Edit</a>
-                                                            <span style="margin-left: 6px; margin-right: 10px;">&nbsp;</span>
-                                                            <a href="/delete-address?id=<%= address[0]._id %>" class="btn-small" style="color: red;">Delete</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            
-                                                <% if (locals.address.length > 1) { %>
-                                                <div class="col-lg-6">
-                                                    <div class="card">
-                                                        <div class="card-header">
-                                                            <h5 class="mb-0">Address no: 2</h5>
-                                                        </div>
-                                                        <div class="card-body">
-                                                            <address>
-                                                                <a><%= address[1].name %></a>
-                                                                <p><%= address[1].houseName %></p>
-                                                                <p><%= address[1].street %></p>
-                                                                <p><%= address[1].city %></p>
-                                                                <p><%= address[1].state %></p>
-                                                                <p><%= address[1].mobile %></p>
-                                                                <p><%= address[1].pincode %></p>
-                                                            </address>
+                                                <% for (let i = 0; i < locals.address.length; i++) { %>
+                                                    <div class="col-lg-6">
+                                                        <div class="card mb-3 mb-lg-0">
+                                                            <div class="card-header">
+                                                                <h3 class="mb-0">Address <%= i + 1 %></h3>
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <address>
+                                                                    <a><%= locals.address[i].name %></a>
+                                                                    <p><%= locals.address[i].houseName %></p>
+                                                                    <p><%= locals.address[i].street %></p>
+                                                                    <p><%= locals.address[i].city %></p>
+                                                                    <p><%= locals.address[i].state %></p>
+                                                                    <p><%= locals.address[i].mobile %></p>
+                                                                    <p><%= locals.address[i].pincode %></p>
+                                                                </address>
+                                                                <a href="/edit-Address?id=<%= locals.address[i]._id %>" class="btn-small">Edit</a>
+                                                                <span style="margin-left: 6px; margin-right: 10px;">&nbsp;</span>
+                                                                <!-- <a href="/delete-address?id=<%= locals.address[i]._id %>" class="btn-small" style="color: red;">Delete</a> -->
+                                                                <a onclick="deleteAddress('<%= locals.address[i]._id %>')" class="btn-small" style="color: red;">Delete</a>
+                                                                
 
-                                                            <a href="/edit-Address?id=<%= address[1]._id %>" class="btn-small">Edit</a>
-                                                            <span style="margin-left: 6px; margin-right: 10px;">&nbsp;</span>
-                                                            <a href="/delete-address?id=<%= address[1]._id %>" class="btn-small" style="color: red;">Delete</a>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
                                                 <% } %>
                                             <% } %>
                                             
@@ -312,7 +298,9 @@
                                                             var state = document.getElementsByName('state')[0].value;
                                                             var pincode = document.getElementsByName('pincode')[0].value;
                                                     
-                                                            var namePattern = /^[a-zA-Z]*$/;
+                                                            // var namePattern = /^[a-zA-Z]*$/;
+                                                            var namePattern = /^[a-zA-Z\s]+$/;
+
                                                             var mobilePattern = /^[0-9]+$/;
                                                             var alphaPattern = /^[a-zA-Z]*$/;
                                                             var pincodePattern = /^[0-9]+$/;
@@ -434,7 +422,6 @@
                                                
                                                 
                                                 <hr>
-
                                                
 
                                             </div>
@@ -708,6 +695,61 @@
     <!-- Template  JS -->
     <script src="user-assets/js/main5103.js?v=6.0"></script>
     <script src="user-assets/js/shop5103.js?v=6.0"></script>
+
+    
+    <script>
+       
+        function deleteAddress(addressId) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You will not be able to recover this address!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, cancel',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/delete-address/${addressId}`, {
+                        method: 'GET'
+                    })
+                    .then(response => response.json())
+                    .then((data) => {
+                        console.log(data);
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Address Deleted',
+                                text: 'The address has been deleted successfully!',
+                                showConfirmButton: false,
+                                timer: 2000
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            throw new Error('Failed to delete the address. Please try again.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Delete Failed',
+                            text: error.message,
+                        });
+                    });
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    // Swal.fire(
+                    //     'Cancelled',
+                    //     'The address deletion has been cancelled.',
+                    //     'error'
+                    // );
+                }
+            });
+        }
+    </script>
+    
+    
 </body>
 
 

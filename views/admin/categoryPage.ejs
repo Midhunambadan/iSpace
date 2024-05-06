@@ -76,24 +76,52 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-3">
-                            <form method="post" action="">
+                            <form method="post" action="" onsubmit="return validateForm()">
 
-                               
-                                  
                                 <div class="mb-4">
-                                    <label for="product_name" class="form-label" >Name</label>
+                                    <label for="product_name" class="form-label">Name</label>
                                     <input type="text" placeholder="Type here" class="form-control" id="product_name" minlength="3" name="category" required />
+                                    <div id="product_name_error" class="error-message"></div>
                                 </div>
-                                
+                            
                                 <div class="mb-4">
-                                    <label class="form-label"  >Description</label>
-                                    <textarea placeholder="Type here" class="form-control" name="description" minlength="10" required ></textarea>
+                                    <label class="form-label">Description</label>
+                                    <textarea placeholder="Type here" class="form-control" name="description" minlength="10" required></textarea>
+                                    <div id="description_error" class="error-message"></div>
                                 </div>
                                 <div class="d-grid">
-                                    <button class="btn btn-primary" >Create category</button>
+                                    <button class="btn btn-primary">Create category</button>
                                 </div>
-
+                            
                             </form>
+                            
+                            <!-- <script>
+                                function validateForm() {
+                                    let isValid = true;
+                            
+                                    // Validate Name
+                                    const productName = document.getElementById('product_name').value.trim();
+                                    const nameRegex = /^[a-zA-Z0-9\s]+$/;
+                                    if (productName === '' || !nameRegex.test(productName)) {
+                                        isValid = false;
+                                        document.getElementById('product_name_error').textContent = 'Name is required and cannot contain special characters';
+                                    } else {
+                                        document.getElementById('product_name_error').textContent = '';
+                                    }
+                            
+                                    // Validate Description
+                                    const description = document.getElementById('description').value.trim();
+                                    if (description === '') {
+                                        isValid = false;
+                                        document.getElementById('description_error').textContent = 'Description is required';
+                                    } else {
+                                        document.getElementById('description_error').textContent = '';
+                                    }
+                            
+                                    return isValid;
+                                }
+                            </script> -->
+                            
                         </div>
                         <div class="col-md-9">
                             <div class="table-responsive">
@@ -135,8 +163,11 @@
                                                         <button type="submit" class="btn btn-outline-success">
                                                             <a href="/admin/category-edit?id=<%= category[i]._id %>" >Edit</a>
                                                         </button>
-                                                        <!-- <button class="btn btn-outline-danger"  >Delete</button> -->
-                                                        <a href="/admin/delete-category?id=<%=category[i]._id%>" class="btn btn-sm font-sm btn-danger rounded">
+                                                        <!-- <a href="/admin/delete-category?id=<%=category[i]._id%>" class="btn btn-sm font-sm btn-danger rounded">
+                                                            <i class="material-icons md-delete_forever"></i> Delete
+                                                        </a> -->
+
+                                                        <a href="#" onclick="confirmDelete('<%=category[i]._id%>')" class="btn btn-sm font-sm btn-danger rounded">
                                                             <i class="material-icons md-delete_forever"></i> Delete
                                                         </a>
                                                   </td>
@@ -156,7 +187,24 @@
             </div> <!-- card .// -->
         </section> <!-- content-main end// -->
 
-
+        <script>
+            function confirmDelete(categoryId) {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'You will not be able to recover this category!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // If user confirms, redirect to deleteProduct route
+                        window.location.href = '/admin/delete-category?id=' + categoryId;
+                    }
+                });
+            }
+            </script>
 
         <footer class="main-footer font-xs">
             <div class="row pb-30 pt-15">

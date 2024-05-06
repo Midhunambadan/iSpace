@@ -19,6 +19,22 @@
     <!-- Template CSS -->
     <link href="/adminAssets/css/main.css" rel="stylesheet" type="text/css" />
 
+     
+    <style>
+        .preview-image {
+            max-width: 100px;
+            max-height: 100px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+
+    <style>
+        .error-message{
+            color: red;
+        }
+    </style>
+
     
 </head>
 
@@ -100,28 +116,21 @@
 
 
 
+                            <form method="post" enctype="multipart/form-data" id="productForm" onsubmit="return validateForm()" >
+                            <!-- <form method="post" enctype="multipart/form-data"  onsubmit="return validateForm()"> -->
 
-                            <form method="post"  enctype="multipart/form-data" >
                                 <div class="mb-4">
                                     <label for="product_name" class="form-label">Product title</label>
                                     <input type="text" placeholder="Type here" class="form-control" id="product_name" minlength="3"  name="pname" required>
+                                    <div id="pname_error" class="error-message"></div>
                                 </div>
                                 <div class="mb-4">
                                     <label class="form-label">Full description</label>
-                                    <textarea placeholder="Type here" class="form-control" rows="4" minlength="12" name="pdescription" required></textarea>
+                                    <textarea placeholder="Type here" class="form-control" rows="4" id="pdescription" name="pdescription" required></textarea>
+                                    <div id="pdescription_error" class="error-message"></div>
                                 </div>
                                 <div class="row">
-
-                                    <!-- <div class="col-lg-4">
-                                        <div class="mb-4">
-                                            <label class="form-label">Category</label>
-                                            <input placeholder="Type here" type="text" class="form-control" name="category" required>
-                                        </div>
-                                    </div> -->
-
-                                  
-
-
+                              
                                     <%if(locals.category){%>
                                     <div class="col-lg-4">
                                         <div class="mb-4">
@@ -136,27 +145,35 @@
                                         </div>
                                     </div>
                                     <%}%>
-
+                              
                                     <div class="col-lg-4">
-                                        <div class="mb-4">
-                                            <label class="form-label">Regular price</label>
-                                            <div class="row gx-2">
-                                                <input placeholder="₹" type="number" class="form-control" name="mrp"  required min="1">
-                                            </div>
-                                        </div>
+                                       
+                                    <div class="mb-4">
+                                        <label class="form-label">Regular price</label>
+                                        <input placeholder="₹" type="number" class="form-control" id="mrp" name="mrp" required min="1">
+                                        <div id="mrp_error" class="error-message"></div>
                                     </div>
+                                    </div>
+                              
+                              
+                              
+                              
                                    
                                     <div class="col-lg-4">
                                         <div class="mb-4">
                                             <label class="form-label">Discount</label>
-                                            <input placeholder="Type here" type="number" class="form-control" name="discount" required  min="1">
+                                            <input placeholder="Type here" type="number" class="form-control" id="discount" name="discount" required  min="1">
+                                            <div id="discount_error" class="error-message"></div>
+                              
                                         </div>
                                     </div>
-
-
+                              
+                              
                                     <div class="col-lg-4">
                                         <label class="form-label">Stock</label>
-                                        <input type="number" placeholder="Type here" class="form-control" id="product_name" name="stock" required min="1">
+                                        <input type="number" placeholder="Type here" class="form-control" id="stock" name="stock" required min="1">
+                                        <div id="discount_error" class="error-message"></div>
+                              
                                     </div>
                                   
                                 </div>
@@ -167,26 +184,99 @@
                                             <h4>Media</h4>
                                         </div>
                                         <div class="card-body" style="align-items: center;">
-                                            <div class="input-upload" >
+                                            <!-- <div class="input-upload" >
                                                 <img src="/adminAssets/imgs/theme/upload.svg" alt="">
                                                 <div id="image-preview-container"></div>
                                                 <input class="form-control" type="file" multiple accept="image/*" name="productImages" onchange="previewImages(event)" required>
                                                 
-
+                              
+                                            </div> -->
+                                            <div class="input-upload">
+                                                <img src="/adminAssets/imgs/theme/upload.svg" alt="">
+                                                <div id="image-preview-container"></div>
+                                                <input class="form-control" type="file" multiple accept="image/*" name="productImages" onchange="validateAndPreviewImages(event)" required>
                                             </div>
+                                            
+                                            
+                                           
+                                            
                                         </div>
                                     </div>
                                 </div> 
-
+                              
                                 <br>
-                                <label class="form-check mb-4">
+                                <!-- <label class="form-check mb-4">
                                     <input class="btn btn-primary btn-lg" style="background-color: #088178;margin-left: 10cm;"  type="submit" value="Submit" ">
-
+                              
                                    
+                                </label> -->
+
+                                <label class="form-check mb-4">
+                                    <button class="btn btn-primary btn-lg" style="background-color: #088178;margin-left: 10cm;" type="button" onclick="submitForm()">Submit</button>
                                 </label>
                                 
-                            </form>
-
+                              </form>
+                              
+                              <!-- <script>
+                                function validateForm() {
+                                    let pname = document.getElementById("product_name").value;
+                                    let pdescription = document.getElementById("pdescription").value;
+                                    let mrp = document.getElementById("mrp").value;
+                              
+                                    let discount = document.getElementById("discount").value;
+                                    let stock = document.getElementById("stock").value;
+                                    // Repeat the above for other input fields
+                              
+                                   
+                                    let pnamePattern = /^[a-zA-Z0-9]+(?: [a-zA-Z0-9]+)*$/;
+                                   let mrpPattern = /^\d+$/;
+                                   let discountPattern = /^(\d+)%?$/;
+                              
+                                   let stockPattern = /^[+]?\d+$/;
+                              
+                              
+                              
+                                    if (!pnamePattern.test(pname)) {
+                                        document.getElementById("pname_error").innerHTML = "Title must contain only alphabets and numbers.No space !!!";
+                                        return false;
+                                    } else {
+                                        document.getElementById("pname_error").innerHTML = "";
+                                    }
+                              
+                                    if (pdescription.trim() === "") {
+                                        document.getElementById("pdescription_error").innerHTML = "Description cannot be empty";
+                                        return false;
+                                    } else {
+                                        document.getElementById("pdescription_error").innerHTML = "";
+                                    }
+                              
+                                    if (!mrpPattern.test(mrp)) {
+                                        document.getElementById("mrp_error").innerHTML = "Regular price must be a number";
+                                        return false;
+                                    } else {
+                                        document.getElementById("mrp_error").innerHTML = "";
+                                    }
+                              
+                                    // Repeat the above for other input fields
+                              
+                              
+                                    if (!stockPattern .test(mrp)) {
+                                        document.getElementById("mrp_error").innerHTML = "Regular price must be a number";
+                                        return false;
+                                    } else {
+                                        document.getElementById("mrp_error").innerHTML = "";
+                                    }
+                              
+                                    if (!discountPattern.test(mrp)) {
+                                        document.getElementById("mrp_error").innerHTML = "Regular price must be a number";
+                                        return false;
+                                    } else {
+                                        document.getElementById("mrp_error").innerHTML = "";
+                                    }
+                              
+                                    return true;
+                                }
+                              </script> -->
 
 
 
@@ -219,6 +309,149 @@
         </footer>
         
     </main>
+
+
+
+    <!-- SweetAlert foradd product -->
+    <script>
+        function submitForm() {
+            // Perform form validation
+            if (validateForm()) {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'Do you want to add this product?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, add it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById('productForm').submit();
+                    }
+                });
+            }
+        }
+
+
+        function validateForm() {
+                                    let pname = document.getElementById("product_name").value;
+                                    let pdescription = document.getElementById("pdescription").value;
+                                    let mrp = document.getElementById("mrp").value;
+                              
+                                    let discount = document.getElementById("discount").value;
+                                    let stock = document.getElementById("stock").value;
+                                    // Repeat the above for other input fields
+                              
+                                   
+                                    let pnamePattern = /^[a-zA-Z0-9]+(?: [a-zA-Z0-9]+)*$/;
+                                   let mrpPattern = /^\d+$/;
+                                   let discountPattern = /^(\d+)%?$/;
+                              
+                                   let stockPattern = /^[+]?\d+$/;
+                              
+                              
+                              
+                                    if (!pnamePattern.test(pname)) {
+                                        document.getElementById("pname_error").innerHTML = "Title must contain only alphabets and numbers.No space !!!";
+                                        return false;
+                                    } else {
+                                        document.getElementById("pname_error").innerHTML = "";
+                                    }
+                              
+                                    if (pdescription.trim() === "") {
+                                        document.getElementById("pdescription_error").innerHTML = "Description cannot be empty";
+                                        return false;
+                                    } else {
+                                        document.getElementById("pdescription_error").innerHTML = "";
+                                    }
+                              
+                                    if (!mrpPattern.test(mrp)) {
+                                        document.getElementById("mrp_error").innerHTML = "Regular price must be a number";
+                                        return false;
+                                    } else {
+                                        document.getElementById("mrp_error").innerHTML = "";
+                                    }
+                              
+                                    // Repeat the above for other input fields
+                              
+                              
+                                    if (!stockPattern .test(mrp)) {
+                                        document.getElementById("mrp_error").innerHTML = "Regular price must be a number";
+                                        return false;
+                                    } else {
+                                        document.getElementById("mrp_error").innerHTML = "";
+                                    }
+                              
+                                    if (!discountPattern.test(mrp)) {
+                                        document.getElementById("mrp_error").innerHTML = "Regular price must be a number";
+                                        return false;
+                                    } else {
+                                        document.getElementById("mrp_error").innerHTML = "";
+                                    }
+                              
+                                    return true;
+                                }
+        
+        // function validateForm() {
+        //     let isValid = true;
+        
+        //     // Perform your form validation logic here
+        //     // For example, check if input fields are not empty
+        //     const productName = document.getElementById('product_name').value.trim();
+        //     const description = document.getElementById('pdescription').value.trim();
+        
+        //     if (productName === '' || description === '') {
+        //         isValid = false;
+        //         Swal.fire({
+        //             icon: 'error',
+        //             title: 'Validation Error',
+        //             text: 'Product title and description cannot be empty',
+        //         });
+        //     }
+        
+        //     return isValid;
+        // }
+        </script>
+            <!-- SweetAlert foradd product -->
+
+        
+
+
+
+        <!-- //image validation// -->
+    <script>
+        function validateAndPreviewImages(event) {
+            const previewContainer = document.getElementById('image-preview-container');
+            previewContainer.innerHTML = ''; // Clear previous previews
+    
+            const files = event.target.files;
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+            const maxSize = 5 * 1024 * 1024; // 5MB
+    
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (!allowedTypes.includes(file.type)) {
+                    alert('Please select a valid image file (JPEG, PNG, or GIF).');
+                    return;
+                }
+                if (file.size > maxSize) {
+                    alert('File size exceeds the limit (5MB).');
+                    return;
+                }
+    
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const image = new Image();
+                    image.src = e.target.result;
+                    image.classList.add('preview-image');
+                    previewContainer.appendChild(image);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+    <!-- //image validation// -->
 
 
     <script>

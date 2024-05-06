@@ -87,15 +87,15 @@ const insertProduct  =  async (req,res)=>{
     const products=await productData.save()
     
 
-    if(products){
+    // if(products){
 
-      res.status(200).json({ success: true, message: 'Product added successfully' });
+    //   res.status(200).json({ success: true, message: 'Product added successfully' });
 
 
-    }else{
+    // }else{
 
-      res.send('not found')
-    }
+    //   res.send('not found')
+    // }
     res.render('addProduct',{proData:products})
 
     
@@ -169,6 +169,7 @@ for (const file of req.files) {
     });
 }
 
+
   const proData=await Product.findByIdAndUpdate({_id:productId},
     {$set:
       {
@@ -183,9 +184,16 @@ for (const file of req.files) {
       productImages:imageUrls
       }
   })
+  
 
-  // await proData.save()
-res.redirect('/admin/products')
+    res.redirect('/admin/products')
+
+// if (proData ) {
+//   res.status(200).json({ message: 'Product updated successfully' });
+// } else {
+//   res.status(500).json({ message: 'Something went wrong' });
+// }
+
 
   } catch (error) {
     console.log(error.message);
@@ -228,6 +236,7 @@ const deleteProduct=async(req,res)=>{
   }
  }
 
+ 
  const UnBlockProduct=async(req,res)=>{
   try {
 

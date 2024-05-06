@@ -18,6 +18,16 @@
     <link rel="shortcut icon" type="image/x-icon" href="user-assets/imgs/theme/favicon.svg">
     <!-- Template CSS -->
     <link rel="stylesheet" href="user-assets/css/main5103.css?v=6.0">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
     <style>
         .qty-btn {
             background-color: #ffffff;
@@ -113,14 +123,17 @@
                                     <td class="text-center detail-info" data-title="Stock">
                                         <div class="detail-extralink mr-15">
                                             <div class="detail-qty border radius">
-                                                <button type="button" class="qty-btn qty-down" onclick="decrease('<%= cartData.product[i].productId._id %>')"><i class="fi-rs-minus"></i></button>
-                                                <span class="qty-val" id="qty_<%= cartData.product[i].productId._id %>">1</span>
-                                                <button type="button" class="qty-btn qty-up" onclick="increase('<%= cartData.product[i].productId._id %>')"><i class="fi-rs-plus"></i></button>
+                                                <button type="button" class="qty-btn qty-down" onclick="decrease('<%= cartData.product[i].productId._id %>' ,'<%= cartData.product[i].productId.MRP %>')"><i class="fi-rs-minus"></i></button>
+                                                <span class="qty-val"
+                                                id="qty_<%= cartData.product[i].productId.id %>"><%= cartData.product[i].quantity%>  
+                                                </span>
+
+                                                <button type="button" class="qty-btn qty-up" onclick="increase('<%= cartData.product[i].productId._id %>','<%= cartData.product[i].productId.MRP %>')"><i class="fi-rs-plus"></i></button>
                                             </div>
                                         </div>
                                     </td>
                                     <td class="price subtotal" data-title="Subtotal" id="subtotal_<%= cartData.product[i].productId._id %>">
-                                        <h4 class="text-brand"><%= cartData.product[i].productId.MRP %></h4>
+                                        <h4 class="text-brand" ><%= cartData.product[i].productId.MRP * cartData.product[i].quantity %></h4>
                                     </td>
                                     <td class="action text-center" data-title="Remove"><a href="/delete-cart?id=<%= cartData.product[i].productId._id %>" class="text-body"><i class="fi-rs-trash"></i></a></td>
                                 </tr>
@@ -131,6 +144,7 @@
                         
                     </div>
 
+   
 
 
 
@@ -165,10 +179,17 @@
                                         <td class="cart_total_label">
                                             <h6 class="text-muted">Grand Total  </h6>
                                         </td>
-                                        <td class="cart_total_amount">
+                                        <!-- <td class="cart_total_amount">
                                             <h4 class="text-brand text-end" name="total">₹</h4>
+                                        </td> -->
+                                        <td class="cart_total_amount">
+                                            <!-- <h4 class="text-brand text-end" >₹<p class="text-brand text-end" id="grandTotal"></p> </h4>  -->
+                                            <!-- <p>kfdf</p> -->
+                                            <span class="text-brand text-end fs-3"> ₹</span> <span class="text-brand text-end fs-3" id="grandTotal"></span>
                                         </td>
+                                        
                                     </tr>
+                               
                                     <tr>
                                         <td scope="col" colspan="2">
                                             <div class="divider-2 mt-10 mb-10"></div>
@@ -440,52 +461,11 @@
 
 </script>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 
 
 
-
-
-<!-- Delete item script -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const deleteButtons = document.querySelectorAll('.delete-item');
-            
-            deleteButtons.forEach(button => {
-                button.addEventListener('click', function(event) {
-                    event.preventDefault();
-                    
-                    const productId = this.getAttribute('data-product-id');
-                    
-                    fetch('/delete-from-cart', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ productId })
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`Failed to delete item from cart. Status: ${response.status}`);
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        if (data.success) {
-                            // Refresh the page or update the cart UI
-                            location.reload(); // Reload the page to reflect the changes
-                        } else {
-                            alert('Failed to delete item from cart.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('An error occurred while deleting the item from cart.');
-                    });
-                });
-            });
-        });
-        </script>
-    <!-- Delete item script -->
 
 
     <script src="user-assets/js/vendor/modernizr-3.6.0.min.js"></script>
@@ -512,104 +492,13 @@
     <script src="user-assets/js/main5103.js?v=6.0"></script>
     <script src="user-assets/js/shop5103.js?v=6.0"></script>
     
+
+
+
+
+
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.qty-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const row = btn.closest('tr');
-            const productId = row.dataset.productid;
-            const qtyVal = document.getElementById(`qty_${productId}`);
-            const qty = parseInt(qtyVal.textContent);
-            const unitPrice = parseFloat(row.querySelector('.price').textContent);
-            const subtotal = row.querySelector('.subtotal');
-            let newQty = qty;
-
-            if (btn.classList.contains('qty-up')) {
-                newQty++;
-            } else if (btn.classList.contains('qty-down')) {
-                newQty = Math.max(1, newQty - 1);
-            }
-
-            
-            qtyVal.textContent = newQty;
-            subtotal.textContent = (unitPrice * newQty).toFixed(2);
-
-            // Update localStorage with the new quantity
-            localStorage.setItem(`cartItem_${productId}`, newQty);
-        });
-    });
-
-    // Restore quantities and subtotals from localStorage on page load
-    document.querySelectorAll('.qty-val').forEach(qtyVal => {
-        const productId = qtyVal.id.split('_')[1];
-        const storedQty = localStorage.getItem(`cartItem_${productId}`);
-        if (storedQty) {
-            qtyVal.textContent = storedQty;
-            const row = qtyVal.closest('tr');
-            const unitPrice = parseFloat(row.querySelector('.price').textContent);
-            const subtotal = row.querySelector('.subtotal');
-            subtotal.textContent = (unitPrice * parseInt(storedQty)).toFixed(2);
-        }
-    });
-});
-
-</script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        
-        let updateCartTotal = function () {
-            let totalSum = 0;
-            let totalQuantity = 0;
-
-            // Iterate over each row in the cart table
-            document.querySelectorAll('.table-wishlist tbody tr').forEach(function (row) {
-                // Extract quantity and price
-                let quantity = parseInt(row.querySelector('.detail-qty .qty-val').textContent);
-                let price = parseFloat(row.querySelector('.price').textContent.replace('₹', ''));
-
-                // Calculate subtotal for the row
-                let subtotal = quantity * price;
-
-                // Update subtotal in the row
-                row.querySelector('.subtotal').textContent = '₹' + subtotal.toFixed(2);
-
-                // Update total sum and quantity
-                totalSum += subtotal;
-                totalQuantity += quantity;
-            });
-
-            // Update total sum and quantity in the total amount table
-            document.querySelector('.cart_total_amount h4').textContent = '₹' + totalSum.toFixed(2);
-            document.querySelector('.cart_total_amount_quantity h4').textContent = totalQuantity;
-
-            // Update grand total
-            document.querySelector('.cart_total_label h6').textContent = 'Grand Total';
-            document.querySelector('.cart_total_amount h4').textContent = '₹' + totalSum.toFixed(2);
-        };
-
-        // Listen for quantity change events
-        document.querySelectorAll('.detail-qty .qty-btn').forEach(function (btn) {
-            btn.addEventListener('click', function () {
-                setTimeout(updateCartTotal, 100); // Delay to ensure quantity update is reflected in the DOM
-            });
-        });
-        // let grandTotal = document.querySelector('.cart_total_amount h4').textContent;
-        // let grandTotalValue = parseFloat(grandTotal.replace('₹', ''));
-
-        // Initial update
-        updateCartTotal();
-    });
-</script>
-
-
-
-
-
-<!-- backend passing code -->
-<script>
-    function increase(productId) {
-    // Your existing code for increasing quantity here...
-
+    function increase(productId,productPrice) {
     fetch('/update-cart', {
         method: 'POST',
         headers: {
@@ -620,22 +509,191 @@
             quantity: 1 // Increase by 1
         })
     })
+  
     .then(response => {
+        console.log(response)
         if (response.ok) {
-            // Update the frontend display as needed
-            updateTotalPrice();
+            // Update the frontend display
+            let grandTotal = document.getElementById('grandTotal').innerText
+            let sum = Number(grandTotal) + Number(productPrice)
+            console.log(grandTotal,productPrice,sum)
+            console.log(typeof grandTotal , typeof productPrice ,typeof sum)
+            document.getElementById('grandTotal').innerText  = sum
+            updateQuantity(productId, 1);
+            return response.json()
         } else {
             console.error('Failed to update cart');
+            return response.json()
+        }
+    })  .then((res) => {
+        console.log(res);
+        if (res.message === 'Cart updated successfully') {
+            toastr.success(res.message);
+        } else {
+            toastr.error(res.message);
         }
     })
     .catch(error => {
         console.error('Error:', error);
+        toastr.error(error.message);
     });
 }
+function decrease(productId ,productPrice) {
+    const quantityElement = document.getElementById('qty_' + productId);
+    let quantity = parseInt(quantityElement.innerText);
+    if (quantity > 1) {
+        fetch('/update-cart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                productId: productId,
+                quantity: -1 // Decrease by 1
+            })
+        })
+        .then(response => {
+            console.log(response)
+            console.log("workeddggggggggggggggggggggggggg")
+            let grandTotal = document.getElementById('grandTotal').innerText
+            console.log("GrandTotal :",grandTotal)
+            console.log("product price  :",productPrice)
+            let sum = Number(grandTotal) - Number(productPrice)
+            console.log(typeof grandTotal , typeof productPrice ,typeof sum)
+            document.getElementById('grandTotal').innerText  = sum
+            let grandTotal1= document.getElementById('grandTotal').innerText
+            console.log(sum,grandTotal1)
+            if (response.ok) {
+                // Update the frontend display
 
-function decrease(productId) {
-    // Your existing code for decreasing quantity here...
+                updateQuantity(productId, -1);
+            } else {
+                console.error('Failed to update cart');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+}
 
+// function updateQuantity(productId, change) {
+//     const quantityElement = document.getElementById('qty_' + productId);
+//     let quantity = parseInt(quantityElement.innerText);
+//     quantity += change;
+//     quantityElement.innerText = quantity;
+// }
+
+
+$(function(){
+    toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-top-center",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "2000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    };
+});
+
+
+
+
+</script>
+
+<!-- update quantity with sum not refresh-->
+<!-- <script>
+   function updateQuantity(productId, change) {
+    const quantityElement = document.getElementById('qty_' + productId);
+    const subtotalElement = document.getElementById('subtotal_' + productId);
+    let quantity = parseInt(quantityElement.innerText);
+    let subtotal = parseFloat(subtotalElement.innerText);
+    quantity += change;
+    if (quantity >= 1) {
+        quantityElement.innerText = quantity;
+        subtotalElement.innerText = (subtotal / (quantity - change)) * quantity;
+        updateCart(productId, quantity);
+        // updateGrandTotal(); // Call function to update grand total
+    }
+}
+
+
+</script> -->
+<!-- update quantity with sum not refresh-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- code for subtotal -->
+<script>
+   window.onload = () => {
+    updateGrandTotal()
+};
+
+    function updateGrandTotal() {
+        let grandTotal = 0;
+        document.querySelectorAll('.subtotal').forEach(subtotalElement => {
+            grandTotal += parseFloat(subtotalElement.innerText.replace('₹', ''));
+        });
+        document.getElementById('grandTotal').innerText =  grandTotal.toFixed(2);
+    }
+
+    // Call updateGrandTotal initially to set the initial grand total
+</script>
+
+
+<script>
+function updateQuantity(productId, change) {
+    const quantityElement = document.getElementById('qty_' + productId);
+    const subtotalElement = document.getElementById('subtotal_' + productId);
+    let quantity = parseInt(quantityElement.innerText);
+    let subtotal = parseFloat(subtotalElement.innerText.replace('₹', ''));
+    quantity += change;
+    if (quantity >= 1) {
+        quantityElement.innerText = quantity;
+        subtotalElement.innerText = '₹' + ((subtotal / (quantity - change)) * quantity).toFixed(2);
+        // updateCart(productId, quantity); // we changed 
+        // updateGrandTotal(); // Call function to update grand total
+    }
+}
+
+</script>
+
+
+<!-- 
+<script>
+    function updateQuantity(productId, change) {
+    const quantityElement = document.getElementById('qty_' + productId);
+    const subtotalElement = document.getElementById('subtotal_' + productId);
+    let quantity = parseInt(quantityElement.innerText);
+    let subtotal = parseFloat(subtotalElement.innerText);
+    quantity += change;
+    if (quantity >= 1) {
+        quantityElement.innerText = quantity;
+        subtotalElement.innerText = (subtotal / (quantity - change)) * quantity;
+        updateCart(productId, quantity);
+    }
+}
+
+function updateCart(productId, quantity) {
     fetch('/update-cart', {
         method: 'POST',
         headers: {
@@ -643,14 +701,11 @@ function decrease(productId) {
         },
         body: JSON.stringify({
             productId: productId,
-            quantity: -1 // Decrease by 1
+            quantity: quantity
         })
     })
     .then(response => {
-        if (response.ok) {
-            // Update the frontend display as needed
-            updateTotalPrice();
-        } else {
+        if (!response.ok) {
             console.error('Failed to update cart');
         }
     })
@@ -659,12 +714,7 @@ function decrease(productId) {
     });
 }
 
-</script>
-
-
-
-
-
+</script> -->
 
 </body>
 

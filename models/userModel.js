@@ -34,7 +34,11 @@ const user = mongoose.Schema({
   registerDate:{
     type:Date,
     default:Date.now
-  }
+  },
+  wishlist:{
+    type:mongoose.Schema.Types.ObjectId,ref:'Wishlist',
+    required:true
+}
 
   
 });

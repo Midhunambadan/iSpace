@@ -7,6 +7,7 @@ const adminController = require("../controllers/adminController");
 const categoryController=require("../controllers/categoryController")
 const userController=require('../controllers/userController')
 const productController=require('../controllers/productController')
+const adminOrderController=require('../controllers/adminOrderController')
 
 const config = require("../config/config");
 const session = require("express-session");
@@ -86,6 +87,10 @@ admin_router.post('/edit-product',adminAuth.isLogin,upload.array('productImages'
 admin_router.get('/delete-product',adminAuth.isLogin,productController.deleteProduct)
 admin_router.get('/product-block',adminAuth.isLogin,productController.blockProduct)
 admin_router.get('/product-unblock',adminAuth.isLogin,productController.UnBlockProduct)
+
+
+
+admin_router.get('/orders',adminOrderController.orderPage)
 
 
 

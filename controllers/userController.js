@@ -8,6 +8,9 @@ const Admin = require("../models/adminModel");
 const Product=require('../models/productModel')
 const Category=require('../models/categoryModel')
 const Address=require('../models/addressModel')
+const Order=require('../models/orderModel')
+const Wishlist=require('../models/wishlistModel')
+
 
 
 // ==================================================================================================================
@@ -199,8 +202,11 @@ const verifyOtp = async (req, res) => {
 
       if (userData) {
         req.session.user1 = userData._id;
+
+        // res.status(200).json({ redirectUrl: '/home'});
+
         res.redirect('/home')
-        // res.render('userHome')
+        
       }
     } else {
       res.render("otp-form", { message: "Please Enter correct OTP !!!" });
@@ -302,6 +308,8 @@ const loadForgotPassword=async(req,res)=>{
   }
 }
 
+
+
 const getForgotOtp= async (req, res) => {
   try {
     const email = req.body.email;
@@ -347,23 +355,33 @@ const getForgotOtp= async (req, res) => {
 
       res.render('forgotOtpPage', { message: 'OTP sent to email, please verify!' });
     } else {
+      // res.send('Email not registerd. Please Register!')
       res.redirect('/forgot');
       // res.render('forgotOtpPage', { message: 'Invalid OTP.Please Enter correct OTP !' });
 
     }
   } catch (error) {
     console.error("Error in verifyForgotPassword:", error);
-    res.status(500).send("Internal Server Error");
+    res.status(500).send("Email not registered");
   }
 }
 
-
+ 
 
 
 const verifyForgotOtp=async(req,res)=>{
   try {
     
-    if(req.session.otp==req.body.otp){
+    const sessionOtp=req.session.otp
+    const bodyOtp=req.body.otp
+
+console.log('---------------------------------------------------------------------ccccccccccccccccccccccccc');
+    console.log('-------------session',sessionOtp);
+    console.log('-----------------body',bodyOtp);
+
+
+
+    if(sessionOtp===bodyOtp){
       res.render('passwordReset')
     }else{
       res.redirect('/forgot')
@@ -428,14 +446,21 @@ const loaduserDashboard = async (req, res) => {
     
     const userId=req.session.user_id
 
+    // const orderDetails= await Order.findById(orderId).populate('userId').populate('product.productId')
+
+
     const userData = await User.findById({ _id: userId});
     const addressData=await Address.find({user:userId})
 
+    const orderData = await Order.find({ userId: userId }).sort({orderDate:-1});
 
 
-    console.log('--------------------addressData',addressData.name);
 
-    res.render("userDashboard", { user: userData,address:addressData });
+    console.log('order-----------',orderData);
+
+    // console.log('--------------------addressData',addressData.name);
+
+    res.render("userDashboard", { user: userData,address:addressData,orders:orderData });
   } catch (error) {
     console.log(error.message);
   }
@@ -449,11 +474,49 @@ const loaduserDashboard = async (req, res) => {
 
 const loaduserWishlist = async (req, res) => {
   try {
-    res.render("userWishlist");
+
+    const userId=req.session.user_id
+    let wishList = await Wishlist.findOne({ userId });
+
+    res.render("userWishlist",{wishlist:wishList});
   } catch (error) {
     console.log(error.message);
   }
 };
+
+
+
+
+const addToWishlist = async (req, res) => {
+  try {
+    const proId = req.query.id;
+    const product = await Product.findById(proId);
+
+    const userId = req.session.user_id;
+
+    let wishList = await Wishlist.findOne({ userId });
+
+    // if (!wishList) {
+    //   wishList = new Wishlist({
+    //     userId,
+    //     products: [{ productId: proId }]
+    //   });
+    // } else {
+    //   if (!wishList.products.some(item => item.productId.equals(proId))) {
+    //     wishList.products.push({ productId: proId });
+    //   }
+    // }
+
+    await wishList.save();
+    console.log('Wishlist updated:', wishList);
+    res.send('Wishlist updated');
+  } catch (error) {
+    console.error('Error adding to wishlist:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
+
 // ==================================================================================================================
 
 //show product
@@ -484,6 +547,7 @@ const loadAllProduct = async (req, res) => {
 
 
     const reqProduct=req.body.searchProduct
+
 
     // console.log('hiiiiiiiiiiiiiiiiiiiiiiiii',reqProduct);
 
@@ -629,35 +693,28 @@ const priceHighToLow=async(req,res)=>{
   }
  }
 
-
-
-const verifyChangePassword=async(req,res)=>{
+ const verifyChangePassword = async (req, res) => {
   try {
-    const userId=req.session.user_id
+    const userId = req.session.user_id;
+    const password = req.body.currentPassword;
+    const newPassword = req.body.password;
 
-    const password=req.body.currentPassword
-    const newPassword=req.body.password
-
-    const userData=await User.findById(userId)
-
-    // console.log('----------userData',userData);
-
-    const spassword=await securePassword(newPassword)
-
+    const userData = await User.findById(userId);
     const isMatch = await bcrypt.compare(password, userData.password);
-    if (isMatch) {
-    await User.findByIdAndUpdate(userId, { password: spassword });
-    res.render('changePassword',{message:"Password changed successfully!"})
-    } else {
-      res.redirect('/change-password?incorrect=true')
-    }
 
-    // console.log('password-------------',userData);
-    // console.log('----------oldpassword',oldpassword);
+    if (isMatch) {
+      const spassword = await bcrypt.hash(newPassword, 10);
+      await User.findByIdAndUpdate(userId, { password: spassword });
+      res.status(200).json({ success: true, message: "Password changed successfully!" });
+    } else {
+      res.status(400).json({ success: false, message: "Current password is incorrect" });
+    }
   } catch (error) {
-    console.log(error.message);
+    console.error(error.message);
+    res.status(500).json({ success: false, message: "An error occurred" });
   }
-}
+};
+
  
 const verifyProfileEdit=async(req,res)=>{
   try {
@@ -680,14 +737,66 @@ const verifyProfileEdit=async(req,res)=>{
   }
 }
 
-// const searchProduct=async(req,res)=>{
+const searchProduct = async (req, res) => {
+  try {
+    const searchProduct = req.body.searchProduct;
+
+    console.log('-----------------searchProduct', searchProduct);
+
+    // Use regex with case-insensitive option
+    // const proData = await Product.find({ product_name: { $regex: new RegExp(searchProduct, 'i') } });
+
+    const proData = await Product.find({ product_name: { $regex: new RegExp('^' + searchProduct.trim().split(' ')[0], 'i') } });
+
+
+    // console.log('______proData', proData);
+    if (proData.length > 0) {
+
+      res.render('showAllProduct',{products:proData})
+    // res.status(200).send({success:true,message:"Product Found",data:proData})
+
+    } else {
+
+      res.render('showAllProduct',{mesg:"Product not found"})
+
+      // res.status(200).send({success:true,message:"Product Not  Found"})
+
+    }
+
+  } catch (error) {
+    console.error('Error searching for product:', error);
+    res.status(500).send('Internal Server Error');
+  }
+};
+
+
+
+// const searchProduct = async (req, res) => {
 //   try {
-//     const searchProduct=req.body.searchProduct
-//     console.log('-----------------',searchProduct);
+//     const searchProductName = req.body.searchProductName.toLowerCase(); // Convert to lowercase for case-insensitive search
+
+//     // Minimum search term length (adjust as needed)
+//     const minSearchLength = 1;
+
+//     // Regex pattern for searching by name or single letter (modify as needed)
+//     const searchRegex = new RegExp(`^${searchProductName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`); // Escape special characters
+
+//     // Perform product search using searchRegex (replace with your actual logic)
+//     const searchResults = await Product.findAll(searchRegex);
+
+//     if (searchResults.length > 0) {
+//       // Handle successful search
+//       res.render('showAllProduct', { searchResults });
+//     } else {
+//       // Handle no search results (optional)
+//       res.send('No products found matching your search.');
+//     }
 //   } catch (error) {
-    
+//     console.error(error);
+//     res.status(500).send('Error: Search failed'); // Handle errors gracefully
 //   }
-// }
+// };
+
 
 
 
@@ -706,7 +815,10 @@ module.exports = {
   loadPasswordReset,
   VerifyPasswordReset,
   loaduserDashboard,
+
   loaduserWishlist,
+  addToWishlist,
+
   getOtp,
   verifyOtp,
   showProduct,
@@ -722,7 +834,6 @@ module.exports = {
   verifyChangePassword,
   verifyProfileEdit,
 
-  // searchProduct
- 
+  searchProduct 
 
 };
