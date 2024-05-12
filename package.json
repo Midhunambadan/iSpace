@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "odd": "nodemon app.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
@@ -25,6 +26,7 @@
     "nodemon": "^3.1.0",
     "otp-generator": "^4.0.1",
     "randomstring": "^1.3.0",
+    "razorpay": "^2.9.3",
     "sharp": "^0.33.3",
     "uuid": "^9.0.1"
   }

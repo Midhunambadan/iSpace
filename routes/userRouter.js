@@ -4,6 +4,8 @@ const userController = require("../controllers/userController");
 const userCartController=require('../controllers/userCartController')
 const addressController=require('../controllers/addressController')
 const productController=require('../controllers/productController')
+const wishlistController=require('../controllers/wishlishController')
+const userOrderController=require('../controllers/userOrderController')
 
 const session = require("express-session");
 const config = require("../config/config");
@@ -44,8 +46,13 @@ router.post('/verify-password-reset',userController.VerifyPasswordReset)
 // ------------------After login>------------------------------------------------------
 
 router.get("/home",auth.isLogin, userController.loaduserHome);
-router.get("/wishlist", auth.isLogin, userController.loaduserWishlist);
-router.get('/add-to-wishlist',auth.isLogin,userController.addToWishlist)
+
+
+router.get("/wishlist", auth.isLogin, wishlistController.loaduserWishlist);
+router.post('/add-to-wishlist',auth.isLogin,wishlistController.addToWishlist)
+router.get('/delete-wishlist',auth.isLogin,wishlistController.deleteWishlist)
+
+
 
 router.get("/show-product",auth.isLogin,userController.showProduct)
 router.get("/all-product",userController.loadAllProduct)
@@ -60,6 +67,10 @@ router.post('/update-quantity',userCartController.updateQuantity)
 
 //----------------------Address Start---------------------------------------
 router.get("/userDashboard", auth.isLogin,userController.loaduserDashboard);
+router.get('/order-details', auth.isLogin,userController.loadOrderDetails)
+router.get('/cancel-order',auth.isLogin,userController.userOrderCancel)
+router.get('/return-order',auth.isLogin,userController.useReturnOrder)
+
 
 router.post('/insert-Address',addressController.insertAddress)
 router.get('/edit-Address',addressController.loadEditAddress)
@@ -70,8 +81,7 @@ router.post('/edit-Address',addressController.verifyEditAddress)
 
 
 router.get('/checkout',auth.isLogin,userCartController.userCheckout)
-router.post('/place-order',userCartController.placeOrder)
-router.get('/continue-shop',userCartController.continueShop)
+
 
 router.post('/insert-checkout-address',userCartController.insertCheckoutAddress)
 router.get('/delete-checkout-address/:id',userCartController.deleteCheckoutAddress)
@@ -99,6 +109,15 @@ router.post('/search-product',userController.searchProduct)
 router.get('/change-password',userController.loadChangePassword)
 router.post('/change-password',userController.verifyChangePassword)
 router.post('/profile-edit',userController.verifyProfileEdit)
+
+
+// ------------------orderController-----------------
+router.post('/place-order',userOrderController.placeOrder)
+router.get('/continue-shop',userOrderController.continueShop)
+router.post('/paymentByRazorpay',userOrderController.paymentRazorpay)
+
+router.post('/apply-coupon',userCartController.applyCoupon)
+router.post('/remove-coupon',userCartController.removeCoupon)
 
 
 module.exports = router;

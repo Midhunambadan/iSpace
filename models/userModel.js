@@ -36,7 +36,8 @@ const user = mongoose.Schema({
     default:Date.now
   },
   wishlist:{
-    type:mongoose.Schema.Types.ObjectId,ref:'Wishlist',
+    type:mongoose.Schema.Types.ObjectId,
+    ref:'Wishlist',
     required:true
 }
 

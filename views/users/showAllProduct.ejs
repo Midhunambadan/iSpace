@@ -197,6 +197,38 @@
                     </ul>
                   </div>
                 </div>
+
+
+                <%if(locals.category){%>
+
+                <div class="sort-by-cover mr-10">
+                  <div class="sort-by-product-wrap">
+                    <div class="sort-by">
+                      <span><i class="fi-rs-apps"></i>Select Category</span>
+                    </div>
+
+                    <div class="sort-by-dropdown-wrap">
+                      <span>:All <i class="fi-rs-angle-small-down"></i></span>
+                    </div>
+                  </div>
+                  <div class="sort-by-dropdown">
+                    <ul>
+
+                      <%for(let i=0;i< category.length;i++){%>
+                      <li><a href="?category=<%=category[i].category%>"><%=category[i].category%></a></li>
+                      <%}%>
+
+                    </ul>
+                  </div>
+                </div>
+
+                <%}%>
+
+
+
+
+
+
                 <div class="sort-by-cover">
                   <div class="sort-by-product-wrap">
                     <div class="sort-by">
@@ -242,12 +274,19 @@
                       </a>
                     </div>
                     <div class="product-action-1">
-                      <a
+                      <!-- <a
                         aria-label="Add To Wishlist"
                         class="action-btn"
                         href="/add-to-wishlist?id=<%=products[i]._id%>"
                         ><i class="fi-rs-heart"></i
-                      ></a>
+                      ></a> -->
+                        <a   aria-label="Add To Wishlist"
+                         class="action-btn"> 
+                         <button class="action-btn" onclick="addToWishlist('<%=products[i]._id%>')">
+                          <i class="fi-rs-heart"></i>
+                        </button></a>
+                     
+                      
                       <a
                         aria-label="Compare"
                         class="action-btn"
@@ -316,6 +355,34 @@
 
               <!--end product card-->
             </div>
+
+
+            <script>
+              function addToWishlist(productId) {
+                fetch('/add-to-wishlist', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({ id: productId }),
+                })
+                .then(response => {
+                  if (response.ok) {
+                    // Wishlist updated successfully
+                   
+                    console.log('Wishlist updated');
+                  } else {
+                    // Handle error
+                    console.error('Failed to update wishlist');
+                  }
+                })
+                .catch(error => {
+                  console.error('Error updating wishlist:', error);
+                });
+              }
+              </script>
+              
+
             <!--product grid-->
             <!-- <div class="pagination-area mt-20 mb-20">
                         <nav aria-label="Page navigation example">

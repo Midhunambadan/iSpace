@@ -18,7 +18,10 @@
 
 </style>
 
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/2.0.2/css/dataTables.dataTables.min.css">
 
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
 
 <body>
@@ -56,6 +59,9 @@
                                         </li> -->
                                         <li class="nav-item">
                                             <a class="nav-link" id="address-tab" data-bs-toggle="tab" href="#address" role="tab" aria-controls="address" aria-selected="true"><i class="fi-rs-marker mr-10"></i>My Address</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="address-tab" data-bs-toggle="tab" href="#wallet" role="tab" aria-controls="address" aria-selected="true"><i class="fi-rs-marker mr-10"></i>Wallet</a>
                                         </li>
                                        
                                         <li class="nav-item">
@@ -96,31 +102,55 @@
                                                 </div>
                                                 <div class="card-body">
                                                     <div class="table-responsive">
-                                                        <table class="table">
+                                                        <table class="table" id="">
                                                             <thead>
                                                                 <tr>
-                                                                    <th>No</th>
-                                                                    <th>ID</th>
+                                                                    <!-- <th>No</th> -->
+                                                                    <th>Order ID</th>
                                                                     <th>Date</th>
                                                                     <th>Status</th>
                                                                     <th>Total</th>
                                                                     <th>Payment</th>
+                                                                    <th>Actions</th>
+                                                                    <th>Details</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
                                                                 <% for(let i=0; i < orders.length; i++) { %>
                                                                     <tr>
-                                                                        <td><%= i+1 %></td>
+                                                                        <!-- <td><%= i+1 %></td> -->
                                                                         <td>
-                                                                            <% for(let j=0; j < orders[i].products.length; j++) { %>
-                                                                                <%= orders[i].products[j].productId %><br>
-                                                                            <% } %>
+                                                                            <%= orders[i].orderId %><br>
+                                                                            
                                                                         </td>
                                                                         <td><%= orders[i].orderDate.toDateString() %></td>
-                                                                        <td class="status-processing" style="color: blue;">Processing</td>
+                                                                        <td class="status-processing" style="color: #3bb77e;"><%= orders[i].orderStatus%></td>
                                                                         <td>₹ <%= orders[i].totalAmount %> for <%= orders[i].products.length %> items</td>
                                                                         <td><%= orders[i].paymentMethod %></td>
-                                                                    </tr>
+
+                                                                        <td>
+                                                                            <div class="btn-group" role="group">
+                                                                                <% if(orders[i].orderStatus=='Delivered'){ %>
+                                                                                    <a href="/return-order?id=<%= orders[i]._id %>" class="btn btn-sm btn-outline-dark btn-cancel">Return</a>
+                                                                                <% } else if(orders[i].orderStatus=='Returned'){ %>
+                                                                                    <span class="badge bg-secondary">Returned</span>
+                                                                                <% } else if (orders[i].orderStatus=="Cancelled"){%>
+                                                                                    <span class="badge bg-secondary">Cancelled</span>
+
+                                                                                <% }else {%>
+                                                                                    <a href="/cancel-order?id=<%= orders[i]._id %>" class="btn btn-sm btn-outline-danger btn-cancel">Cancel</a>
+
+                                                                               <% } %>
+                                                                                   
+                                                                                
+                                                                            </div>
+                                                                        </td>
+
+
+                                                                        <!-- <td><a href="#" class="btn-small d-block">Cancel</a></td> -->
+                                                                        <td><a href="/order-details?id=<%=orders[i]._id%>" class="btn-small d-block"><i class="fas fa-eye"></i> View</a></td>
+
+                                                                    </tr> 
                                                                 <% } %>
                                                             </tbody>
                                                         </table>
@@ -371,6 +401,66 @@
                                             
                                         </div>
                                     </div>
+
+
+                                        <!-- wallet start -->
+                                    <div class="tab-pane fade" id="wallet" role="tabpanel" aria-labelledby="orders-tab">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h3 class="mb-0">Your Wallet Transcations</h3>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="table-responsive">
+                                                    <table class="table" id="">
+                                                        <thead>
+                                                            <tr>
+                                                                <!-- <th>No</th> -->
+                                                                <th>Transcation ID</th>
+                                                                <th>Date</th>
+                                                                <th>Amount</th>
+                                                                <th>Status</th>
+                                                                
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <% for(let i=0; i < wallet.length; i++) { %>
+                                                                <tr>
+                                                                    <!-- <td><%= i+1 %></td> -->
+                                                                    <td>
+                                                                        <%= wallet[i].transactionHistory[i]._id%><br>
+                                                                        
+                                                                    </td>
+                                                                    <td><%= wallet[i].date.toDateString() %></td>
+                                                                    <td class="status-processing" style="color: #3bb77e;"><%= wallet[i].transactionHistory[i].amount%></td>
+                                                                    <td>₹ <%= wallet[i].transactionHistory[i].type %> </td>
+
+
+                                                                </tr> 
+                                                            <% } %>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h3 class="mb-0">Wallet Balance</h3>
+                                                </div>
+                                                <div class="card-body">
+                                                    <p>Your current balance is: ₹ </p>
+                                                    <form action="/add-wallet-amount" method="POST">
+                                                        <div class="form-group">
+                                                            <label for="amount">Add Amount</label>
+                                                            <input type="text" class="form-control" id="amount" name="amount" placeholder="Enter amount">
+                                                        </div>
+                                                        <button type="submit" class="btn btn-primary">Add</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
 
 
 
@@ -643,7 +733,7 @@
         </div>
     </footer>
     <!-- Preloader Start -->
-    <div id="preloader-active">
+    <!-- <div id="preloader-active">
         <div class="preloader d-flex align-items-center justify-content-center">
             <div class="preloader-inner position-relative">
                 <div class="text-center">
@@ -651,8 +741,15 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="//cdn.datatables.net/2.0.7/js/dataTables.min.js"></script>
+
+
+    <script>
+    let table = new DataTable('#myTable');
+    </script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

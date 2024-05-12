@@ -10,6 +10,7 @@ const Category=require('../models/categoryModel')
 const Address=require('../models/addressModel')
 const Order=require('../models/orderModel')
 const Wishlist=require('../models/wishlistModel')
+const Wallet=require('../models/walletModel')
 
 
 
@@ -448,7 +449,7 @@ const loaduserDashboard = async (req, res) => {
 
     // const orderDetails= await Order.findById(orderId).populate('userId').populate('product.productId')
 
-
+    const walletData=await Wallet.find({userId:userId})
     const userData = await User.findById({ _id: userId});
     const addressData=await Address.find({user:userId})
 
@@ -456,66 +457,160 @@ const loaduserDashboard = async (req, res) => {
 
 
 
-    console.log('order-----------',orderData);
+    console.log('walletData-----------',walletData);
 
     // console.log('--------------------addressData',addressData.name);
 
-    res.render("userDashboard", { user: userData,address:addressData,orders:orderData });
+    res.render("userDashboard", { user: userData,address:addressData,orders:orderData,wallet:walletData });
   } catch (error) {
     console.log(error.message);
   }
 };
 
 
-// ==================================================================================================================
-
-
-//userWishlist
-
-const loaduserWishlist = async (req, res) => {
+const loadOrderDetails=async(req,res)=>{
   try {
 
+    const Id= req.query.id
     const userId=req.session.user_id
-    let wishList = await Wishlist.findOne({ userId });
+  // const userDetails=await User.findById(userId)
+  const orderDetails=await Order.findById(Id).populate('userId').populate('products.productId')
 
-    res.render("userWishlist",{wishlist:wishList});
+  // console.log(userDetails,'userDetails---------------------');
+
+  console.log(orderDetails,'orderDetails---------------------');
+
+
+
+    res.render('orderDetails',{orders:orderDetails})
+
   } catch (error) {
-    console.log(error.message);
+    
   }
-};
+}
+// console.log("user Order details")
+
+//         const orderId= req.query.id
+
+//         const orderDetails= await Order.findById(orderId).populate('userId').populate('products.productId')
+
+//         res.render("userOrderDetails",{orderDetails})
 
 
 
-
-const addToWishlist = async (req, res) => {
+const userOrderCancel=async(req,res)=>{
   try {
-    const proId = req.query.id;
-    const product = await Product.findById(proId);
+    
+    const userId=req.session.user_id
+    const orderId = req.query.id;
 
-    const userId = req.session.user_id;
+        // Fetch the order to be canceled
+        const order = await Order.findById(orderId).populate('products.productId');
 
-    let wishList = await Wishlist.findOne({ userId });
+        if (!order) {
+            return res.status(404).json({ message: "Order not found" });
+        }
 
-    // if (!wishList) {
-    //   wishList = new Wishlist({
-    //     userId,
-    //     products: [{ productId: proId }]
-    //   });
-    // } else {
-    //   if (!wishList.products.some(item => item.productId.equals(proId))) {
-    //     wishList.products.push({ productId: proId });
-    //   }
-    // }
+        // Ensure that the order belongs to the current user
+        if (order.userId.toString() !== userId) {
+            return res.status(403).json({ message: "Unauthorized access" });
+        }
 
-    await wishList.save();
-    console.log('Wishlist updated:', wishList);
-    res.send('Wishlist updated');
+
+
+
+
+
+        // Change the order status to "Cancelled"
+        order.orderStatus = 'Cancelled';
+        await order.save();
+    
+        res.redirect('/userDashboard')
+
+
   } catch (error) {
-    console.error('Error adding to wishlist:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    
   }
 }
 
+
+
+
+const useReturnOrder=async(req,res)=>{
+  try {
+    
+    const userId = req.session.user_id;
+      const orderId = req.query.id;
+
+      const order = await Order.findById(orderId).populate('products.productId');
+
+      if (!order || order.userId.toString() !== userId) {
+          return res.status(404).send("Order not found");
+      }
+
+      let refundedAmount = 0;
+      for (const item of order.products) {
+          const product = await Product.findById(item.productId);
+          if (product) {
+            console.log('product----------------',product);
+              product.stock += item.quantity;
+              refundedAmount += item.quantity * product.MRP; // Assuming salesprice is used for calculation
+             const result= await product.save();
+
+             console.log('result-------------',result);
+          }
+      }
+
+
+
+        // Update user's wallet balance
+        const wallet = await Wallet.findOne({ userId: userId });
+        if (wallet) {
+          console.log('------------------wallet',wallet);
+            wallet.balance += refundedAmount;
+
+            // Add transaction to transaction history
+            wallet.transactionHistory.push({
+                date: new Date(),
+                type: 'Credit',
+                amount: refundedAmount,
+            });
+
+            await wallet.save();
+        } else {
+          console.log('------------------nowallet');
+
+            // If the wallet doesn't exist, create a new one for the user
+            wallet = await Wallet.create({
+                userId: userId,
+                balance: refundedAmount,
+                currency: "INR", // You may want to change this based on your currency system
+                transactionHistory: [{
+                    date: new Date(),
+                    type: 'Credit',
+                    amount: refundedAmount,
+                }]
+            });
+        }
+
+        // Change order status to "Returned"
+        const orderReturn = await Order.findByIdAndUpdate(orderId, { $set: { orderStatus: 'Returned' } });
+
+        console.log('------------------------------',orderReturn);
+        
+        // res.json({ message: 'Order returned successfully' });
+
+        res.redirect('/userDashboard')
+
+
+
+
+
+
+  } catch (error) {
+    
+  }
+}
 
 // ==================================================================================================================
 
@@ -545,17 +640,16 @@ const showProduct=async(req,res)=>{
 const loadAllProduct = async (req, res) => {
   try {
 
+    const searchCategory=req.query.category
+
 
     const reqProduct=req.body.searchProduct
 
 
-    // console.log('hiiiiiiiiiiiiiiiiiiiiiiiii',reqProduct);
+    const cateData=await Category.find()
 
-    // const searchProduct = await Product.find({ name: { $regex: new RegExp('^' + reqProduct + '$', 'i') } });
+    console.log('category',cateData);
 
-    // console.log('hiiiiiiiiiiiiiiiiiiiiiiiiisearchProduct',searchProduct);
-
-    
     const productData = await Product.find({ isActive: true }).populate({
       path: 'categoryId',
       match: { isActive: true }
@@ -566,7 +660,7 @@ const loadAllProduct = async (req, res) => {
       return product.categoryId && product.categoryId.isActive === true;
     });
 
-    res.render('showAllProduct', { products: filteredProductData });
+    res.render('showAllProduct', { products: filteredProductData,category:cateData });
   } catch (error) {
     console.log(error);
   }
@@ -744,9 +838,9 @@ const searchProduct = async (req, res) => {
     console.log('-----------------searchProduct', searchProduct);
 
     // Use regex with case-insensitive option
-    // const proData = await Product.find({ product_name: { $regex: new RegExp(searchProduct, 'i') } });
+    const proData = await Product.find({ product_name: { $regex: new RegExp(searchProduct, 'i') } });
 
-    const proData = await Product.find({ product_name: { $regex: new RegExp('^' + searchProduct.trim().split(' ')[0], 'i') } });
+    // const proData = await Product.find({ product_name: { $regex: new RegExp('^' + searchProduct.trim().split(' ')[0], 'i') } });
 
 
     // console.log('______proData', proData);
@@ -814,10 +908,12 @@ module.exports = {
   verifyForgotOtp,
   loadPasswordReset,
   VerifyPasswordReset,
-  loaduserDashboard,
 
-  loaduserWishlist,
-  addToWishlist,
+  loaduserDashboard,
+  loadOrderDetails,
+  userOrderCancel,
+  useReturnOrder,
+
 
   getOtp,
   verifyOtp,

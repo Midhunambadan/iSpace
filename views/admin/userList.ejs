@@ -5,6 +5,9 @@
 <script src="sweetalert2.min.js"></script>
 <link rel="stylesheet" href="sweetalert2.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js" integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/2.0.7/css/dataTables.dataTables.min.css">
+
 <body>
     <%- include('../partials/admin-left.ejs') %>
 
@@ -133,7 +136,7 @@
 
                 <div class="container">
                     <!-- <h2>Admin User Management</h2> -->
-                    <table class="table">
+                    <table class="table" id="myTable">
                         <thead>
                             <tr>
                                 <th>Seal Number</th>
@@ -148,7 +151,7 @@
                             <% if(users.length > 0){ %>
                             <% for(let i=0; i< users.length; i++){ %>
                             <tr>
-                                <td><%= i+1 %></td>
+                                <td ><%= i+1 %></td>
                                 <td><%= users[i].name %></td>
                                 <td><%= users[i].email %></td>
                                 <td><%= users[i].mobile %></td>
@@ -177,7 +180,7 @@
                 
 
 
-            <div class="pagination-area mt-30 mb-50">
+            <!-- <div class="pagination-area mt-30 mb-50">
                 <nav aria-label="Page navigation example">
                     <ul class="pagination justify-content-start">
                         <li class="page-item active"><a class="page-link" href="#">01</a></li>
@@ -188,8 +191,18 @@
                         <li class="page-item"><a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a></li>
                     </ul>
                 </nav>
-            </div>
+            </div> -->
         </section> <!-- content-main end// -->
+
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="//cdn.datatables.net/2.0.7/js/dataTables.min.js"></script>
+    
+        <script>
+        let table = new DataTable('#myTable');
+        </script>
+    
+
     <script>
         function confirmBlock(userId) {
     Swal.fire({

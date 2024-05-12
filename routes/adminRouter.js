@@ -8,6 +8,7 @@ const categoryController=require("../controllers/categoryController")
 const userController=require('../controllers/userController')
 const productController=require('../controllers/productController')
 const adminOrderController=require('../controllers/adminOrderController')
+const adminCouponController=require('../controllers/adminCouponController')
 
 const config = require("../config/config");
 const session = require("express-session");
@@ -88,9 +89,13 @@ admin_router.get('/delete-product',adminAuth.isLogin,productController.deletePro
 admin_router.get('/product-block',adminAuth.isLogin,productController.blockProduct)
 admin_router.get('/product-unblock',adminAuth.isLogin,productController.UnBlockProduct)
 
-
-
 admin_router.get('/orders',adminOrderController.orderPage)
+
+
+admin_router.get('/load-coupon',adminAuth.isLogin,adminCouponController.loadCoupon)
+admin_router.post('/load-coupon',adminCouponController.addCoupon)
+
+
 
 
 

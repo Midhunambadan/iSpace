@@ -22,21 +22,37 @@ const loadaddProduct = async (req, res) => {
   };
   
 
+// ---------------------------------------------------------------------------------------------------------------------------------
   const loadProduct = async (req, res) => {
     try {
+      let limit=10
+
+      let page=1
+      if(req.query.page){
+        page=req.query.page
+      }
+
       // const productData=await Product.find()
-      const productData = await Product.find().sort({ listedDate: -1 });
+      const productData = await Product.find().sort({ listedDate: -1 }).limit(limit*1).skip((page-1)*limit).exec();
+
+      const count = await Product.find().sort({ listedDate: -1 }).countDocuments()
+      // console.log(count,'uuuuuuuuuuuuuuuu');
 
 
-      res.render("productPage",{products:productData});
+
+
+      res.render("productPage",{
+        products:productData,
+        totalPages: Math.ceil(count/limit),
+        currentPage:page
+      
+      })
 
     } catch (error) {
       console.log(error.message);
     }
   };
-  
-
-  
+    
   // ==================================================================================================================
 const insertProduct  =  async (req,res)=>{
   try {

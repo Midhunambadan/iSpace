@@ -3,7 +3,8 @@
  const User=require('../models/userModel')
  const Address=require('../models/addressModel')
  const Order=require('../models/orderModel')
- const OrderAddress=require('../models/orderAdderss')
+ const Wallet=require('../models/walletModel')
+ const Coupon=require('../models/couponModel')
 
 
  // userCart
@@ -241,6 +242,8 @@ const userCheckout=async(req,res)=>{
     
     const userId=req.session.user_id
 
+    const couponData= await Coupon.find()
+    // console.log('couponData-----',couponData);
     
     const cartData=await Cart.find({userId:userId}).populate('product.productId')
 
@@ -253,48 +256,12 @@ const userCheckout=async(req,res)=>{
     // console.log('-----------------------------------',cartData)
   
 
-    res.render('checkOut',{address:addressData,cart:cartData[0]})
+    res.render('checkOut',{address:addressData,cart:cartData[0],coupon:couponData})
 
   } catch (error) {
     
   }
 }
-
-
-
-
-// const products=await productData.save()
-
-// const addCheckoutAddress = async (req, res) => {
-//   try {
-//       const userId = req.session.user_id;
-//       const user = await User.findById(userId);
-
-//       const { name, mobile, houseName, street, city, state, pincode } = req.body;
-
-//       const newAddress = new OrderAddress({
-//           name: name,
-//           mobile: mobile,
-//           houseName: houseName,
-//           street: street,
-//           city: city,
-//           state: state,
-//           pincode: pincode
-//       });
-
-//       // Save the new address to the user's address array
-//       // user.address.push(newAddress);
-
-//       // const updatedUser = await order.save();
-
-//       const updateAddress=await newAddress.save()
-
-//       res.redirect('/checkout');
-//   } catch (error) {
-//       console.error(error);
-//       res.status(500).send('Internal Server Error');
-//   }
-// };
 
 
 
@@ -355,173 +322,105 @@ const deleteCheckoutAddress=async(req,res)=>{
 }
 
 
-
-
-
-
-
-// const placeOrder = async (req, res) => {
-//   try {
-//       const { paymentMethod, addressId } = req.body;
-
-//       // Check if payment method and address ID are provided
-//       if (!paymentMethod || !addressId) {
-//           return res.json({ success: false, message: 'Payment method and address are required.' });
-//       }
-
-//       // Fetch address details from database using addressId
-//       const address = await Address.findById(addressId);
-
-//       if (!address) {
-//           return res.json({ success: false, message: 'Invalid address ID.' });
-//       }
-
-//       // Calculate total amount based on the products in the cart
-//       let totalAmount = 0;
-//       for (let i = 0; i < Cart.product.length; i++) {
-//           totalAmount += Cart.product[i].quantity * Cart.product[i].productId.MRP;
-//       }
-
-//       // Create a new order
-//       const newOrder = new Order({
-//           userId: req.user.id,
-//           products: Cart.product.map(item => ({
-//               productId: item.productId,
-//               quantity: item.quantity,
-//           })),
-//           address: {
-//               name: address.name,
-//               mobile: address.mobile,
-//               houseName: address.houseName,
-//               street: address.street,
-//               city: address.city,
-//               state: address.state,
-//               pincode: address.pincode,
-//           },
-//           totalAmount: totalAmount.toFixed(2),
-//           paymentMethod: paymentMethod,
-//       });
-
-//       // Save the order
-//       await newOrder.save();
-
-
-      
-
-//       res.json({ success: true, message: 'Order placed successfully.' });
-//   } catch (error) {
-//       console.error('Error:', error);
-//       res.json({ success: false, message: 'Failed to place order.' });
-//   }
-// };
-
-
-
-
-
-
-
-
-const placeOrder=async(req,res)=>{
+const applyCoupon=async(req,res)=>{
   try {
+    
+    const {couponCode,selectedAmount}=req.body
+
+    // console.log('couponCode.......',couponCode);
+    // console.log('selectedAddres-------------',selectedAmount);
+
+    const userId = req.session.user_id;
+    const coupon = await Coupon.findOne({ code: couponCode, is_active: true, validUntil: { $gte: Date.now() } });
+    if (!coupon) {
+
+      console.log('no coupn founddddddddd')
+      // return res.json({
+      //     success: false,
+      //     message: 'Coupon not found or expired.'
+      // });
+  }else{
+    console.log('coupon found');
+  }
+
+  const userRedeemed = coupon.redeemedUsers.find(user => user.userId === userId);
+  if (userRedeemed) {
+    console.log('user reedmed');
+    
+    // return res.json({
+    //     success: false,
+    //     message: 'Coupon has already been redeemed by the user.'
+    // });
+}else{
+  console.log(' user not redeemed');
+}
 
 
-    console.log('placeorder -------------------');
 
-    // const orderData=req.body
+if (selectedAmount < coupon.minimumAmount) {
 
-    // console.log('orderData------------',orderData);
+  console.log('not applicable for this price');
+  // return res.json({
+  //     success: false,
+  //     message: 'Selectected Coupon is not applicable for this price'
 
+  // });
+}else{
+  console.log('applicable');
+
+  coupon.redeemedUsers.push({ userId: userId, usedTime: new Date() });
+  coupon.timesUsed++;
+  await coupon.save();
+}
+
+return res.status(200).json({
+  success: true,
+  message: 'Coupon applied successfully.',
+  couponName: coupon.name,
+  discountAmount: coupon.discountpercentage
+});
+
+
+  } catch (error) {
+    
+  }
+}
+
+
+const removeCoupon=async(req,res)=>{
+  try {
+    const {couponCode}=req.body
     const userId=req.session.user_id
-    const addressData= await Address.find({_id:req.body.selectedAddress})
-    const cartData= await Cart.findOne({userId:userId})
-
-    // console.log("addressData:--------------------",addressData)
-    // console.log("amount:---------------",req.body.amount)
-    // console.log('cartdata-----------',cartData.product);
 
 
-  //   if (!cartData || cartData.products.length == 0) {
-  //     // return res.status(400).json();
-  //     console.log('hiiiiiii-------------------');
-  // }
-// console.log('hi herer-------------------');
-
-  // console.log('userId-------------',req.session.userId);
+    const updatedCoupon = await Coupon.findOneAndUpdate(
+      { code: couponCode },
+      { $pull: { redeemedUsers: { userId: userId } } }, // Pull the user ID from the redeemedUsers array
+      { new: true } // To return the updated document
+  );
 
 
-  const orderData= new Order({
-    userId:userId,
-    products:cartData.product,
-    address:addressData[0],
-    paymentMethod:req.body.paymentMethod,
-    totalAmount:req.body.amount,
-})
-
-const newOrder=  await orderData.save()
-
-// console.log(('new order-========-----',newOrder));
-
-
-    if(newOrder){
-      console.log('hi-------------------------');
-
-      const result = await Cart.updateOne(
-          {userId:userId},
-          {
-            $unset: {
-              product: 1,
-            },
-          }
-        );
-  }
-
-  updateStock()
-
-   // Update product quantities
-
-  //  for (const item of cartData.products) {
-  //   const product = await Product.findById(item.productId);
-  //   product.quantity -= item.quantity;
-  //   await product.save();
-  //   }
-
-
-
-async function updateStock() {
-  for (const product of cartData.product) {
-      const productInfo = await Product.findById(product.productId);
-
-      if (productInfo) {
-          // Update stock based on the quantity in the order
-          productInfo.stock -= product.quantity;
-
-          // Save the updated product info
-          await productInfo.save();
-      }
-  }
-}
-  
-
-
-  res.status(200).json({message:'success'})
-
-    
-  } catch (error) {
-    console.log(error);
-  }
+  if (updatedCoupon) {
+    console.log("Coupon updated successfully:", updatedCoupon);
+    // Handle success if needed
+} else {
+    console.log("Coupon not found or user not redeemed it:", couponCode);
+    // Handle not found or user not redeemed the coupon
 }
 
+res.redirect('/checkout');
 
 
-
-const continueShop=async(req,res)=>{
-  try {
-    res.render('placeOrder')
   } catch (error) {
     
   }
 }
+
+
+
+
+
+
 
   
   module.exports={
@@ -531,8 +430,11 @@ const continueShop=async(req,res)=>{
     userCheckout,
     updateQuantity,
     updateCart,
-    placeOrder,
+
     insertCheckoutAddress,
     deleteCheckoutAddress,
-    continueShop
+
+    applyCoupon,
+    removeCoupon
+    
   }

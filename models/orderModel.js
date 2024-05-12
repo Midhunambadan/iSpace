@@ -34,14 +34,14 @@ const orderModel= mongoose.Schema({
     }
     },
 
-
     orderId:{type:String},
     totalAmount:{type:String},
     orderDate:{type:Date,default:Date.now},
     paymentMethod:{type:String,required:true},
+    razOrderId:{type:String},
 
-    // paymentStatus:{type:String,enum:['Pending','Recieved','Failed','Refund'],default:"Pending"},
-    // orderStatus:{type:String,enum:['Order Placed','Confirmed','Shipped','Delivered','Cancelled','Returned','Pending'],default:"Order Placed"},
+    paymentStatus:{type:String,enum:['Pending','Recieved','Failed','Refund'],default:"Pending"},
+    orderStatus:{type:String,enum:['Order Placed','Confirmed','Shipped','Delivered','Cancelled','Returned','Pending'],default:"Order Placed"},
 
 })
 
