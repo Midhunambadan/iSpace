@@ -57,6 +57,9 @@ router.get('/delete-wishlist',auth.isLogin,wishlistController.deleteWishlist)
 router.get("/show-product",auth.isLogin,userController.showProduct)
 router.get("/all-product",userController.loadAllProduct)
 router.post('/all-product',userController.loadAllProduct)
+
+// router.get('/search-category',userController.searchCategory)
+
 // ------------------User Cart------------------------------------------------------
 router.get("/user-cart",auth.isLogin, userCartController.loadUserCart);
 router.post('/add-to-cart',auth.isLogin,userCartController.addToCart)

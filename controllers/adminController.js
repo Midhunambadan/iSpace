@@ -193,6 +193,31 @@ const blockUser = async (req, res) => {
   }
 };
 
+
+
+
+// const toggleBlockAndUnBolock=async(req,res)=>{
+
+//   try {
+    
+//     const id= req.query.id
+//     const updateUser=await User.findByIdAndUpdate(id,{isActive:true})
+
+//     if(updateUser){
+//       return res.status(404).send('Blocked')
+//     }else{
+//       return res.status(404).send('unBlocked')
+//     }
+
+//     res.redirect('/admin/home')
+    
+
+//   } catch (error) {
+    
+//   }
+// }
+
+
 // ==================================================================================================================
 
 const unblockUser = async (req, res) => {
@@ -240,5 +265,7 @@ module.exports = {
   loadAddUser,
   addUser,
   blockUser,
-  unblockUser
+  unblockUser,
+
+  // toggleBlockAndUnBolock
 };
