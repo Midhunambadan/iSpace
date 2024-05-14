@@ -123,7 +123,7 @@
                                                                             <%= orders[i].orderId %><br>
                                                                             
                                                                         </td>
-                                                                        <td><%= orders[i].orderDate.toDateString() %></td>
+                                                                        <td><%= orders[i].orderDate.toLocaleDateString('en-GB') %></td>
                                                                         <td class="status-processing" style="color: #3bb77e;"><%= orders[i].orderStatus%></td>
                                                                         <td>₹ <%= orders[i].totalAmount %> for <%= orders[i].products.length %> items</td>
                                                                         <td><%= orders[i].paymentMethod %></td>

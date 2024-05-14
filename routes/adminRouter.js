@@ -9,6 +9,7 @@ const userController=require('../controllers/userController')
 const productController=require('../controllers/productController')
 const adminOrderController=require('../controllers/adminOrderController')
 const adminCouponController=require('../controllers/adminCouponController')
+const offerController=require('../controllers/offerController')
 
 const config = require("../config/config");
 const session = require("express-session");
@@ -94,6 +95,8 @@ admin_router.get('/orders',adminOrderController.orderPage)
 
 admin_router.get('/load-coupon',adminAuth.isLogin,adminCouponController.loadCoupon)
 admin_router.post('/load-coupon',adminCouponController.addCoupon)
+
+admin_router.get('/offer-page',offerController.loadOfferPage)
 
 
 

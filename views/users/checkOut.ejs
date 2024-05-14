@@ -206,6 +206,7 @@
 
 
                     if (!response.ok) {
+                        
                         throw new Error('Failed to apply coupon.');
                     }
 
@@ -219,35 +220,40 @@
                         console.log('hiiiiiiiiiiiiiiiiii');
 
 
-
+                        Swal.fire({
+                                position: "top-center",
+                                icon: "success",
+                                title: data.message,
+                                showConfirmButton: false,
+                                timer: 1500
+                                });
 
 
                         // toastr.success(data.message);
 
 
                         const couponName = data.couponName;
-                        console.log('couponName',couponName);
-                        // const couponid = data._id;
                         const discountAmount = data.discountAmount;
-                        console.log('discountAmount',discountAmount);
-
-
-                        // const originalTotal = parseFloat(document.getElementById('grandTotal').innerText.replace('$', ''));
+                        
+                        
                         const grandTotalElement = document.getElementById('grandTotal');
-                         const grandTotalText = grandTotalElement.textContent;
-                          const selectedAmount = parseFloat(grandTotalText.replace('₹', '').trim());
-                        console.log('selectedAmount',selectedAmount);
-
+                        const grandTotalText = grandTotalElement.textContent;
+                        const selectedAmount = parseFloat(grandTotalText.replace('₹', '').trim());
                         const discountPercent = parseFloat(discountAmount) / 100; // Convert discount amount to percentage
-                        console.log('discountPercent',discountPercent);
-
                         const discountedTotal = selectedAmount * (1 - discountPercent); // Applying discount    
-                        console.log('oooooooooo',discountedTotal);
 
                         // const inputElement = document.getElementById('grandTotal');
                         //      inputElement.value = 'discountedTotal'
                         document.getElementById('grandTotal').innerText =  discountedTotal.toFixed(2);
-                       
+                        
+                        // console.log('couponName',couponName);
+                        // const couponid = data._id;
+                        // console.log('discountAmount',discountAmount);
+                        // const originalTotal = parseFloat(document.getElementById('grandTotal').innerText.replace('$', ''));
+                        // console.log('selectedAmount',selectedAmount);
+                        // console.log('discountPercent',discountPercent);
+                        // console.log('oooooooooo',discountedTotal);
+                        
 
                         
 
@@ -260,29 +266,54 @@
                             `;
 
                               // Add event listener to the remove coupon button
-                        document.getElementById('removeCouponBtn').addEventListener('click', function () {
-                            
-                            fetch('/remove-coupon', {
-                                method: 'POST', // Assuming you want to send a POST request
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                },
-                                body: JSON.stringify({ couponCode }), // You can include any data if required
-                            })
-                            .then(response => {
-                                    if (response.ok) {
-                                        // Reload the page after successful removal
-                                        location.reload(); // Reload the page to remove the coupon
-                                    } else {
-                                        console.error('Failed to remove coupon');
-                                        // Handle the error if needed
-                                    }
-                                })
-                                .catch(error => {
-                                    console.error('Error:', error);
-                                    // Handle the error if needed
-                                });
-                        })
+                       // Add event listener to the remove coupon button
+document.getElementById('removeCouponBtn').addEventListener('click', async function () {
+    try {
+        const response = await fetch('/remove-coupon', {
+            method: 'POST', // Assuming you want to send a POST request
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ couponCode }), // You can include any data if required
+        });
+        if (response.ok) {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: "Deleted!",
+                        timer: 1500,
+                        text: "Your coupon has been deleted.",
+                        icon: "success"
+                    });
+                    // You may update the UI to reflect the deletion of the coupon here
+                    // Reset the coupon details in the UI
+                    document.getElementById('couponNamePlaceholder').innerHTML = '';
+                    // Update the total price display
+                    const grandTotalText = document.getElementById('grandTotal').textContent;
+                    const selectedAmount = parseFloat(grandTotalText.replace('₹', '').trim());
+                    document.getElementById('grandTotal').innerText = selectedAmount.toFixed(2);
+                    // Allow editing of the coupon code input
+                    document.getElementById('couponCode').readOnly = false;
+                }
+            });
+        } else {
+            console.error('Failed to remove coupon');
+            // Handle the error if needed
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        // Handle the error if needed
+    }
+});
+
 
                            // Update the total price display
                            document.getElementById('grandTotal').innerText = discountedTotal.toFixed(2);
@@ -294,6 +325,13 @@
 
 
                     }else{
+
+                        // Swal.fire({
+                        //         icon: "error",
+                        //         title: "Oops...",
+                        //         text: !data.message,
+                        //         footer: '<a href="#">Why do I have this issue?</a>'
+                        //         });
                         alert(`Coupon errror found`)
                     }
 
@@ -847,7 +885,7 @@
         console.log('place order worked')
             const cashOnDeliveryRadio = document.getElementById('cashOnDelivery');
 
-        console.log('cashOnDeliveryRadio',cashOnDeliveryRadio);
+        // console.log('cashOnDeliveryRadio',cashOnDeliveryRadio);
 
         const paymentOption = document.querySelector('input[name="payment_option"]:checked').value;
         console.log("paymnt oppp: ", paymentOption)
@@ -866,6 +904,13 @@
         let selectedAddress
 
         if(!addressRadio){
+            
+            Swal.fire({
+                    icon: "error",
+                    title: "Oops...Address not found!",
+                    text: "Address not found!",
+                    footer: '<a href="#">Why do I have this issue?</a>'
+                    });
         // toastr.warning("Address not found")
         console.log('Address not found');
         return
@@ -877,6 +922,19 @@
     // console.log('selected adddress',selectedAddress)
 
     
+    if(!paymentOption){
+        Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Payment option not found!",
+                    footer: '<a href="#">Why do I have this issue?</a>'
+                    })
+
+                    console.log('Payment not found');
+
+    }
+
+
 
     const orderData ={
         paymentMethod:paymentOption,
@@ -885,9 +943,17 @@
         // couponDiscount:discountAmount,    
     }
   
-    
+    if(!orderData){
+         console.log("Data :",orderData)
+        Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "orderData not found!",
+                    footer: '<a href="#">Why do I have this issue?</a>'
+                    })
+    }
       
-    // console.log("Data :",orderData)
+   
     // console.log("Amount:",grandTotalValue)
     // console.log('addres',selectedAddress)
 
@@ -923,6 +989,7 @@
         })
         .catch(error => {
         
+            
         // toastr.error( "Cash on delivery is not applicable for this order!");
         console.log('Cash on delivery is not applicable for this order!');
 

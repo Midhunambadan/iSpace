@@ -146,6 +146,8 @@ $(document).ready(function() {
                                         <th scope="col">Total</th>
                                         <th scope="col">Status</th>
                                         <th scope="col">Date</th>
+                                        <th scope="col">Action</th>
+                                        <th scope="col">Details</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -157,7 +159,10 @@ $(document).ready(function() {
                                         <td> <%= orders[i].address.mobile %></td>
                                         <td>₹ <%= orders[i].totalAmount %></td>
                                         <td><span class="badge rounded-pill alert-warning">Pending</span></td>
-                                        <td><%= orders[i].orderDate.toDateString() %></td>
+                                        <td><%= orders[i].orderDate.toLocaleDateString('en-GB') %></td>
+
+                                        <td>Delivered</td>
+                                        <td>View</td>
                                     </tr>
                                     <% } %>
                                 </tbody>
