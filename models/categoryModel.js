@@ -19,7 +19,27 @@ const category = new mongoose.Schema({
     listedDate:{
         type:Date,
         default:Date.now
+    },
+
+    offer:{
+        name:{
+            type:String,
+            
+        },
+        offerPercentage:{
+           type:Number,
+           default:0
+        },
+        validity:{
+            type: Date   
+        },
+        isActive:{
+            type:Boolean,
+            default:true
+
+        }
     }
+
 });
 
 module.exports = mongoose.model("Category", category);

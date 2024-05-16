@@ -161,14 +161,16 @@
                                             <td><%=coupons[i].discountpercentage%> %</td>
                                             <td> ₹ <%=coupons[i].minimumAmount%> </td>
                                             <td><%=coupons[i].validUntil.toDateString()%></td>
-                                            <td>Active</td>
+
+                                            <td class="<%= coupons[i].is_active  ? 'text-success' : 'text-danger' %>"><%= coupons[i].is_active ? 'Active' : 'Inactive' %></td>
+
                                             <td class="text-end">
                                                 <div class="dropdown">
                                                     <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
                                                     <div class="dropdown-menu">
-                                                        <a class="dropdown-item" href="#">Block</a>
+                                                        <a class="dropdown-item" href="/admin//block-coupon?id=<%=coupons[i]._id%>">Block</a>
                                                         <!-- <a class="dropdown-item" href="#">Edit info</a> -->
-                                                        <a class="dropdown-item text-danger" href="#">Delete</a>
+                                                        <a class="dropdown-item text-danger" href="/admin/delete-coupon?id=<%=coupons[i]._id%>">Delete</a>
                                                     </div>
                                                 </div> <!-- dropdown //end -->
                                             </td>

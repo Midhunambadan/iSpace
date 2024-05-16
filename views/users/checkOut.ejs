@@ -265,16 +265,26 @@
                                 </button>
                             `;
 
+                            const originalTotal = selectedAmount;
+
+
                               // Add event listener to the remove coupon button
                        // Add event listener to the remove coupon button
+       // Store the original total before applying the coupon
+
+
+// Update the total price display after applying the coupon
+document.getElementById('grandTotal').innerText = discountedTotal.toFixed(2);
+
+// Add event listener to the remove coupon button
 document.getElementById('removeCouponBtn').addEventListener('click', async function () {
     try {
         const response = await fetch('/remove-coupon', {
-            method: 'POST', // Assuming you want to send a POST request
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ couponCode }), // You can include any data if required
+            body: JSON.stringify({ couponCode }),
         });
         if (response.ok) {
             Swal.fire({
@@ -293,30 +303,31 @@ document.getElementById('removeCouponBtn').addEventListener('click', async funct
                         text: "Your coupon has been deleted.",
                         icon: "success"
                     });
-                    // You may update the UI to reflect the deletion of the coupon here
                     // Reset the coupon details in the UI
                     document.getElementById('couponNamePlaceholder').innerHTML = '';
-                    // Update the total price display
-                    const grandTotalText = document.getElementById('grandTotal').textContent;
-                    const selectedAmount = parseFloat(grandTotalText.replace('₹', '').trim());
-                    document.getElementById('grandTotal').innerText = selectedAmount.toFixed(2);
+                    // Reset the total to the original value
+                    document.getElementById('grandTotal').innerText = originalTotal.toFixed(2);
                     // Allow editing of the coupon code input
                     document.getElementById('couponCode').readOnly = false;
                 }
             });
-        } else {
-            console.error('Failed to remove coupon');
-            // Handle the error if needed
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        // Handle the error if needed
-    }
-});
+                    } else {
+                        console.error('Failed to remove coupon');
+                        // Handle the error if needed
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    // Handle the error if needed
+                }
+                     });
+
 
 
                            // Update the total price display
                            document.getElementById('grandTotal').innerText = discountedTotal.toFixed(2);
+
+                        //    document.getElementById('grandTotal').innerText = originalTotal.toFixed(2);
+
 
                                couponCodeInput.readOnly = true;
 
@@ -550,7 +561,11 @@ document.getElementById('removeCouponBtn').addEventListener('click', async funct
                                 <% } %>
                                 <div class="text-center">
                                     <h7 class="w-160 mb-5"><a class='text-heading' href='#'>Free Delivery</a></h7></span>
-
+                                    <br>
+                                    <!-- <h7 class="w-160 mb-5"><a class='text-heading' href='#'>Coupon Discount</a></h7></span>
+                                    <br>
+                                    <h4 id="grandTotal" class="text-brand">₹ 100</h4>
+                                    <br><br> -->
                                     <h6 class="w-160 mb-5"><a class='text-heading' href='#'>Grand Total</a></h6></span>
                                     <br>
                                     <h4 id="grandTotal" class="text-brand">₹ <%= grandTotal.toFixed(2) %></h4>
@@ -907,9 +922,9 @@ document.getElementById('removeCouponBtn').addEventListener('click', async funct
             
             Swal.fire({
                     icon: "error",
-                    title: "Oops...Address not found!",
+                    title: "Oops...Please select a address!",
                     text: "Address not found!",
-                    footer: '<a href="#">Why do I have this issue?</a>'
+                    // footer: '<a href="#">Why do I have this issue?</a>'
                     });
         // toastr.warning("Address not found")
         console.log('Address not found');
@@ -923,6 +938,7 @@ document.getElementById('removeCouponBtn').addEventListener('click', async funct
 
     
     if(!paymentOption){
+        console.log('payment option not selected');
         Swal.fire({
                     icon: "error",
                     title: "Oops...",

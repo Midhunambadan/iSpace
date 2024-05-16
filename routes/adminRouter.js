@@ -95,9 +95,12 @@ admin_router.get('/orders',adminOrderController.orderPage)
 
 admin_router.get('/load-coupon',adminAuth.isLogin,adminCouponController.loadCoupon)
 admin_router.post('/load-coupon',adminCouponController.addCoupon)
+admin_router.get('/delete-coupon',adminAuth.isLogin,adminCouponController.deleteCoupon)
+admin_router.get('/block-coupon',adminAuth.isLogin,adminCouponController.couponBlock)
 
-admin_router.get('/offer-page',offerController.loadOfferPage)
-
+admin_router.get('/offer-page',adminAuth.isLogin,offerController.loadOfferPage)
+admin_router.post('/offer-page',adminAuth.isLogin,offerController.addCategoroyOffer)
+admin_router.get('/remove-offer',adminAuth.isLogin,offerController.removeCategoryOffer)
 
 
 

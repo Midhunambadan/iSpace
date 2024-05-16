@@ -46,7 +46,39 @@ const addCoupon=async(req,res)=>{
 }
 
 
+
+const deleteCoupon=async(req,res)=>{
+    try {
+        
+        const id=req.query.id
+
+        const coupon=await Coupon.findByIdAndDelete(id)
+
+        res.redirect('/admin/load-coupon')
+
+    } catch (error) {
+        
+    }
+}
+
+const couponBlock=async(req,res)=>{
+    try {
+        const id =req.query.id
+
+        await Coupon.findByIdAndUpdate(id,{is_active:false})
+        res.redirect('/admin/load-coupon')
+        
+    } catch (error) {
+        
+    }
+}
+
+
+
+
 module.exports={
     loadCoupon,
-    addCoupon
+    addCoupon,
+    deleteCoupon,
+    couponBlock
 }
