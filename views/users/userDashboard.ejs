@@ -87,10 +87,9 @@
                                     </div>
 
                                     <style>
-                                        .status-processing {
-    color: blue; /* Choose your desired color */
-}
-
+                                        .status-processing{
+                                                        color: blue; /* Choose your desired color */
+                                                    }
                                     </style>
 
 
@@ -102,7 +101,7 @@
                                                 </div>
                                                 <div class="card-body">
                                                     <div class="table-responsive">
-                                                        <table class="table" id="">
+                                                        <table class="table" id="myTable">
                                                             <thead>
                                                                 <tr>
                                                                     <!-- <th>No</th> -->
@@ -120,14 +119,12 @@
                                                                     <tr>
                                                                         <!-- <td><%= i+1 %></td> -->
                                                                         <td>
-                                                                            <%= orders[i].orderId %><br>
-                                                                            
+                                                                            <%= orders[i].orderId %><br>    
                                                                         </td>
                                                                         <td><%= orders[i].orderDate.toLocaleDateString('en-GB') %></td>
                                                                         <td class="status-processing" style="color: #3bb77e;"><%= orders[i].orderStatus%></td>
                                                                         <td>₹ <%= orders[i].totalAmount %> for <%= orders[i].products.length %> items</td>
                                                                         <td><%= orders[i].paymentMethod %></td>
-
                                                                         <td>
                                                                             <div class="btn-group" role="group">
                                                                                 <% if(orders[i].orderStatus=='Delivered'){ %>
@@ -142,10 +139,8 @@
 
                                                                                <% } %>
                                                                                    
-                                                                                
                                                                             </div>
                                                                         </td>
-
 
                                                                         <!-- <td><a href="#" class="btn-small d-block">Cancel</a></td> -->
                                                                         <td><a href="/order-details?id=<%=orders[i]._id%>" class="btn-small d-block"><i class="fas fa-eye"></i> View</a></td>

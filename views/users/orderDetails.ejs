@@ -113,7 +113,8 @@
                                                 <th width="40%">Product</th>
                                                 <th width="20%">Unit Price</th>
                                                 <th width="20%">Quantity</th>
-                                                <th width="20%" class="text-end">Total</th>
+                                                <th width="20%" >Total</th>
+                                                <th width="20%" class="text-end">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -129,7 +130,8 @@
                                                     </td>
                                                     <td>₹<%=orders.products[i].productId.MRP%></td>
                                                     <td> <%=orders.products[i].quantity%> </td>
-                                                    <td class="text-end"> <%=orders.products[i].quantity* orders.products[i].productId.MRP%></td>
+                                                    <td >₹ <%=orders.products[i].quantity* orders.products[i].productId.MRP%></td>
+                                                    <td class="badge bg-secondary">status </td>
 
                                                 </tr>
                                             <% } %>
@@ -138,6 +140,15 @@
                                 <% } %>
                                 
                             </div> <!-- table-responsive// -->
+
+                            <div class="row">
+                                <div class="col-lg-11">
+                                    <h3 class="text-end">Total:₹ 500</h3>
+                                    
+
+                                </div>
+                            </div>
+
                             <!-- <a class="btn btn-primary" href="page-orders-tracking.html">View Order Tracking</a> -->
                         </div> <!-- col// -->
                         <div class="col-lg-1"></div>

@@ -36,10 +36,6 @@ const loadaddProduct = async (req, res) => {
       const productData = await Product.find().sort({ listedDate: -1 }).limit(limit*1).skip((page-1)*limit).exec();
 
       const count = await Product.find().sort({ listedDate: -1 }).countDocuments()
-      // console.log(count,'uuuuuuuuuuuuuuuu');
-
-
-
 
       res.render("productPage",{
         products:productData,

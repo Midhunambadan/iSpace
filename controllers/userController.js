@@ -640,11 +640,16 @@ const showProduct=async(req,res)=>{
 const loadAllProduct = async (req, res) => {
   try {
 
+    let limit=10
+
+      let page=1
+      if(req.query.page){
+        page=req.query.page
+      }
+
     const searchCategory=req.query.category
 
-
     const reqProduct=req.body.searchProduct
-
 
     const cateData=await Category.find()
 
@@ -653,14 +658,23 @@ const loadAllProduct = async (req, res) => {
     const productData = await Product.find({ isActive: true }).populate({
       path: 'categoryId',
       match: { isActive: true }
-    });
+    }).limit(limit*1).skip((page-1)*limit).exec();;
 
     // Filter out products with null categoryId (inactive categories)
     const filteredProductData = productData.filter(product => {
       return product.categoryId && product.categoryId.isActive === true;
     });
 
-    res.render('showAllProduct', { products: filteredProductData,category:cateData });
+    const count = await Product.find().sort({ listedDate: -1 }).countDocuments()
+
+
+
+    res.render('showAllProduct', 
+    { products: filteredProductData,
+      category:cateData, 
+      totalPages: Math.ceil(count/limit),
+      currentPage:page});
+
   } catch (error) {
     console.log(error);
   }
@@ -682,7 +696,7 @@ const priceLowToHigh=async(req,res)=>{
       return product.categoryId && product.categoryId.isActive === true;
     });
 
-    res.render('showAllProduct', { products: filteredProductData });
+    res.render('showAllProduct', { products: filteredProductData});
 
   } catch (error) {
     
@@ -833,12 +847,22 @@ const verifyProfileEdit=async(req,res)=>{
 
 const searchProduct = async (req, res) => {
   try {
+
+    let limit=10
+
+    let page=1
+    if(req.query.page){
+      page=req.query.page
+    }
+
     const searchProduct = req.body.searchProduct;
 
     console.log('-----------------searchProduct', searchProduct);
 
     // Use regex with case-insensitive option
-    const proData = await Product.find({ product_name: { $regex: new RegExp(searchProduct, 'i') } });
+    const proData = await Product.find({ product_name: { $regex: new RegExp(searchProduct, 'i') } }).limit(limit*1).skip((page-1)*limit).exec();
+
+    const count = await Product.find().sort({ listedDate: -1 }).countDocuments()
 
     // const proData = await Product.find({ product_name: { $regex: new RegExp('^' + searchProduct.trim().split(' ')[0], 'i') } });
 
@@ -846,7 +870,10 @@ const searchProduct = async (req, res) => {
     // console.log('______proData', proData);
     if (proData.length > 0) {
 
-      res.render('showAllProduct',{products:proData})
+      res.render('showAllProduct',{products:proData,
+        totalPages: Math.ceil(count/limit),
+        currentPage:page
+      })
     // res.status(200).send({success:true,message:"Product Found",data:proData})
 
     } else {
