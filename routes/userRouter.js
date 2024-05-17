@@ -63,7 +63,7 @@ router.post('/all-product',userController.loadAllProduct)
 // ------------------User Cart------------------------------------------------------
 router.get("/user-cart",auth.isLogin, userCartController.loadUserCart);
 router.post('/add-to-cart',auth.isLogin,userCartController.addToCart)
-router.get('/delete-cart',userCartController.deleteCart)
+router.get('/delete-cart',auth.isLogin,userCartController.deleteCart)
 router.post('/update-cart',userCartController.updateCart)
 router.post('/update-quantity',userCartController.updateQuantity)
 
@@ -77,8 +77,8 @@ router.get('/return-order',auth.isLogin,userController.useReturnOrder)
 
 
 router.post('/insert-Address',addressController.insertAddress)
-router.get('/edit-Address',addressController.loadEditAddress)
-router.get('/delete-address/:id',addressController.deleteAddress)
+router.get('/edit-Address',auth.isLogin,addressController.loadEditAddress)
+router.get('/delete-address/:id',auth.isLogin,addressController.deleteAddress)
 router.post('/edit-Address',addressController.verifyEditAddress)
 
 //----------------------Checkout page Start---------------------------------------
@@ -88,7 +88,7 @@ router.get('/checkout',auth.isLogin,userCartController.userCheckout)
 
 
 router.post('/insert-checkout-address',userCartController.insertCheckoutAddress)
-router.get('/delete-checkout-address/:id',userCartController.deleteCheckoutAddress)
+router.get('/delete-checkout-address/:id',auth.isLogin,userCartController.deleteCheckoutAddress)
 // router.post('/edit-Address',addressController.verifyEditAddress)
 
 
@@ -106,18 +106,16 @@ router.post('/search-product',userController.searchProduct)
 
 // /------------------------Sort Start----------------------------------------------
 
-
-
 //-----------Account-Profile--------------------------------------------------------
 
-router.get('/change-password',userController.loadChangePassword)
+router.get('/change-password',auth.isLogin,userController.loadChangePassword)
 router.post('/change-password',userController.verifyChangePassword)
 router.post('/profile-edit',userController.verifyProfileEdit)
 
 
 // ------------------orderController-----------------
 router.post('/place-order',userOrderController.placeOrder)
-router.get('/continue-shop',userOrderController.continueShop)
+router.get('/continue-shop',auth.isLogin,userOrderController.continueShop)
 router.post('/paymentByRazorpay',userOrderController.paymentRazorpay)
 
 router.post('/apply-coupon',userCartController.applyCoupon)

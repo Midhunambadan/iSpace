@@ -332,13 +332,13 @@ const applyCoupon=async(req,res)=>{
 
     const userId = req.session.user_id;
     const coupon = await Coupon.findOne({ code: couponCode, is_active: true, validUntil: { $gte: Date.now() } });
-    if (!coupon) {
 
-      console.log('no coupn founddddddddd')
-      // return res.json({
-      //     success: false,
-      //     message: 'Coupon not found or expired.'
-      // });
+    if (!coupon) {
+      // console.log('no coupn founddddddddd')
+      return res.status(200).json({
+          success: false,
+          message: 'Coupon not found or expired.'
+      });
   }else{
     console.log('coupon found');
   }
@@ -347,10 +347,10 @@ const applyCoupon=async(req,res)=>{
   if (userRedeemed) {
     console.log('user reedmed');
     
-    // return res.json({
-    //     success: false,
-    //     message: 'Coupon has already been redeemed by the user.'
-    // });
+    return res.status(200).json({
+        success: false,
+        message: 'Coupon has already been redeemed by the user.'
+    });
 }else{
   console.log(' user not redeemed');
 }
@@ -360,11 +360,11 @@ const applyCoupon=async(req,res)=>{
 if (selectedAmount < coupon.minimumAmount) {
 
   console.log('not applicable for this price');
-  // return res.json({
-  //     success: false,
-  //     message: 'Selectected Coupon is not applicable for this price'
+  return res.status(200).json({
+      success: false,
+      message: 'Selectected Coupon is not applicable for this price'
 
-  // });
+  });
 }else{
   console.log('applicable');
 

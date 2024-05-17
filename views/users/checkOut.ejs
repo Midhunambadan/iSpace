@@ -204,6 +204,8 @@
                         body: JSON.stringify({ couponCode, selectedAmount })
                     });
 
+                    console.log(response);
+
 
                     if (!response.ok) {
                         
@@ -337,13 +339,12 @@ document.getElementById('removeCouponBtn').addEventListener('click', async funct
 
                     }else{
 
-                        // Swal.fire({
-                        //         icon: "error",
-                        //         title: "Oops...",
-                        //         text: !data.message,
-                        //         footer: '<a href="#">Why do I have this issue?</a>'
-                        //         });
-                        alert(`Coupon errror found`)
+                        Swal.fire({
+                                icon: "error",
+                                title: "Oops...",
+                                text: data.message,
+                                });
+                        // alert(`Coupon errror found`)
                     }
 
                 } catch (error) {

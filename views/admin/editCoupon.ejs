@@ -82,8 +82,8 @@
         <section class="content-main">
             <div class="content-header">
                 <div>
-                    <h2 class="content-title card-title">Coupon Management </h2>
-                    <p>Add and delete coupons</p>
+                    <h2 class="content-title card-title">Edit Coupon</h2>
+                    <p>Edit coupons</p>
                 </div>
                 <div>
                     <input type="text" placeholder="Search Categories" class="form-control bg-white">
@@ -91,109 +91,39 @@
             </div>
             <div class="card">
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-3">
+                    <div class="row justify-content-center">
+                        <div class="col-md-6">
                             <form method="post">
                                 <div class="mb-4">
-                                    <label for="product_name"  class="form-label">Name</label>
+                                    <label for="product_name" class="form-label">Name</label>
                                     <input name="name" type="text" placeholder="Type here" class="form-control" id="product_name" />
                                 </div>
                                 <div class="mb-4">
                                     <label for="product_slug" class="form-label">Code</label>
-                                    <input name="code" type="text" placeholder="Type here" class="form-control" id="code" />
+                                    <input name="code" type="text" placeholder="Type here" class="form-control" id="code"  />
                                 </div>
                                 <div class="mb-4">
                                     <label class="form-label">Discount Percentage</label>
                                     <input name="discountpercentage" type="number" placeholder="Type here" class="form-control" id="discount" />
-
-                                    <!-- <select class="form-select">
-                                        <option>Clothes</option>
-                                        <option>T-Shirts</option>
-                                    </select> -->
                                 </div>
                                 <div class="mb-4">
                                     <label class="form-label">Minimum Amount</label>
                                     <input name="minimumAmount" type="number" placeholder="Type here" class="form-control" id="minAmount" />
                                 </div>
-
                                 <div class="mb-4">
                                     <label class="form-label">Validity</label>
                                     <input name="validUntil" type="text" placeholder="Select Date" class="form-control" id="validity" />
                                 </div>  
-
                                 <div class="d-grid">
                                     <button class="btn btn-primary">Create Coupon</button>
                                 </div>
                             </form>
                         </div>
-                        <div class="col-md-9">
-                            <div class="table-responsive">
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" value="" />
-                                                </div>
-                                            </th>
-                                            <th>ID</th>
-                                            <!-- <th>Name</th> -->
-                                            <th>Code</th>
-                                            <th>Discount</th>
-                                            <th>Min Amount</th>
-                                            <th>Validity</th>
-                                            <th>Status</th>
-                                            <th class="text-end">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <%if(coupons.length > 0){%>
-                                            <%for(let i=0;i< coupons.length;i++){%>
-                                        <tr>
-                                            <td class="text-center">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" value="" />
-                                                </div>
-                                            </td>
-                                            <td><%=i+1%></td>
-                                            <td><%=coupons[i].code%></td>
-                                            <td><%=coupons[i].discountpercentage%> %</td>
-                                            <td> ₹ <%=coupons[i].minimumAmount%> </td>
-                                            <td><%=coupons[i].validUntil.toDateString()%></td>
-
-                                            <td class="<%= coupons[i].is_active  ? 'text-success' : 'text-danger' %>"><%= coupons[i].is_active ? 'Active' : 'Inactive' %></td>
-
-                                            <td class="text-end">
-                                                <div class="dropdown">
-                                                    <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                                    <div class="dropdown-menu">
-                                                        <a class="dropdown-item" href="/admin/block-coupon?id=<%=coupons[i]._id%>">Block</a>
-                                                        <a class="dropdown-item" href="/admin/edit-coupon?id=<%=coupons[i]._id%>">Edit</a>
-                                                        <a class="dropdown-item text-danger" href="/admin/delete-coupon?id=<%=coupons[i]._id%>">Delete</a>
-                                                    </div>
-                                                </div> <!-- dropdown //end -->
-                                            </td>
-                                        </tr>
-                                        <%}%>
-                                        <%}%>
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <script>
-                                // Add this code inside a script tag or a JavaScript file
-                            flatpickr("#validity", {
-                            dateFormat: "Y-m-d", // Set the date format as needed
-                            minDate: "today",    // Set the minimum date to today
-                            // Additional options can be added here
-                                            });
-
-                            </script>
-                        </div> <!-- .col// -->
-                    </div> <!-- .row // -->
-                </div> <!-- card body .// -->
-            </div> <!-- card .// -->
-        </section> <!-- content-main end// -->
+                    </div>
+                </div>
+            </div>
+        </section>
+         <!-- content-main end// -->
         <footer class="main-footer font-xs">
             <div class="row pb-30 pt-15">
                 <div class="col-sm-6">
@@ -209,6 +139,16 @@
             </div>
         </footer>
     </main>
+
+    <script>
+        // Add this code inside a script tag or a JavaScript file
+    flatpickr("#validity", {
+    dateFormat: "Y-m-d", // Set the date format as needed
+    minDate: "today",    // Set the minimum date to today
+    // Additional options can be added here
+                    });
+
+    </script>
     <script src="/adminAssets/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="/adminAssets/js/vendors/bootstrap.bundle.min.js"></script>
     <script src="/adminAssets/js/vendors/select2.min.js"></script>

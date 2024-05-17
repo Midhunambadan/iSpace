@@ -15,12 +15,12 @@ const loadCoupon=async(req,res)=>{
 const addCoupon=async(req,res)=>{
     try {
 
-        const {name,code,discountpercentage,minimumAmount,validUntil}=req.body
+        const {code,discountpercentage,minimumAmount,validUntil}=req.body
 
         console.log('datasss----------------',req.body);
 
         const coupon = new Coupon({
-            name: name,
+           
             code: code,
             discountpercentage:discountpercentage,
             minimumAmount:minimumAmount,
@@ -75,10 +75,32 @@ const couponBlock=async(req,res)=>{
 
 
 
+const editCoupon = async (req,res) => {
+    try {
+        const id = req.query.id;
+        const coupon = await Coupon.findById(id); // Find the coupon by ID
+
+        console.log(coupon,'---------------------');
+        if (coupon) {
+
+            req.session.editCouponId = id;
+            res.render('editCoupon', { coupon }); // Pass the coupon data to the view
+        } else {
+            res.status(404).send('Coupon not found'); // Send a 404 response if the coupon is not found
+        }
+    } catch (error) {
+        console.error('Error fetching coupon:', error); // Log the error for debugging
+        res.status(500).send('Internal Server Error'); // Send a 500 response in case of an error
+    }
+};
+
+
+
 
 module.exports={
     loadCoupon,
     addCoupon,
     deleteCoupon,
-    couponBlock
+    couponBlock,
+    editCoupon
 }

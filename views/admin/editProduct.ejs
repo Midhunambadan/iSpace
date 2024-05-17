@@ -177,14 +177,17 @@
         </footer>
 
         <script>
-            function deleteImage(event) {
-    const imageContainer = event.target.parentNode;
-    imageContainer.parentNode.removeChild(imageContainer);
-}
+     
         </script>
 
 
         <script>
+
+       function deleteImage(event) {
+    const imageContainer = event.target.parentNode;
+    imageContainer.parentNode.removeChild(imageContainer);
+}
+
             function previewImages(event) {
     const previewContainer = document.getElementById('image-preview-container');
     const existingImages = previewContainer.querySelectorAll('img');
