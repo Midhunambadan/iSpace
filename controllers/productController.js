@@ -154,8 +154,8 @@ const updateProduct=async(req,res)=>{
     const productId = req.session.editProductId ;
   
 
-  const { pname, pdescription, mrp, category, discount, stock,productImages } = req.body;
-// console.log("gfhg-vvvvvvvvvvvvvvv-------------",req.body)
+  const { pname, pdescription, mrp, category, discount, stock } = req.body;
+console.log("gfhg-vvvvvvvvvvvvvvv-------------",req.body)
 // console.log("gfhg-vvvvvvvvvvvvvvv-------------",typeof(req.body.category))
 
 
@@ -180,22 +180,39 @@ for (const file of req.files) {
         }
     });
 }
-
-
-  const proData=await Product.findByIdAndUpdate({_id:productId},
-    {$set:
-      {
-      product_name:pname,
-      discription:pdescription,
-      MRP:mrp,
-      categoryId: new mongoose.Types.ObjectId(category),
-      discount:discount,
-      stock:stock,
-      // productImages : req.files.map(file => file.filename),
-
-      productImages:imageUrls
+console.log('category ::',category)
+const findProduct  =  await Product.findById(productId)
+      findProduct.product_name = pname
+      findProduct.discription=pdescription
+      findProduct.MRP=mrp
+      findProduct.categoryId= category
+      findProduct.discount=discount
+      findProduct.stock=stock
+      console.log('...................................................................................................................')
+      console.log(req.files)
+      console.log(req.files.length)
+      console.log('...................................................................................................................')
+      if(req.files && req.files.length) {
+        findProduct.productImages = imageUrls
       }
-  })
+
+      await findProduct.save()
+
+
+  // const proData=await Product.findByIdAndUpdate({_id:productId},
+  //   {$set:
+  //     {
+  //     product_name:pname,
+  //     discription:pdescription,
+  //     MRP:mrp,
+  //     categoryId: new mongoose.Types.ObjectId(category),
+  //     discount:discount,
+  //     stock:stock,
+  //     // productImages : req.files.map(file => file.filename),
+
+  //     productImages:imageUrls
+  //     }
+  // })
   
 
     res.redirect('/admin/products')

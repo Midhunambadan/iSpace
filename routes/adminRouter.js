@@ -80,6 +80,7 @@ admin_router.get('/unblock-user',adminAuth.isLogin,adminController.unblockUser)
 
 
 
+
 // <<<<<<<<<<<<<<<<<<<<<For Products>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 admin_router.get("/products",adminAuth.isLogin, productController.loadProduct);
 admin_router.get('/add-product',adminAuth.isLogin,productController.loadaddProduct)
@@ -94,16 +95,17 @@ admin_router.get('/orders',adminOrderController.orderPage)
 
 
 admin_router.get('/load-coupon',adminAuth.isLogin,adminCouponController.loadCoupon)
-admin_router.post('/load-coupon',adminCouponController.addCoupon)
-admin_router.get('/delete-coupon',adminCouponController.deleteCoupon)
-admin_router.get('/block-coupon',adminCouponController.couponBlock)
+admin_router.post('/add-coupon',adminCouponController.addCoupon)
+admin_router.get('/delete-coupon',adminAuth.isLogin,adminCouponController.deleteCoupon)
+admin_router.get('/block-coupon',adminAuth.isLogin,adminCouponController.couponBlock)
 
-admin_router.get('/edit-coupon',adminCouponController.editCoupon)
+admin_router.get('/edit-coupon',adminAuth.isLogin,adminCouponController.editCoupon)
+admin_router.post('/edit-coupon',adminAuth.isLogin,adminCouponController.updateCoupon)
 
 
-admin_router.get('/offer-page',offerController.loadOfferPage)
+admin_router.get('/offer-page',adminAuth.isLogin,offerController.loadOfferPage)
 admin_router.post('/offer-page',offerController.addCategoroyOffer)
-admin_router.get('/remove-offer',offerController.removeCategoryOffer)
+admin_router.get('/remove-offer',adminAuth.isLogin,offerController.removeCategoryOffer)
 
 
 

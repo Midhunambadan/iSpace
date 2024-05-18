@@ -19,6 +19,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -93,11 +95,11 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-3">
-                            <form method="post">
-                                <div class="mb-4">
+                            <form method="post" action="/admin/add-coupon">
+                                <!-- <div class="mb-4">
                                     <label for="product_name"  class="form-label">Name</label>
                                     <input name="name" type="text" placeholder="Type here" class="form-control" id="product_name" />
-                                </div>
+                                </div> -->
                                 <div class="mb-4">
                                     <label for="product_slug" class="form-label">Code</label>
                                     <input name="code" type="text" placeholder="Type here" class="form-control" id="code" />
@@ -106,10 +108,6 @@
                                     <label class="form-label">Discount Percentage</label>
                                     <input name="discountpercentage" type="number" placeholder="Type here" class="form-control" id="discount" />
 
-                                    <!-- <select class="form-select">
-                                        <option>Clothes</option>
-                                        <option>T-Shirts</option>
-                                    </select> -->
                                 </div>
                                 <div class="mb-4">
                                     <label class="form-label">Minimum Amount</label>
@@ -122,9 +120,58 @@
                                 </div>  
 
                                 <div class="d-grid">
-                                    <button class="btn btn-primary">Create Coupon</button>
+                                    <button class="btn btn-primary" type="submit" >Create Coupon</button>
                                 </div>
                             </form>
+
+                            <!-- <script>
+                               async function addCoupon(event) {
+    // Prevent the default form submission
+    event.preventDefault();
+    console.log('hiiiiiiiiiiiiiiii coupon');
+
+    // Get form element
+    const form = event.target.closest('form');
+
+    // Create a FormData object from the form
+    const formData = new FormData(form);
+
+    // Convert FormData to a JSON object
+    const formObject = {};
+    formData.forEach((value, key) => {
+        formObject[key] = value;
+    });
+
+    console.log(formObject);
+
+    try {
+        // Send the form data using fetch
+        const response = await fetch('/admin/load-coupon', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formObject)
+        });
+
+        // Check if the request was successful
+        if (response.ok) {
+            const result = await response.json();
+            console.log('Coupon created successfully:', result);
+            // Optionally, you can reset the form or show a success message
+            form.reset();
+            alert('Coupon created successfully!');
+        } else {
+            console.error('Failed to create coupon:', response.statusText);
+            alert('Failed to create coupon. Please try again.');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again.');
+    }
+}
+
+                            </script> -->
                         </div>
                         <div class="col-md-9">
                             <div class="table-responsive">
@@ -169,7 +216,9 @@
                                                     <div class="dropdown-menu">
                                                         <a class="dropdown-item" href="/admin/block-coupon?id=<%=coupons[i]._id%>">Block</a>
                                                         <a class="dropdown-item" href="/admin/edit-coupon?id=<%=coupons[i]._id%>">Edit</a>
-                                                        <a class="dropdown-item text-danger" href="/admin/delete-coupon?id=<%=coupons[i]._id%>">Delete</a>
+                                                        <a class="dropdown-item text-danger"  onclick="confirmDelete('<%=coupons[i]._id%>')">Delete</a>
+                                                        <!-- <button  >Delete</button> -->
+
                                                     </div>
                                                 </div> <!-- dropdown //end -->
                                             </td>
@@ -179,6 +228,59 @@
                                     </tbody>
                                 </table>
                             </div>
+
+                            <script>
+                                async function confirmDelete(couponId) {
+                                    const result = await Swal.fire({
+                                        title: 'Are you sure?',
+                                        text: "You won't be able to revert this!",
+                                        icon: 'warning',
+                                        showCancelButton: true,
+                                        confirmButtonColor: '#3085d6',
+                                        cancelButtonColor: '#d33',
+                                        confirmButtonText: 'Yes, delete it!'
+                                    });
+                        
+                                    if (result.isConfirmed) {
+                                        try {
+                                            const response = await fetch(`/admin/delete-coupon?id=${couponId}`, {
+                                                method: 'GET',
+                                                headers: {
+                                                    'Content-Type': 'application/json'
+                                                }
+                                            });
+                        
+                                            const result = await response.json();
+                        
+                                            if (response.ok) {
+                                                Swal.fire({
+                                                    title: 'Deleted!',
+                                                    text: result.message,
+                                                    icon: 'success',
+                                                    confirmButtonText: 'OK'
+                                                }).then(() => {
+                                                    window.location.href = '/admin/load-coupon';
+                                                });
+                                            } else {
+                                                Swal.fire({
+                                                    title: 'Error!',
+                                                    text: result.message || 'An error occurred while deleting the coupon.',
+                                                    icon: 'error',
+                                                    confirmButtonText: 'OK'
+                                                });
+                                            }
+                                        } catch (error) {
+                                            console.error('Error:', error);
+                                            Swal.fire({
+                                                title: 'Error!',
+                                                text: 'An error occurred while deleting the coupon.',
+                                                icon: 'error',
+                                                confirmButtonText: 'OK'
+                                            });
+                                        }
+                                    }
+                                }
+                            </script>
 
                             <script>
                                 // Add this code inside a script tag or a JavaScript file

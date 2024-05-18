@@ -95,7 +95,7 @@
                                 <label class="form-label">Category</label>
                                 <select class="form-select form-select-lg" name="category" style="width: 300px;" required>
                                     <% if (products.categoryId) { %>
-                                        <option value="<%= products.categoryId %>" selected disabled id="product_category" name=""><%= products.categoryId.category %> </option>
+                                        <option value="<%= products.categoryId._id %>" selected  id="product_category" name="category"><%= products.categoryId.category %> </option>
                                     <% } %>
                                     <% category.forEach((cate)=>{ %>
                                         <option value="<%= cate._id %>"><%= cate.category %></option>
@@ -134,7 +134,7 @@
                                     <img id="previewImage" src="" alt="Product Image">
                                 <% } %>
                             </div>
-                            <input class="form-control" type="file" multiple accept="image/*" name="productImages" onchange="previewImages(event)" required>
+                            <input class="form-control" type="file" multiple accept="image/*" name="productImages" onchange="previewImages(event)" >
                         </div>
                     </div>
 
