@@ -29,6 +29,8 @@
 
 
 
+
+
 </head>
 
 <body>
@@ -152,7 +154,9 @@
                                                     <div class="dropdown-menu">
                                                         <!-- <a class="dropdown-item" href="#">View detail</a> -->
                                                         <a class="dropdown-item" href="#">Edit info</a>
-                                                        <a class="dropdown-item text-danger" href="/admin/remove-offer?id=<%=cateData[i]._id%>">Delete</a>
+                                                        <a class="dropdown-item text-danger" href="#" onclick="confirmRemoveOffer('<%= cateData[i]._id %>')">Deletes</a>
+
+                                                        <!-- <a class="dropdown-item text-danger" href="/admin/remove-offer?id=<%=cateData[i]._id%>">Delete</a> -->
                                                     </div>
                                                 </div> 
                                             </td>
@@ -202,6 +206,52 @@
                         </div> <!-- card-body end// -->
                     </div> <!-- card end// -->
                 </div>
+
+                <script>
+                    function confirmRemoveOffer(categoryId) {
+                        Swal.fire({
+                            title: 'Are you sure?',
+                            text: "You won't be able to revert this!",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Yes, delete it!'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                fetch(`/admin/remove-offer?id=${categoryId}`, {
+                                    method: 'GET'
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        Swal.fire(
+                                            'Deleted!',
+                                            data.message,
+                                            'success'
+                                        ).then(() => {
+                                            window.location.reload(); // Reload the page to reflect changes
+                                        });
+                                    } else {
+                                        Swal.fire(
+                                            'Error!',
+                                            data.message,
+                                            'error'
+                                        );
+                                    }
+                                })
+                                .catch(error => {
+                                    Swal.fire(
+                                        'Error!',
+                                        'Failed to remove offer.',
+                                        'error'
+                                    );
+                                });
+                            }
+                        });
+                    }
+                </script>
+
                 <div class="col-md-3">
                     <div class="card mb-4">
                         <div class="card-body">

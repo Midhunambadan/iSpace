@@ -91,7 +91,6 @@ admin_router.get('/delete-product',adminAuth.isLogin,productController.deletePro
 admin_router.get('/product-block',adminAuth.isLogin,productController.blockProduct)
 admin_router.get('/product-unblock',adminAuth.isLogin,productController.UnBlockProduct)
 
-admin_router.get('/orders',adminOrderController.orderPage)
 
 
 admin_router.get('/load-coupon',adminAuth.isLogin,adminCouponController.loadCoupon)
@@ -107,6 +106,10 @@ admin_router.get('/offer-page',adminAuth.isLogin,offerController.loadOfferPage)
 admin_router.post('/offer-page',offerController.addCategoroyOffer)
 admin_router.get('/remove-offer',adminAuth.isLogin,offerController.removeCategoryOffer)
 
+
+admin_router.get('/orders',adminOrderController.orderPage)
+admin_router.get('/order-details',adminOrderController.orderDetailsPage)
+admin_router.post('/update-order-status',adminOrderController.orderStatusChange)
 
 
 

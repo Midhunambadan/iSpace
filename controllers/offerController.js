@@ -38,6 +38,8 @@ const addCategoroyOffer=async(req,res)=>{
             // Save the updated category
             const updatedCategory = await existingCategory.save();
             const cateId=updatedCategory._id
+
+            req.session.cateId=cateId
             
          
             const productsToUpdate = await Product.find({ categoryId: cateId });
@@ -50,14 +52,14 @@ const addCategoroyOffer=async(req,res)=>{
             for (const product of productsToUpdate) {
                 const updatedPrice = Math.round(product.MRP * ((100 - offerPercentage) / 100));
                 product.MRP = updatedPrice;
-                // console.log(updatedPrice,"++++++++++++++++ssadhgsadhsadghdsghasdghhdashsadhashhgasdhhgasdhgasdghgasghaahdhgadhj")
+
                 await product.save();
 
                }
 
             //    res.status(200).json({ success: true, message: 'Offer applied successfully' });
 
-               res.status(200).json({ message: 'Offer applied successfully', category: updatedCategory });
+               res.status(200).json({success:true, message: 'Offer applied successfully', category: updatedCategory });
 
             
           res.redirect('/admin/offer-page')
@@ -72,22 +74,80 @@ const addCategoroyOffer=async(req,res)=>{
 }
 
 
+// const removeCategoryOffer = async (req, res) => {
+//     try {
+//         const id = req.query.id;
+
+//         // Find the category
+//         const category = await Category.findById(id);
+//         if (!category) {
+//             return res.status(404).json({ success: false, message: 'Category not found' });
+//         }
+
+//         // Get the offer percentage from the category
+//         const offerPercentage = category.offer.offerPercentage;
+
+//         // Find all products in this category
+//         const productsToUpdate = await Product.find({ categoryId: id });
+//         if (!productsToUpdate || productsToUpdate.length === 0) {
+//             return res.status(404).json({ success: false, message: 'No products found for this category' });
+//         }
+
+//         // Update each product's price back to its normal price
+//         for (const product of productsToUpdate) {
+//             const originalPrice = Math.round(product.MRP / ((100 - offerPercentage) / 100));
+//             product.MRP = originalPrice;
+//             await product.save();
+//         }
+
+//         // Remove the offer from the category
+//         category.offer = undefined;
+//         await category.save();
+
+//         res.status(200).json({ success: true, message: 'Offer removed and prices updated successfully' });
+//         // res.redirect('/admin/offer-page'); // Uncomment if you want to redirect after removal
+//     } catch (error) {
+//         res.status(500).json({ success: false, message: 'Failed to remove offer' });
+//     }
+// };
 
 
-const removeCategoryOffer=async(req,res)=>{
+
+const removeCategoryOffer = async (req, res) => {
     try {
-        const id =req.query.id
+        const id = req.query.id;
 
-        await Category.updateOne({ _id: id }, { $unset: { offer: 1 } });
+        // Find the category
+        const category = await Category.findById(id);
+        if (!category) {
+            return res.status(404).json({ success: false, message: 'Category not found' });
+        }
 
-        // console.log('remove offer controler',category);
-        res.redirect('/admin/offer-page')
+        // Get the offer percentage from the category
+        const offerPercentage = category.offer.offerPercentage;
+
+        // Find all products in this category
+        const productsToUpdate = await Product.find({ categoryId: id });
+        if (!productsToUpdate || productsToUpdate.length === 0) {
+            return res.status(404).json({ success: false, message: 'No products found for this category' });
+        }
+
+        // Update each product's price back to its normal price
+        for (const product of productsToUpdate) {
+            const originalPrice = Math.round(product.MRP / ((100 - offerPercentage) / 100));
+            product.MRP = originalPrice;
+            await product.save();
+        }
+
+        // Remove the offer from the category
+        category.offer = undefined;
+        await category.save();
+
+        res.status(200).json({ success: true, message: 'Offer removed and prices updated successfully' });
     } catch (error) {
-        
+        res.status(500).json({ success: false, message: 'Failed to remove offer' });
     }
-}
-
-
+};
 
 
 

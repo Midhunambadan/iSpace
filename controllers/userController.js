@@ -500,30 +500,87 @@ const loadOrderDetails=async(req,res)=>{
 
 const userOrderCancel=async(req,res)=>{
   try {
-    
+    // console.log('userOrdercontroller--------------------------------------------------------------------');
     const userId=req.session.user_id
+    console.log("userId------------------------",userId);
     const orderId = req.query.id;
 
         // Fetch the order to be canceled
-        const order = await Order.findById(orderId).populate('products.productId');
+        const order = await Order.findById(orderId);
 
         if (!order) {
             return res.status(404).json({ message: "Order not found" });
         }
 
+            // Change the order status to "Cancelled"
+            order.orderStatus = 'Cancelled';
+            await order.save();
+
+         // Increase the product stock for each item in the canceled order
+        const orderItems=order.products
+
+        // console.log('orderItems--------------------------------------------------------------------',orderItems);
+
+
+        for (const item of orderItems) {
+          const product = await Product.findById(item.productId);
+
+          if (product) {
+              product.stock += item.quantity; // Increase product stock
+              await product.save();
+          }
+      }
+
+        // // Update order status to 'Cancelled'
+        // const orderCancelled = await Order.findByIdAndUpdate(orderId, { $set: { orderStatus: 'Cancelled' } });
+
         // Ensure that the order belongs to the current user
-        if (order.userId.toString() !== userId) {
-            return res.status(403).json({ message: "Unauthorized access" });
+        // if (order.userId.toString() !== userId) {
+        //     return res.status(403).json({ message: "Unauthorized access" });
+        // }
+
+    
+
+        // console.log('order--------------------------------------------------------------------',order,order.paymentMethod);
+
+
+          // Check payment method
+          if (order.paymentMethod !== "cash on delivery") {
+            
+
+            // console.log('wallet--------------------------------------------------------------------',wallet);
+            // const new = 
+            if (!await Wallet.findOne({ userId: userId })) {
+              console.log('No wallet found, creating a new one...');
+             const  wallet2 = new Wallet({
+                  userId: userId,
+                  balance: 0,
+                  transactionHistory: []
+              });
+
+              console.log('new .. ',wallet2)
+             const newW =  await wallet2.save()
+             console.log('new .. ',newW)
+          }
+          const wallet = await Wallet.findOne({ userId: userId });
+
+          
+            const totalAmount = parseFloat(order.totalAmount);
+            wallet.balance += totalAmount;
+
+            console.log('totalAmount--------------------------------------------------------------------',wallet,totalAmount);
+
+            wallet.transactionHistory.push({
+                amount: totalAmount,
+                type: 'Credit'
+            });
+
+           const walletData= await wallet.save();
+           console.log('walletdata..............',walletData);
         }
 
 
 
-
-
-
-        // Change the order status to "Cancelled"
-        order.orderStatus = 'Cancelled';
-        await order.save();
     
         res.redirect('/userDashboard')
 

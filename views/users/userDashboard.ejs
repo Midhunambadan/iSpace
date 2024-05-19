@@ -135,7 +135,9 @@
                                                                                     <span class="badge bg-secondary">Cancelled</span>
 
                                                                                 <% }else {%>
-                                                                                    <a href="/cancel-order?id=<%= orders[i]._id %>" class="btn btn-sm btn-outline-danger btn-cancel">Cancel</a>
+                                                                                    <a href="#" class="btn btn-sm btn-outline-danger btn-cancel" data-order-id="<%= orders[i]._id %>">Cancel</a>
+
+                                                                                    <!-- <a href="/cancel-order?id=<%= orders[i]._id %>" class="btn btn-sm btn-outline-danger btn-cancel">Cancel</a> -->
 
                                                                                <% } %>
                                                                                    
@@ -155,7 +157,69 @@
                                         </div>
                                     <% } %>
                                     
-                                    
+                                  
+
+                                <!-- this below sciptt code have doubt future i will edit   -->
+
+                 <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const cancelButtons = document.querySelectorAll('.btn-cancel');
+
+                            cancelButtons.forEach(button => {
+                                button.addEventListener('click', async function(event) {
+                                    event.preventDefault();
+
+                                    const orderId = this.getAttribute('data-order-id');
+
+                                    const result = await Swal.fire({
+                                        title: 'Are you sure?',
+                                        text: "You won't be able to revert this!",
+                                        icon: 'warning',
+                                        showCancelButton: true,
+                                        confirmButtonColor: '#3085d6',
+                                        cancelButtonColor: '#d33',
+                                        confirmButtonText: 'Yes, cancel it!'
+                                    });
+
+                                    if (result.isConfirmed) {
+                                        try {
+                                            const response = await fetch(`/cancel-order?id=${orderId}`, {
+                                                method: 'GET',
+                                                headers: {
+                                                    'Content-Type': 'application/json'
+                                                }
+                                            });
+
+                                            if (response.ok) {
+                                                Swal.fire(
+                                                    'Cancelled!',
+                                                    'Your order has been cancelled.',
+                                                    'success'
+                                                ).then(() => {
+                                                    // Optionally, refresh the page or remove the cancelled order from the DOM
+                                                    location.reload();
+                                                });
+                                            } else {
+                                                const errorData = await response.json();
+                                                Swal.fire(
+                                                    'Error!',
+                                                    errorData.message || 'There was an error cancelling your order.',
+                                                    'error'
+                                                );
+                                            }
+                                        } catch (error) {
+                                            Swal.fire(
+                                                'Error!',
+                                                'There was an error cancelling your order.',
+                                                'error'
+                                            );
+                                        }
+                                    }
+                                });
+                            });
+                        });
+                    </script>
+                                                
                                     
 
                                     <div class="tab-pane fade" id="track-orders" role="tabpanel" aria-labelledby="track-orders-tab">
@@ -400,12 +464,37 @@
 
                                         <!-- wallet start -->
                                     <div class="tab-pane fade" id="wallet" role="tabpanel" aria-labelledby="orders-tab">
+
+
+                                        <div class="col-md-4">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h3 class="mb-0">Wallet Balance</h3>
+                                                </div>
+                                                <div class="card-body">
+                                                    <% for(let i=0; i < wallet.length; i++) { %>
+                                                    <%if(locals.wallet.length>0 ){%>
+                                                         <h5>Your current balance is:</h5><h5 style="color: #3bb77e;">₹ <%=wallet[i].balance%></h5>
+                                                         <% } %>
+                                                         <% } %>
+                                                    <!-- <form action="/add-wallet-amount" method="POST">
+                                                        <div class="form-group">
+                                                            <label for="amount">Add Amount</label>
+                                                            <input type="text" class="form-control" id="amount" name="amount" placeholder="Enter amount">
+                                                        </div>
+                                                        <button type="submit" class="btn btn-primary">Add</button>
+                                                    </form> -->
+                                                </div>
+                                            </div>
+                                        </div>
+
                                         <div class="card">
                                             <div class="card-header">
                                                 <h3 class="mb-0">Your Wallet Transcations</h3>
                                             </div>
                                             <div class="card-body">
                                                 <div class="table-responsive">
+                                                    <%if(locals.wallet.length>0 ){%>
                                                     <table class="table" id="">
                                                         <thead>
                                                             <tr>
@@ -418,42 +507,30 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
+                                                       
+
+                                                          
                                                             <% for(let i=0; i < wallet.length; i++) { %>
                                                                 <tr>
                                                                     <!-- <td><%= i+1 %></td> -->
                                                                     <td>
                                                                         <%= wallet[i].transactionHistory[i]._id%><br>
-                                                                        
                                                                     </td>
                                                                     <td><%= wallet[i].date.toDateString() %></td>
-                                                                    <td class="status-processing" style="color: #3bb77e;"><%= wallet[i].transactionHistory[i].amount%></td>
+                                                                    <td class="status-processing" style="color: #3bb77e;">₹<%= wallet[i].transactionHistory[i].amount%></td>
                                                                     <td>₹ <%= wallet[i].transactionHistory[i].type %> </td>
 
 
                                                                 </tr> 
-                                                            <% } %>
+                                                                <% } %>
+                                                           
                                                         </tbody>
                                                     </table>
+                                                     <% } %>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
-                                            <div class="card">
-                                                <div class="card-header">
-                                                    <h3 class="mb-0">Wallet Balance</h3>
-                                                </div>
-                                                <div class="card-body">
-                                                    <p>Your current balance is: ₹ </p>
-                                                    <form action="/add-wallet-amount" method="POST">
-                                                        <div class="form-group">
-                                                            <label for="amount">Add Amount</label>
-                                                            <input type="text" class="form-control" id="amount" name="amount" placeholder="Enter amount">
-                                                        </div>
-                                                        <button type="submit" class="btn btn-primary">Add</button>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
+                                     
                                     </div>
 
 

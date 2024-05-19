@@ -16,8 +16,7 @@
     <!-- Template CSS -->
     <link href="/adminAssets/css/main.css" rel="stylesheet" type="text/css" />
 
-
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/2.0.2/css/dataTables.dataTables.min.css">
 
@@ -150,6 +149,8 @@ $(document).ready(function() {
                                         <th scope="col">Details</th>
                                     </tr>
                                 </thead>
+
+
                                 <tbody>
                                     <% for (let i = 0; i < orders.length; i++) { %>
                                     <tr>
@@ -158,11 +159,29 @@ $(document).ready(function() {
                                         <td><b><%= orders[i].address.name %></b></td>
                                         <td> <%= orders[i].address.mobile %></td>
                                         <td>₹ <%= orders[i].totalAmount %></td>
-                                        <td><span class="badge rounded-pill alert-warning">Pending</span></td>
+                                        <td><span class="badge rounded-pill alert-warning"><%= orders[i].orderStatus %></span></td>
                                         <td><%= orders[i].orderDate.toLocaleDateString('en-GB') %></td>
 
-                                        <td>Delivered</td>
-                                        <td>View</td>
+                                        <td>
+                                            
+                                            <div class="btn-group" role="group">
+                                                <form action="/admin/update-order-status" method="POST">
+                                                    <input type="hidden" name="orderId" value="<%= orders[i]._id %>">
+                                                    <select name="orderStatus" class="form-select d-inline-block mb-lg-0 mb-15 mw-200" onchange="this.form.submit()">
+                                                        <% const statuses = ['Order Placed', 'Confirmed', 'Shipped', 'Delivered', 'Cancelled', 'Returned', 'Pending']; %>
+                                                        <% statuses.forEach(status => { %>
+                                                            <option value="<%= status %>" <%= orders[i].orderStatus === status ? 'selected' : '' %>><%= status %></option>
+                                                        <% }) %>
+                                                    </select>
+                                                </form>
+                                            </div>
+                                            
+                                       
+                                        </td>
+                                        <td ><a href="/admin/order-details?id=<%=orders[i]._id%>"class="btn-small d-block"> <i class="fas fa-eye"></i> View</a></td>
+
+                                        <!-- <td><a href="/order-details?id=<%=orders[i]._id%>" class="btn-small d-block"><i class="fas fa-eye"></i> View</a></td> -->
+
                                     </tr>
                                     <% } %>
                                 </tbody>
@@ -215,6 +234,7 @@ $(document).ready(function() {
     <script>
     let table = new DataTable('#myTable');
     </script>
+
 
 
     <script src="/adminAssets/js/vendors/jquery-3.6.0.min.js"></script>
