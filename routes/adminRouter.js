@@ -10,6 +10,7 @@ const productController=require('../controllers/productController')
 const adminOrderController=require('../controllers/adminOrderController')
 const adminCouponController=require('../controllers/adminCouponController')
 const offerController=require('../controllers/offerController')
+const salesReportController=require('../controllers/salesReportController')
 
 const config = require("../config/config");
 const session = require("express-session");
@@ -106,10 +107,16 @@ admin_router.get('/offer-page',adminAuth.isLogin,offerController.loadOfferPage)
 admin_router.post('/offer-page',offerController.addCategoroyOffer)
 admin_router.get('/remove-offer',adminAuth.isLogin,offerController.removeCategoryOffer)
 
+admin_router.get('/product-offer',adminAuth.isLogin,offerController.loadProductOffer)
+admin_router.post('/product-offer',adminAuth.isLogin,offerController.addProductOffer)
+admin_router.get('/remove-product-offer',adminAuth.isLogin,offerController.removeProductOffer)
 
-admin_router.get('/orders',adminOrderController.orderPage)
-admin_router.get('/order-details',adminOrderController.orderDetailsPage)
+admin_router.get('/orders',adminAuth.isLogin,adminOrderController.orderPage)
+admin_router.get('/order-details',adminAuth.isLogin,adminOrderController.orderDetailsPage)
 admin_router.post('/update-order-status',adminOrderController.orderStatusChange)
+
+
+admin_router.get('/sales-report',adminAuth.isLogin,salesReportController.loadSalesReport)
 
 
 

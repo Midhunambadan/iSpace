@@ -494,41 +494,39 @@
                                             </div>
                                             <div class="card-body">
                                                 <div class="table-responsive">
-                                                    <%if(locals.wallet.length>0 ){%>
-                                                    <table class="table" id="">
-                                                        <thead>
-                                                            <tr>
-                                                                <!-- <th>No</th> -->
-                                                                <th>Transcation ID</th>
-                                                                <th>Date</th>
-                                                                <th>Amount</th>
-                                                                <th>Status</th>
-                                                                
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                       
-
-                                                          
-                                                            <% for(let i=0; i < wallet.length; i++) { %>
+                                                    <% if (wallet.length > 0) { %>
+                                                        <table class="table" id="">
+                                                            <thead>
                                                                 <tr>
-                                                                    <!-- <td><%= i+1 %></td> -->
-                                                                    <td>
-                                                                        <%= wallet[i].transactionHistory[i]._id%><br>
-                                                                    </td>
-                                                                    <td><%= wallet[i].date.toDateString() %></td>
-                                                                    <td class="status-processing" style="color: #3bb77e;">₹<%= wallet[i].transactionHistory[i].amount%></td>
-                                                                    <td>₹ <%= wallet[i].transactionHistory[i].type %> </td>
-
-
-                                                                </tr> 
+                                                                    <th>Transaction ID</th>
+                                                                    <th>Date</th>
+                                                                    <th>Amount</th>
+                                                                    <th>Status</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <% for (let i = 0; i < wallet.length; i++) { %>
+                                                                    <% for (let j = 0; j < wallet[i].transactionHistory.length; j++) { %>
+                                                                        <tr>
+                                                                            <td><%= wallet[i].transactionHistory[j]._id %></td>
+                                                                            <td>
+                                                                                <% 
+                                                                                    const date = new Date(wallet[i].transactionHistory[j].date);
+                                                                                    const formattedDate = date.toLocaleDateString('en-GB'); // Format as dd/mm/yyyy
+                                                                                %>
+                                                                                <%= formattedDate %>
+                                                                            </td>
+                                                                            <td class="status-processing" style="color: #3bb77e;">₹<%= wallet[i].transactionHistory[j].amount %></td>
+                                                                            <td><%= wallet[i].transactionHistory[j].type %></td>
+                                                                        </tr>
+                                                                    <% } %>
                                                                 <% } %>
-                                                           
-                                                        </tbody>
-                                                    </table>
-                                                     <% } %>
+                                                            </tbody>
+                                                        </table>
+                                                    <% } %>
                                                 </div>
                                             </div>
+                                            
                                         </div>
                                      
                                     </div>

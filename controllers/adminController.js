@@ -2,11 +2,12 @@ const { render } = require("../app");
 const Admin = require("../models/adminModel");
 const { findByIdAndUpdate } = require("../models/categoryModel");
 const User = require("../models/userModel");
+const Category = require("../models/categoryModel");
+const Order=require('../models/orderModel')
+const Product=require('../models/productModel')
+
 const bcrypt = require("bcrypt");
 const randomstring=require('randomstring')
-const Category = require("../models/categoryModel");
-
-
 // // ==================================================================================================================
 
 
@@ -101,7 +102,14 @@ const verifyLogin = async (req, res) => {
 
 const loadAdminDashboard = async (req, res) => {
   try {
-    res.render("home");
+    const orders=await Order.find({}).countDocuments()
+    const product=await Product.find().countDocuments()
+    const category=await Category.find().countDocuments()
+
+    console.log(orders,'==========',product)
+
+    res.render("home",{orders,product,category});
+
   } catch (error) {
     console.log(error.message);
   }

@@ -30,6 +30,24 @@ const product= new mongoose.Schema({
     categoryId:{
         type:mongoose.Schema.Types.ObjectId,ref:'Category',
         required:true
+    },
+    productOffer:{
+        name:{
+            type:String,
+            
+        },
+        offerPercentage:{
+           type:Number,
+           default:0
+        },
+        validity:{
+            type: Date   
+        },
+        isActive:{
+            type:Boolean,
+            default:true
+
+        }
     }
 })
 

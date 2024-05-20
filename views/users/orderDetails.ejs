@@ -119,22 +119,28 @@
                                         </thead>
                                         <tbody>
                                             <% for (let i = 0; i < orders.products.length; i++) { %>
-                                                <tr>
-                                                    <td>
-                                                        <a class="itemside" href="#">
-                                                            <div class="left">
-                                                                <img src="/productImage/<%= orders.products[i].productId.productImages[0] %>" width="40" height="40" class="img-xs" alt="Item">
-                                                            </div>
-                                                            <div class="info"><%=orders.products[i].productId.product_name%> </div>
-                                                        </a>
-                                                    </td>
-                                                    <td>₹<%=orders.products[i].productId.MRP%></td>
-                                                    <td> <%=orders.products[i].quantity%> </td>
-                                                    <td >₹ <%=orders.products[i].quantity* orders.products[i].productId.MRP%></td>
-                                                    <td class="badge bg-secondary">status </td>
-
-                                                </tr>
+                                                <% if (orders.products[i].productId) { %>
+                                                    <tr>
+                                                        <td>
+                                                            <a class="itemside" href="#">
+                                                                <div class="left">
+                                                                    <img src="/productImage/<%= orders.products[i].productId.productImages[0] %>" width="40" height="40" class="img-xs" alt="Item">
+                                                                </div>
+                                                                <div class="info"><%= orders.products[i].productId.product_name %></div>
+                                                            </a>
+                                                        </td>
+                                                        <td>₹<%= orders.products[i].productId.MRP %></td>
+                                                        <td><%= orders.products[i].quantity %></td>
+                                                        <td>₹ <%= orders.products[i].quantity * orders.products[i].productId.MRP %></td>
+                                                        <td class="badge bg-secondary"><%= orders.products[i].status || 'Status' %></td>
+                                                    </tr>
+                                                <% } else { %>
+                                                    <tr>
+                                                        <td colspan="5">Product information not available.</td>
+                                                    </tr>
+                                                <% } %>
                                             <% } %>
+                                            
                                         </tbody>
                                     </table>
                                 <% } %>

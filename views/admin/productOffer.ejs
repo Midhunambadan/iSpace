@@ -94,7 +94,7 @@
         <section class="content-main">
             <div class="content-header">
                 <div>
-                    <h2 class="content-title card-title">Category Offer List </h2>
+                    <h2 class="content-title card-title">Product Offer List </h2>
                     <p>Lorem ipsum dolor sit amet.</p>
                 </div>
             </div>
@@ -129,8 +129,8 @@
                                     <thead>
                                         <tr>
                                             <th>SL No:</th>
-                                            <th>Category</th>
-                                            <th>Percentage Offfer</th>
+                                            <th>Product Name</th>
+                                            <th>Offer Percentage </th>
                                             <th>Status</th>
                                             <th>Validity</th>
                                             <th class="text-end"> Action </th>
@@ -138,67 +138,30 @@
                                     </thead>
                                     <tbody>
 
-                                        <%if(cateData.length>0){%>
-                                            <%for(let i=0;i< cateData.length;i++){%>   
+                                        <%if(products.length>0){%>
+                                            <%for(let i=0;i< products.length;i++){%>   
                                         <tr>
                                             <td><%=i+1%></td>
-                                            <td><b><%=cateData[i].category%></b></td>
-                                            <td><%=cateData[i].offer.offerPercentage%></td>
-                                            <td><span class="badge rounded-pill alert-success"><%=cateData[i].offer.isActive%></span></td>
-                                            <td><%= cateData[i].offer.validity ? cateData[i].offer.validity.toDateString() : '' %></td>
+                                            <td><b><%=products[i].product_name%></b></td>
+                                            <td><%=products[i].productOffer.offerPercentage%></td>
+                                            <td><span class="badge rounded-pill alert-success"><%=products[i].isActive%></span></td>
+
+                                            <td><%= products[i].productOffer.validity ? products[i].productOffer.validity.toDateString() : '' %></td>
 
                                             <td class="text-end">
-                                                <!-- <a href="#" class="btn btn-md rounded font-sm">Detail</a> -->
                                                 <div class="dropdown">
                                                     <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
                                                     <div class="dropdown-menu">
-                                                        <!-- <a class="dropdown-item" href="#">View detail</a> -->
-                                                        <a class="dropdown-item" href="#">Edit info</a>
-                                                        <a class="dropdown-item text-danger" href="#" onclick="confirmRemoveOffer('<%= cateData[i]._id %>')">Deletes</a>
+                                                        <!-- <a class="dropdown-item" href="#">Edit info</a> -->
+                                                        <a class="dropdown-item text-danger" href="#" onclick="confirmRemoveOffer('<%= products[i]._id %>')">Deletes</a>
 
-                                                        <!-- <a class="dropdown-item text-danger" href="/admin/remove-offer?id=<%=cateData[i]._id%>">Delete</a> -->
                                                     </div>
                                                 </div> 
                                             </td>
                                         </tr>
                                         <%}%>
                                         <%}%>
-                                        <!-- <tr>
-                                            <td>789</td>
-                                            <td><b>Guy Hawkins</b></td>
-                                            <td>$0.00</td>
-                                            <td><span class="badge rounded-pill alert-danger">Cancelled</span></td>
-                                            <td>25.05.2022</td>
-                                            <td class="text-end">
-                                                <a href="#" class="btn btn-md rounded font-sm">Detail</a>
-                                                <div class="dropdown">
-                                                    <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                                    <div class="dropdown-menu">
-                                                        <a class="dropdown-item" href="#">View detail</a>
-                                                        <a class="dropdown-item" href="#">Edit info</a>
-                                                        <a class="dropdown-item text-danger" href="#">Delete</a>
-                                                    </div>
-                                                </div> 
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>478</td>
-                                            <td><b>Leslie Alexander</b></td>
-                                            <td>$293.01</td>
-                                            <td><span class="badge rounded-pill alert-warning">Pending</span></td>
-                                            <td>18.05.2022</td>
-                                            <td class="text-end">
-                                                <a href="#" class="btn btn-md rounded font-sm">Detail</a>
-                                                <div class="dropdown">
-                                                    <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                                    <div class="dropdown-menu">
-                                                        <a class="dropdown-item" href="#">View detail</a>
-                                                        <a class="dropdown-item" href="#">Edit info</a>
-                                                        <a class="dropdown-item text-danger" href="#">Delete</a>
-                                                    </div>
-                                                </div> 
-                                            </td>
-                                        </tr> -->
+                                       
                                        
                                     </tbody>
                                 </table>
@@ -208,7 +171,7 @@
                 </div>
 
                 <script>
-                    function confirmRemoveOffer(categoryId) {
+                    function confirmRemoveOffer(proId) {
                         Swal.fire({
                             title: 'Are you sure?',
                             text: "You won't be able to revert this!",
@@ -219,7 +182,7 @@
                             confirmButtonText: 'Yes, delete it!'
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                fetch(`/admin/remove-offer?id=${categoryId}`, {
+                                fetch(`/admin/remove-product-offer?id=${proId}`, {
                                     method: 'GET'
                                 })
                                 .then(response => response.json())
@@ -270,11 +233,11 @@
 
                                
                                 <div class="mb-4">
-                                    <label class="form-label">Select Category</label>
-                                    <select class="form-select" name="category">
-                                        <option>Category</option>
-                                        <% cateData.forEach(x => { %>
-                                            <option><%= x.category %></option>
+                                    <label class="form-label">Select Product</label>
+                                    <select class="form-select" name="product">
+                                        <option>Product</option>
+                                        <% products.forEach(x => { %>
+                                            <option><%= x.product_name %></option>
                                         <% }); %>
                                     </select>
                                 </div>
@@ -284,7 +247,7 @@
                                 </div>
                             
                                 <div class="d-grid">
-                                    <button class="btn btn-primary" onclick="addOffer(event)" >Add Offer</button>
+                                    <button class="btn btn-primary" type="submit" onclick="addOffer(event)" >Add Offer</button>
                                 </div>
                             </form>
 
@@ -295,10 +258,10 @@
                                 event.preventDefault(); // Prevent form submission
                                 const name = document.getElementById('order_id').value;
                                 const offerPercentage = document.getElementById('order_customer').value;
-                                const category = document.querySelector('select[name="category"]').value;
+                                const product = document.querySelector('select[name="product"]').value;
                                 const validity = document.getElementById('order_total').value;
                         
-                                if (!name || !offerPercentage || !category || !validity) {
+                                if (!name || !offerPercentage || !product || !validity) {
 
                                 // Check if any field is empty
                                 Swal.fire({
@@ -310,12 +273,16 @@
                                 return;
                                  }
                                 try {
-                                    const response = await fetch('/admin/offer-page', {
+
+                                    console.log('hiiiiiiiiiiiiiiii')
+                                    const response = await fetch('/admin/product-offer', {
                                         method: 'POST',
                                         headers: {
                                             'Content-Type': 'application/json'
                                         },
-                                        body: JSON.stringify({ name, offerPercentage, category, validity })
+                                        body: JSON.stringify({ name, offerPercentage, product, validity })
+
+                                       
                                     });
                         
                                     if (!response.ok) {
@@ -323,8 +290,12 @@
                                     }
                         
                                     const data = await response.json();
+                                    console.log(data,'datssssssssssss')
                         
                                     if (data.success) {
+
+                                        console.log('hiiiiiiiiiiiiiiii',data)
+
                                         // Offer added successfully
                                         Swal.fire({
                                             title: 'Success',
