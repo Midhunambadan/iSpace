@@ -128,7 +128,7 @@ const adminLogout = async (req, res) => {
 
 const userList = async (req, res) => {
   try {
-    const usersData = await User.find().sort({registerDate:-1});
+    const usersData = await User.find().sort({registerDate:-1})
 
     res.render("userList", { users: usersData });
   } catch (error) {

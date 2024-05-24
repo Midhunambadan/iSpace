@@ -14,7 +14,6 @@ var instance = new Razorpay({
 
 });
 
-// console.log(instance,"a,badan odi")
 
 
 
@@ -23,20 +22,15 @@ var instance = new Razorpay({
 const placeOrder=async(req,res)=>{
     try {
   
-      // console.log('placeorder -------------------');
-  
 
-      // const orderData=req.body
-  
-      // console.log('orderData------------',orderData);
   
       const userId=req.session.user_id
       const addressData= await Address.find({_id:req.body.selectedAddress})
       const cartData= await Cart.findOne({userId:userId})
   
-      // console.log("addressData:--------------------",addressData)
-      // console.log("amount:---------------",req.body.amount)
-      // console.log('cartdata-----------',cartData.product);
+      console.log("addressData:--------------------",addressData)
+      console.log("amount:---------------",req.body.amount)
+      console.log('cartdata-----------',cartData.product);
   
   
     //   if (!cartData || cartData.products.length == 0) {
@@ -94,14 +88,7 @@ const placeOrder=async(req,res)=>{
   
     updateStock()
   
-     // Update product quantities
-  
-    //  for (const item of cartData.products) {
-    //   const product = await Product.findById(item.productId);
-    //   product.quantity -= item.quantity;
-    //   await product.save();
-    //   }
-  
+
   async function updateStock() {
     for (const product of cartData.product) {
         const productInfo = await Product.findById(product.productId);
@@ -170,12 +157,9 @@ const placeOrder=async(req,res)=>{
 
         instance.orders.create(options,async function(err, razOrder) {
         
-          console.log(options.amount,"asssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss")
+          // console.log(options.amount,"asssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss")
 
 
-
-
-          
           if (err) {
             console.error(err);
             res.status(500).json({ error: "Failed to create Razorpay order" });

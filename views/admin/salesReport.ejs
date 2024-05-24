@@ -15,157 +15,193 @@
     <link rel="shortcut icon" type="image/x-icon" href="/adminAssets/imgs/theme/favicon.svg">
     <!-- Template CSS -->
     <link href="/adminAssets/css/main.css" rel="stylesheet" type="text/css" />
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+        
+<style>
+      .content-main {
+            
+            display: flex;
+            
+        }
+        .content-left {
+            flex: 80%;
+        }
+        .content-right {
+            flex: 30%;
+            padding-left: 20px;
+        }
+        .card-body {
+            overflow-x: auto;
+        }
+    .download-btn {
+        background-color:#088178;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    .download-btn:hover {
+        background-color: #218838;
+    }
+    .date-range-form {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .date-range-form label {
+        font-size: 14px;
+        margin-right: 5px;
+    }
+
+    .date-range-form input[type="date"] {
+        padding: 5px;
+        font-size: 14px;
+    }
+
+    .date-range-form button {
+        background-color: #008080;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .date-range-form button:hover {
+        background-color: #006666;
+    }
+
+   
+</style>
 </head>
 
 <body>
-    <%- include('../partials/admin-left.ejs') %>
 
-    <main class="main-wrap">
+    <main class="main-wrap" style="margin-left: 100px;">
         <header class="main-header navbar">
-            <div class="col-search">
-                <form class="searchform">
-                    <div class="input-group">
-                        <input list="search_terms" type="text" class="form-control" placeholder="Search term">
-                        <button class="btn btn-light bg" type="button"> <i class="material-icons md-search"></i></button>
-                    </div>
-                    <datalist id="search_terms">
-                        <option value="Products">
-                        <option value="New orders">
-                        <option value="Apple iphone">
-                        <option value="Ahmed Hassan">
-                    </datalist>
-                </form>
-            </div>
-            <div class="col-nav">
-                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i class="material-icons md-apps"></i> </button>
-                <ul class="nav">
-                    <li class="nav-item">
-                        <a class="nav-link btn-icon" href="#">
-                            <i class="material-icons md-notifications animation-shake"></i>
-                            <span class="badge rounded-pill">3</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i> </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="requestfullscreen nav-link btn-icon"><i class="material-icons md-cast"></i></a>
-                    </li>
-                    <li class="dropdown nav-item">
-                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownLanguage" aria-expanded="false"><i class="material-icons md-public"></i></a>
-                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownLanguage">
-                            <a class="dropdown-item text-brand" href="#"><img src="/adminAssets/imgs/theme/flag-us.png" alt="English">English</a>
-                            <a class="dropdown-item" href="#"><img src="/adminAssets/imgs/theme/flag-fr.png" alt="Français">Français</a>
-                            <a class="dropdown-item" href="#"><img src="/adminAssets/imgs/theme/flag-jp.png" alt="Français">日本語</a>
-                            <a class="dropdown-item" href="#"><img src="/adminAssets/imgs/theme/flag-cn.png" alt="Français">中国人</a>
-                        </div>
-                    </li>
-                    <li class="dropdown nav-item">
-                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false"> <img class="img-xs rounded-circle" src="/adminAssets/imgs/people/avatar2.jpg" alt="User"></a>
-                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
-                            <a class="dropdown-item" href="#"><i class="material-icons md-perm_identity"></i>Edit Profile</a>
-                            <a class="dropdown-item" href="#"><i class="material-icons md-settings"></i>Account Settings</a>
-                            <a class="dropdown-item" href="#"><i class="material-icons md-account_balance_wallet"></i>Wallet</a>
-                            <a class="dropdown-item" href="#"><i class="material-icons md-receipt"></i>Billing</a>
-                            <a class="dropdown-item" href="#"><i class="material-icons md-help_outline"></i>Help center</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item text-danger" href="#"><i class="material-icons md-exit_to_app"></i>Logout</a>
-                        </div>
-                    </li>
-                </ul>
-            </div>
+            <!-- Header content -->
         </header>
         <section class="content-main">
-            <div class="content-header">
-                <div>
-                    <h2 class="content-title card-title">Sales Report </h2>
-                    <p>Lorem ipsum dolor sit amet.</p>
+            <div class="content-left">
+                <div class="content-header">
+                    <div>
+                        <h2 class="content-title card-title">Sales Report </h2>
+                        <p>Lorem ipsum dolor sit amet.</p>
+                    </div>
+                    <div>
+                        <input type="text" placeholder="Search order ID" class="form-control bg-white">
+                    </div>
                 </div>
-                <div>
-                    <input type="text" placeholder="Search order ID" class="form-control bg-white">
-                </div>
-            </div>
-            <div class="card mb-4">
-                <header class="card-header">
-                    <div class="row gx-3">
-                        <div class="col-lg-4 col-md-6 me-auto">
-                            <input type="text" placeholder="Search..." class="form-control">
-                        </div>
-                        <div class="col-lg-2 col-6 col-md-3">
-                            <select class="form-select">
-                                <option>Status</option>
-                                <option>Active</option>
-                                <option>Disabled</option>
-                                <option>Show all</option>
-                            </select>
-                        </div>
-                        <div class="col-lg-2 col-6 col-md-3">
-                            <select class="form-select">
-                                <option>Show 20</option>
-                                <option>Show 30</option>
-                                <option>Show 40</option>
-                            </select>
+                <div class="card mb-4">
+
+                    <header class="card-header">
+                        <form class="date-range-form" action="/admin/search-sales-report" method="post">
+                            <label for="start-date">Starting:</label>
+                            <input type="date" id="start-date" name="start" style="border-radius: 3px;border-color: rgb(206, 206, 206);">
+                            <label for="end-date" >Ending:</label>
+                            <input type="date" id="end-date" name="end" style="border-radius: 3px;border-color: rgb(216, 216, 216);">
+                            <button type="submit" style="border-radius: 4px;">Submit</button>
+                        </form>
+                    </header>
+
+
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <% if (totalOrder) { %>
+                            <table class="table table-hover" id="">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Payment Method</th>
+                                        <th scope="col">Coupon Discount</th>
+                                        <th scope="col">Total</th>
+                                        <th scope="col">Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% for (let i = 0; i < totalOrder.length; i++) { %>
+                                    <tr>
+                                        <td><%= i + 1 %></td>
+                                        <td><b><%= totalOrder[i].userId.name %></b></td>
+                                        <td><%= totalOrder[i].paymentMethod %></td>
+                                        <td><%= totalOrder[i].paymentMethod %></td>
+                                        <td><span class="badge rounded-pill alert-warning"><%= totalOrder[i].totalAmount %></span></td>
+                                        <td><%= totalOrder[i].orderDate.toDateString()%></td>
+                                    </tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                            <% } %>
                         </div>
                     </div>
-                </header> <!-- card-header end// -->
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <%if(totalOrder){%>
-
-                        
-                        <table class="table table-hover" id="">
-                            <thead>
-                              			 
-                                <tr>
-                                    <th>Order ID</th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Payment Method</th>
-                                    <!-- <th scope="col">Product Category	</th> -->
-                                    <th scope="col">Total</th>
-                                    <th scope="col">Date</th>
-                                    
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                                <%for(let i=0;i< totalOrder.length;i++){%>
-
-                               
-                                <tr>
-                                    <td><%=i+1%></td>
-                                    <td><b><%=totalOrder[i].userId.name%></b></td>
-                                    <td><%=totalOrder[i].paymentMethod%></td>
-                                    <!-- <td><%=totalOrder[i].paymentMethod%></td> -->
-                                    <td><span class="badge rounded-pill alert-warning"><%=totalOrder[i].totalAmount%></span></td>
-                                    <td><%=totalOrder[i].orderDate.toDateString()%></td>
-                                    
-                                </tr>
-                                <%}%>
-
-                            </tbody>
-                        </table>
-                        <%}%>
-                    </div> <!-- table-responsive //end -->
-                </div> <!-- card-body end// -->
-            </div> <!-- card end// -->
-            <div class="pagination-area mt-15 mb-50">
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-start">
-                        <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                        <li class="page-item"><a class="page-link" href="#">02</a></li>
-                        <li class="page-item"><a class="page-link" href="#">03</a></li>
-                        <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                        <li class="page-item"><a class="page-link" href="#">16</a></li>
-                        <li class="page-item"><a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a></li>
-                    </ul>
-                </nav>
+                </div>
+                <div class="pagination-area mt-15 mb-50">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-start">
+                            <li class="page-item active"><a class="page-link" href="#">01</a></li>
+                            <li class="page-item"><a class="page-link" href="#">02</a></li>
+                            <li class="page-item"><a class="page-link" href="#">03</a></li>
+                            <li class="page-item"><a class="page-link dot" href="#">...</a></li>
+                            <li class="page-item"><a class="page-link" href="#">16</a></li>
+                            <li class="page-item"><a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a></li>
+                        </ul>
+                    </nav>
+                </div>
             </div>
-        </section> <!-- content-main end// -->
+            <div class="content-right">
+            
+                    
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Transcation Details</h3>
+                    </div>
+                    
+                    <%if(locals.totalSum){%>
+
+                    <div class="card-body">
+                        <h4>Total Amount :₹ <%=totalSum %></h4>
+                    </div>
+                    <% } %>
+
+                    <% if (totalOrder) { %>
+                    <div class="card-body">
+                        <h4>Total Orders : <%=totalOrder.length%></h4>
+                    </div>
+                    <% } %>
+                    <div class="card-body">
+                        <p>Here you can add details about total orders.</p>
+                    </div>
+                </div>
+             
+                <div class="card">
+                    <!-- <div class="card-header">
+                        <h4>Total Orders:</h4>
+                    </div> -->
+                    <div class="card-body">
+                        <!-- <p>Here you can add details about total reviews.</p> -->
+                        <button class="btn download-btn">Download report</button>
+                    </div>
+                </div>
+           
+                
+                
+            </div>
+        </section>
         <footer class="main-footer font-xs">
             <div class="row pb-30 pt-15">
                 <div class="col-sm-6">
                     <script>
-                    document.write(new Date().getFullYear())
+                        document.write(new Date().getFullYear())
                     </script> ©, Evara - HTML Ecommerce Template .
                 </div>
                 <div class="col-sm-6">
@@ -175,24 +211,18 @@
                 </div>
             </div>
         </footer>
-
-
-
-
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    </main>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="//cdn.datatables.net/2.0.7/js/dataTables.min.js"></script>
-
-
     <script>
-    let table = new DataTable('#myTable');
+        let table = new DataTable('#myTable');
     </script>
-
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const editProfileBtn = document.getElementById('editProfileBtn');
             const profileForm = document.getElementById('profileForm');
-    
-            editProfileBtn.addEventListener('click', function(event) {
+
+            editProfileBtn.addEventListener('click', function (event) {
                 event.preventDefault();
                 if (profileForm.style.display === 'none') {
                     profileForm.style.display = 'block'; // Show the form
@@ -202,12 +232,6 @@
             });
         });
     </script>
-
-
-
-
-
-    </main>
     <script src="/adminAssets/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="/adminAssets/js/vendors/bootstrap.bundle.min.js"></script>
     <script src="/adminAssets/js/vendors/select2.min.js"></script>

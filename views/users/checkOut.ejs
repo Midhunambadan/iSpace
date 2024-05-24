@@ -898,123 +898,133 @@ document.getElementById('removeCouponBtn').addEventListener('click', async funct
     function placeOrder() {
 
 
-        console.log('place order worked')
-            const cashOnDeliveryRadio = document.getElementById('cashOnDelivery');
+        console.log('place order worked');
+const cashOnDeliveryRadio = document.getElementById('cashOnDelivery');
 
-        // console.log('cashOnDeliveryRadio',cashOnDeliveryRadio);
+// console.log('cashOnDeliveryRadio',cashOnDeliveryRadio);
 
-        const paymentOption = document.querySelector('input[name="payment_option"]:checked').value;
-        console.log("paymnt oppp: ", paymentOption)
-        const addressRadio = document.querySelector('input[name="address"]:checked');
+const paymentRadio = document.querySelector('input[name="payment_option"]:checked');
+const paymentOption = paymentRadio ? paymentRadio.value : null;
 
-        const grandTotalElement = document.getElementById('grandTotal');
-        const grandTotalText = grandTotalElement.textContent;
-        const grandTotalValue = parseFloat(grandTotalText.replace('₹', '').trim());
-        
+console.log("payment option: ", paymentOption);
+const addressRadio = document.querySelector('input[name="address"]:checked');
 
-        // console.log(grandTotalValue)
-        // console.log('radio',paymentOption);
-        // console.log('sa',addressRadio);
+const grandTotalElement = document.getElementById('grandTotal');
+const grandTotalText = grandTotalElement.textContent;
+const grandTotalValue = parseFloat(grandTotalText.replace('₹', '').trim());
+
+console.log('grandTotalValue',grandTotalValue);
+// console.log('radio',paymentOption);
+// console.log('sa',addressRadio);
+
+let selectedAddress;
+
+if (!addressRadio) {
+    Swal.fire({
+        icon: "error",
+        title: "Oops...Please select an address!",
+        text: "Address not found!",
+        // footer: '<a href="#">Why do I have this issue?</a>'
+    });
+    console.log('Address not found');
+    return;
+} else {
+    selectedAddress = addressRadio.value;
+}
+
+if (!paymentRadio) {
+    Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Payment option not found!",
+        footer: '<a href="#">Why do I have this issue?</a>'
+    });
+    console.log('Payment option not selected');
+    return;
+}
+
+if(grandTotalValue>1000&&paymentRadio.value==='cash on delivery' ){
+
+    Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Cash on delivery not applicable!!! Please select another Paymentmethod",
+        footer: '<a href="#">Why do I have this issue?</a>'
+    });
+    console.log('Cash on delivery not applicable');
+    return;
 
 
-        let selectedAddress
-
-        if(!addressRadio){
-            
-            Swal.fire({
-                    icon: "error",
-                    title: "Oops...Please select a address!",
-                    text: "Address not found!",
-                    // footer: '<a href="#">Why do I have this issue?</a>'
-                    });
-        // toastr.warning("Address not found")
-        console.log('Address not found');
-        return
-        }else{
-         selectedAddress = document.querySelector('input[name="address"]:checked').value;
-
-        } 
-
-    // console.log('selected adddress',selectedAddress)
-
-    
-    if(!paymentOption){
-        console.log('payment option not selected');
-        Swal.fire({
-                    icon: "error",
-                    title: "Oops...",
-                    text: "Payment option not found!",
-                    footer: '<a href="#">Why do I have this issue?</a>'
-                    })
-
-                    console.log('Payment not found');
-
-    }
+}
 
 
+const orderData = {
+    paymentMethod: paymentOption,
+    selectedAddress: selectedAddress,
+    amount: grandTotalValue,
+    // couponDiscount: discountAmount,    
+};
 
-    const orderData ={
-        paymentMethod:paymentOption,
-        selectedAddress:selectedAddress,
-        amount:grandTotalValue,
-        // couponDiscount:discountAmount,    
-    }
-  
-    if(!orderData){
-         console.log("Data :",orderData)
-        Swal.fire({
-                    icon: "error",
-                    title: "Oops...",
-                    text: "orderData not found!",
-                    footer: '<a href="#">Why do I have this issue?</a>'
-                    })
-    }
-      
+// console.log('req.body.amount',req.body.amount);
+
+if (!orderData) {
+    console.log("Data :", orderData);
+    Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "orderData not found!",
+        footer: '<a href="#">Why do I have this issue?</a>'
+    });
+    return;
+}
+
    
     // console.log("Amount:",grandTotalValue)
     // console.log('addres',selectedAddress)
 
 
 
-    if(paymentOption==='cash on delivery'){
-        console.log('cash on worked');
+    if (paymentOption === 'cash on delivery') {
+    console.log('cash on delivery worked');
 
-        fetch('/place-order',{
-            method:'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(orderData),
-        }).then(response => response.json())
-        .then(data => {
-            Swal.fire({
-            position: "center",
-            icon: "success",
-            title: "Order Placed",
-            showConfirmButton: false,
-            timer:2000
-            
-            });   
+    Swal.fire({
+        title: 'Confirm Order',
+        text: 'Are you sure you want to place this order?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, place order',
+        cancelButtonText: 'No, cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch('/place-order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(orderData),
             })
-    .then(()=>{
-
-        setTimeout(()=>{
-            window.location.href='/continue-shop'
-
-        },1000)
-
-        })
-        .catch(error => {
-        
-            
-        // toastr.error( "Cash on delivery is not applicable for this order!");
-        console.log('Cash on delivery is not applicable for this order!');
-
-        })
-
-        
-
-    }else if(paymentOption==='online gateway'){
+            .then(response => response.json())
+            .then(data => {
+                Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: "Order Placed",
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            })
+            .then(() => {
+                setTimeout(() => {
+                    window.location.href = '/continue-shop';
+                }, 1000);
+            })
+            .catch(error => {
+                console.log('Cash on delivery is not applicable for this order!');
+            });
+        }
+    });
+}
+else if(paymentOption==='online gateway'){
         console.log('online gateway found');
 
         fetch('/paymentByRazorpay',{
@@ -1049,10 +1059,14 @@ document.getElementById('removeCouponBtn').addEventListener('click', async funct
         "handler": function (response) {
             console.log(response, "respossadasd")
             if (response.razorpay_payment_id) {
+
+
+
+
                 // If payment is successful, update payment status to "Received"
                 orderData.paymentStatus = "Received";
                 // Save the order again with updated payment status
-                fetch(`/saveOrder?id=${orderId}`, { // Pass the orderId as a query parameter
+                fetch(`/save-order?id=${orderId}`, { // Pass the orderId as a query parameter
                     
                     method: 'PATCH', 
                     headers: {

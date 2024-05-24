@@ -117,6 +117,7 @@ admin_router.post('/update-order-status',adminOrderController.orderStatusChange)
 
 
 admin_router.get('/sales-report',adminAuth.isLogin,salesReportController.loadSalesReport)
+admin_router.post('/search-sales-report',adminAuth.isLogin,salesReportController.searchSalesReportWithDate)
 
 
 

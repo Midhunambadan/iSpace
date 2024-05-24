@@ -21,6 +21,7 @@
 
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
 </head>
 
 <body>
@@ -95,34 +96,81 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-3">
-                            <form method="post" action="/admin/add-coupon">
-                                <!-- <div class="mb-4">
-                                    <label for="product_name"  class="form-label">Name</label>
-                                    <input name="name" type="text" placeholder="Type here" class="form-control" id="product_name" />
-                                </div> -->
+                            <form id="couponForm" method="post" action="/admin/add-coupon">
                                 <div class="mb-4">
                                     <label for="product_slug" class="form-label">Code</label>
-                                    <input name="code" type="text" placeholder="Type here" class="form-control" id="code" />
+                                    <input name="code" type="text" placeholder="Type here" class="form-control" id="code" required />
                                 </div>
                                 <div class="mb-4">
                                     <label class="form-label">Discount Percentage</label>
-                                    <input name="discountpercentage" type="number" placeholder="Type here" class="form-control" id="discount" />
-
+                                    <input name="discountpercentage" type="number" placeholder="Type here" min="1" max="99" class="form-control" id="discount" required />
                                 </div>
                                 <div class="mb-4">
                                     <label class="form-label">Minimum Amount</label>
-                                    <input name="minimumAmount" type="number" placeholder="Type here" class="form-control" id="minAmount" />
+                                    <input name="minimumAmount" type="number" placeholder="Type here" class="form-control" id="minAmount" required />
                                 </div>
-
                                 <div class="mb-4">
                                     <label class="form-label">Validity</label>
-                                    <input name="validUntil" type="text" placeholder="Select Date" class="form-control" id="validity" />
-                                </div>  
-
+                                    <input name="validUntil" type="date" placeholder="Select Date" class="form-control" id="validity" required />
+                                </div>
                                 <div class="d-grid">
-                                    <button class="btn btn-primary" type="submit" >Create Coupon</button>
+                                    <button class="btn btn-primary" type="submit">Create Coupon</button>
                                 </div>
                             </form>
+                            
+
+ <script>
+ document.getElementById('couponForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    const form = event.target;
+
+    // Validate form fields
+    const code = form.code.value.trim();
+    const discount = form.discountpercentage.value;
+    const minAmount = form.minimumAmount.value;
+    const validity = form.validUntil.value;
+
+    if (!code || !discount || !minAmount || !validity) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Please fill out all fields before submitting the form.',
+        });
+        return;
+    }
+
+    // Show confirmation SweetAlert
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "Do you want to create this coupon?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, create it!',
+        cancelButtonText: 'No, cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+             
+            // Submit the form programmatically if confirmed
+            form.submit();
+        }
+    }).then((result)=>{
+
+        if (result.isConfirmed) {
+            
+        }
+        Swal.fire({
+ icon: 'success',
+ title: 'Coupon Created',
+ text: 'Your coupon has been successfully created.',
+ timer: 2000,
+ showConfirmButton: false
+                                                      })
+    });
+});
+
+ </script>
+
 
                             <!-- <script>
                                async function addCoupon(event) {

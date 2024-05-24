@@ -155,6 +155,7 @@ const updateProduct=async(req,res)=>{
   
 
   const { pname, pdescription, mrp, category, discount, stock } = req.body;
+  
 console.log("gfhg-vvvvvvvvvvvvvvv-------------",req.body)
 // console.log("gfhg-vvvvvvvvvvvvvvv-------------",typeof(req.body.category))
 
@@ -199,29 +200,7 @@ const findProduct  =  await Product.findById(productId)
       await findProduct.save()
 
 
-  // const proData=await Product.findByIdAndUpdate({_id:productId},
-  //   {$set:
-  //     {
-  //     product_name:pname,
-  //     discription:pdescription,
-  //     MRP:mrp,
-  //     categoryId: new mongoose.Types.ObjectId(category),
-  //     discount:discount,
-  //     stock:stock,
-  //     // productImages : req.files.map(file => file.filename),
-
-  //     productImages:imageUrls
-  //     }
-  // })
-  
-
     res.redirect('/admin/products')
-
-// if (proData ) {
-//   res.status(200).json({ message: 'Product updated successfully' });
-// } else {
-//   res.status(500).json({ message: 'Something went wrong' });
-// }
 
 
   } catch (error) {
@@ -281,10 +260,6 @@ const deleteProduct=async(req,res)=>{
   }
  }
 
-
-
-
- 
 
 
 module.exports={

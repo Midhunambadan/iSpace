@@ -10,7 +10,7 @@ const orderPage=async(req,res)=>{
 
         const orderData=await Order.find().sort({orderDate:-1});
 
-        console.log('orderdddddddddddddddddd',orderData);
+        // console.log('orderdddddddddddddddddd',orderData);
 
         res.render('orderPage',{orders:orderData})
     } catch (error) {
@@ -25,7 +25,7 @@ const orderDetailsPage=async(req,res)=>{
         const orderId=req.query.id
         // console.log(orderId,'oderId');
         const orderData=await Order.find({_id:orderId}).sort({orderDate:-1}).populate('userId').populate('products.productId');
-        console.log(orderData);
+        // console.log(orderData);
         res.render('orderDetailsPage',{orders:orderData})
     } catch (error) {
         
@@ -38,10 +38,21 @@ const orderStatusChange=async(req,res)=>{
     try {
        
         const { orderId, orderStatus } = req.body;
-        
-      const orderData=  await Order.findByIdAndUpdate(orderId, { orderStatus });
+        // console.log('--------------------------',req.body);
 
-        console.log(orderData,'==================--------------------=============');
+
+        if(orderStatus=='Delivered'){
+            const orderData=  await Order.findByIdAndUpdate(orderId, { $set:{orderStatus:orderStatus,paymentStatus:'Recieved' }},{new:true});
+            console.log(orderData,'ddddddddddddddddddddddddddd');
+        }else{
+            const orderData=  await Order.findByIdAndUpdate(orderId, { orderStatus});
+
+        }
+
+
+    
+
+        // console.log(orderData,'==================--------------------=============');
         
 
         res.redirect('/admin/orders');

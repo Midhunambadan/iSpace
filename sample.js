@@ -1,22 +1,21 @@
-// const input=123
 
-// // const output=6
-// const arr=Array.from(String(input),Number)
+let str="?name=midhun&age=24&place:kothamangalam"
 
-// let sum=0
-// const res=arr.forEach((x)=>sum=sum+x)
+// app.listen(3000)
 
-// console.log('sum:',sum);
+let num=str.slice(1).split('&')
+
+let res=num.map((x)=>{
+    return x.split('=')
+})
+
+console.log(res);
 
 
+res.forEach((x)=>{
+     obj[x[0]]=x[1]
+})
 
 
-
-
-// const words = ["ad","bd","aaab","baa","badab"]
-
-// const array=words.toString('')
-
-// console.log(array);
-
+console.log(obj);
 
