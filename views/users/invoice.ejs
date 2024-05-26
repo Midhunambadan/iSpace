@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        * {
+            font-family: 'Arial', sans-serif;
+            text-align: left;
+            color: #555;
+        }
+
+        .invoice-box {
+            max-width: 800px;
+            margin: auto;
+            padding: 30px;
+            border: 1px solid #eee;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+            font-size: 16px;
+            line-height: 24px;
+            font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+            color: #555;
+            position: relative;
+        }
+
+        .invoice-box table {
+            width: 100%;
+            line-height: inherit;
+            text-align: left;
+        }
+
+        .invoice-box table td {
+            padding: 5px;
+            vertical-align: top;
+        }
+
+        .invoice-box table tr td:nth-child(2) {
+            text-align: right;
+        }
+
+        .invoice-box table tr.top table td {
+            padding-bottom: 20px;
+        }
+
+        .invoice-box table tr.top table td.title {
+            font-size: 45px;
+            line-height: 45px;
+            color: #333;
+        }
+
+        .invoice-box table tr.information table td {
+            padding-bottom: 40px;
+        }
+
+        .invoice-box table tr.heading td {
+            background: #eee;
+            border-bottom: 1px solid #ddd;
+            font-weight: bold;
+        }
+
+        .invoice-box table tr.details td {
+            padding-bottom: 20px;
+        }
+
+        .invoice-box table tr.item td {
+            border-bottom: 1px solid #eee;
+        }
+
+        .invoice-box table tr.item.last td {
+            border-bottom: none;
+        }
+
+        .invoice-box table tr.total td:nth-child(2) {
+            border-top: 2px solid #eee;
+            font-weight: bold;
+        }
+
+        .header {
+            text-align: center;
+            padding: 10px 0;
+            border-bottom: 2px solid #eee;
+            margin-bottom: 20px;
+        }
+
+        .description {
+            margin-bottom: 20px;
+        }
+
+        .download-button {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+        }
+
+        .download-button:hover {
+            background-color: #45a049;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="invoice-box">
+        <a href="#" class="download-button">Download</a>
+        <div class="header">
+            <h1>I Space Pvt</h1>
+            <p>Your Trusted Partner in eShopping</p>
+        </div>
+
+        <div class="description">
+            <p>Dear Customer,</p>
+            <p>Thank you for choosing our services. Below is the invoice for the recent services provided. If you have any questions or concerns, please do not hesitate to contact us at support@example.com.</p>
+        </div>
+
+        <% if (order) { %>
+        <table cellpadding="0" cellspacing="0">
+            <tr class="top">
+                <td colspan="2">
+                    <table>
+                        <tr>
+                            <td class="title">
+                                <h3></h3>
+                            </td>
+                            <td>
+                                Invoice #: <%= order.orderId %><br>
+                                Order Date: <%= new Date(order.orderDate).toLocaleDateString() %><br>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            
+            <tr class="information">
+                <td colspan="2">
+                    <table>
+                        <tr>
+                            <td>
+                                iSpace, Pvt.<br>
+                                12345 Sunny Road<br>
+                                Kundannor, KL 12345
+                            </td>
+                            <td>
+                                Customer Name: <%= order.userId.name %><br>
+                                Email: <%= order.userId.email %> <br>
+                                Mobile: <%= order.userId.mobile %>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            
+            <tr class="heading">
+                <td>
+                    Payment Method
+                </td>
+                <td>
+                    Amount
+                </td>
+            </tr>
+            
+            <tr class="details">
+                <td>
+                    <%= order.paymentMethod %>
+                </td>
+                <td>
+                    ₹ <%= order.totalAmount %>
+                </td>
+            </tr>
+            
+            <tr class="heading">
+                <td>
+                    Item
+                </td>
+                <td>
+                    Price
+                </td>
+            </tr>
+
+            <% let totalSum = 0; %>
+            <% order.products.forEach(product => { %>
+            <% totalSum += product.productId.MRP * product.quantity; %>
+            <tr class="item">
+                <td>
+                    Product name: <%= product.productId.product_name %>
+                </td>
+                <td>
+                    ₹ <%= product.productId.MRP %>
+                </td>
+            </tr>
+            <tr class="item">
+                <td>
+                    Quantity:
+                </td>
+                <td>
+                    <%= product.quantity %>
+                </td>
+            </tr>
+            <% }) %>
+            
+            <tr class="total">
+                <td></td>
+                <td>
+                   Total: ₹ <%= totalSum %>
+                </td>
+            </tr>
+        </table>
+        <% } %>
+    </div>
+</body>
+</html>

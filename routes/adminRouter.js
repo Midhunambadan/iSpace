@@ -51,6 +51,7 @@ const upload=multer({storage:storage});
 
 // <<<<<<<<<<<<<<<<<<<<<For Admin>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+
 admin_router.get("/", adminAuth.isLogout, adminController.loadAdminform);
 admin_router.post("/verifySignup", adminController.verifySignup);
 admin_router.post("/verifyLogin", adminController.verifyLogin);
@@ -58,8 +59,8 @@ admin_router.get("/home",adminAuth.isLogin,adminController.loadAdminDashboard);
 admin_router.get("/logout", adminAuth.isLogin, adminController.adminLogout);
 admin_router.get("/userlist", adminAuth.isLogin, adminController.userList);
 
-// <<<<<<<<<<<<<<<<<<<<<For Category>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+// <<<<<<<<<<<<<<<<<<<<<For Category>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 admin_router.get('/category',adminAuth.isLogin,categoryController.loadcategoryList)
 admin_router.post('/category',adminAuth.isLogin,categoryController.addcategory)
@@ -70,16 +71,12 @@ admin_router.get('/delete-category',adminAuth.isLogin,categoryController.deleteC
 admin_router.get('/category-block',adminAuth.isLogin,categoryController.blockCategory)
 admin_router.get('/category-unblock',adminAuth.isLogin,categoryController.unBlockCategory)
 
-
-
 // <<<<<<<<<<<<<<<<<<<<<For User>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 admin_router.get('/adduser',adminAuth.isLogin,adminController.loadAddUser)
 admin_router.post('/adduser',adminAuth.isLogin,adminController.addUser)
 admin_router.get('/block-user',adminAuth.isLogin,adminController.blockUser)
 admin_router.get('/unblock-user',adminAuth.isLogin,adminController.unblockUser)
-
-
 
 
 // <<<<<<<<<<<<<<<<<<<<<For Products>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

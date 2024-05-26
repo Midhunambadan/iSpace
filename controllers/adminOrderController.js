@@ -19,18 +19,31 @@ const orderPage=async(req,res)=>{
 }
 
 
-const orderDetailsPage=async(req,res)=>{
-    try {
+// const orderDetailsPage=async(req,res)=>{
+//     try {
 
-        const orderId=req.query.id
-        // console.log(orderId,'oderId');
-        const orderData=await Order.find({_id:orderId}).sort({orderDate:-1}).populate('userId').populate('products.productId');
-        // console.log(orderData);
-        res.render('orderDetailsPage',{orders:orderData})
-    } catch (error) {
+//         const orderId=req.query.id
+//         // console.log(orderId,'oderId');
+//         const orderData=await Order.find({_id:orderId}).sort({orderDate:-1}).populate('userId').populate('products.productId');
+//         // console.log(orderData);
+//         res.render('orderDetailsPage',{orders:orderData})
+//     } catch (error) {
         
+//     }
+// }
+
+
+const orderDetailsPage = async (req, res) => {
+    try {
+        const orderId = req.query.id;
+        const orderData = await Order.findById(orderId).populate('userId').populate('products.productId');
+        res.render('orderDetailsPage', { orders: orderData ? [orderData] : [] });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
     }
-}
+};
+
 
 
 

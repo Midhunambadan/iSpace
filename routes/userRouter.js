@@ -67,7 +67,6 @@ router.get('/delete-cart',auth.isLogin,userCartController.deleteCart)
 router.post('/update-cart',userCartController.updateCart)
 router.post('/update-quantity',userCartController.updateQuantity)
 
-
 //----------------------Address Start---------------------------------------
 router.get("/userDashboard", auth.isLogin,userController.loaduserDashboard);
 router.get('/order-details', auth.isLogin,userController.loadOrderDetails)
@@ -120,6 +119,8 @@ router.post('/paymentByRazorpay',userOrderController.paymentRazorpay)
 
 router.post('/apply-coupon',userCartController.applyCoupon)
 router.post('/remove-coupon',userCartController.removeCoupon)
+
+router.get('/invoice',userOrderController.loadInvoice)
 
 
 module.exports = router;

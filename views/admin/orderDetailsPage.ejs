@@ -104,17 +104,23 @@
                             <%}%>
                         </div>
                         <div class="col-lg-6 col-md-6 ms-auto text-md-end">
-                            <select class="form-select d-inline-block mb-lg-0 mb-15 mw-200">
+                            <!-- <select class="form-select d-inline-block mb-lg-0 mb-15 mw-200">
                                 <option>Change status</option>
                                 <option>Awaiting payment</option>
                                 <option>Confirmed</option>
                                 <option>Shipped</option>
                                 <option>Delivered</option>
                             </select>
-                            <a class="btn btn-primary" href="#">Save</a>
-                            <a class="btn btn-secondary print ms-2" href="#"><i class="icon material-icons md-print"></i></a>
+                            <a class="btn btn-primary" href="#">Save</a> -->
+                            <a class="btn btn-secondary print ms-2" href="#" onclick="printPage()"><i class="icon material-icons md-print"></i></a>
                         </div>
                     </div>
+
+                    <script>
+                        function printPage(){
+                            window.print()
+                        }
+                    </script>
                     <%}%>
 
                 </header> <!-- card-header end// -->
@@ -165,7 +171,7 @@
                                     <p class="mb-1">
                                         Shipping:  <%=orders[i].address.name%> <br> Pay method:  <%=orders[i].paymentMethod%><br> Payment Status:  <%=orders[i].paymentStatus%> <br> Order Status :<%=orders[i].orderStatus%>
                                     </p>
-                                    <a href="#">View profile</a>
+                                    <!-- <a href="#">View profile</a> -->
                                 </div>
                                 <%}%>
                             </article>
@@ -184,50 +190,59 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <%for(let i=0;i< orders.length;i++){%>
-                                        <tr>
-                                            <td>
-                                                <a class="itemside" href="#">
-                                                    <div class="left">
-                                                        <img src="/productImage/<%= orders[i].products[i].productId.productImages[0] %>" width="40" height="40" class="img-xs" alt="Item">
-                                                    </div>
-                                                    <div class="info"> <%= orders[i].products[i].productId.product_name %> </div>
-                                                </a>
-                                            </td>
-                                            <td> ₹ <%= orders[i].products[i].productId.MRP %> </td>
-                                            <td> <%= orders[i].products[i].quantity %> </td>
-                                            <td class="text-end"> ₹ <%= orders[i].products[i].productId.MRP * orders[i].products[i].quantity %> </td>
-                                        </tr>
-                                        
-                                        <tr>
-                                            <td colspan="4">
-                                                <article class="float-end">
-                                                    <dl class="dlist">
-                                                        <dt>Subtotal:</dt>
-                                                        <dd>₹ <%= orders[i].products[i].productId.MRP * orders[i].products[i].quantity %></dd>
-                                                    </dl>
-                                                    <!-- <dl class="dlist">
-                                                        <dt>Shipping cost:</dt>
-                                                        <dd>$10.00</dd>
-                                                    </dl> -->
-                                                    <dl class="dlist">
-                                                        <dt>Grand total:</dt>
-                                                        <dd> <b class="h5">₹ <%= orders[i].products[i].productId.MRP * orders[i].products[i].quantity %></b> </dd>
-                                                    </dl>
-                                                    <dl class="dlist">
-                                                        <dt class="text-muted">Status:</dt>
-                                                        <dd>
-                                                            <span class="badge rounded-pill alert-success text-success">Payment done</span>
-                                                        </dd>
-                                                    </dl>
-                                                </article>
-                                            </td>
-                                        </tr>
-                                        <%}%>
+                                        <% if (orders && orders.length > 0) { %>
+                                            <div>
+                                                <h2 class="content-title card-title">Order detail</h2>
+                                                <% for (let i = 0; i < orders.length; i++) { %>
+                                                    <% const order = orders[i]; %>
+                                                    <% for (let j = 0; j < order.products.length; j++) { %>
+                                                        <tr>
+                                                            <td>
+                                                                <a class="itemside" href="#">
+                                                                    <div class="left">
+                                                                        <img src="/productImage/<%= order.products[j].productId.productImages[0] %>" width="40" height="40" class="img-xs" alt="Item">
+                                                                    </div>
+                                                                    <div class="info"> <%= order.products[j].productId.product_name %> </div>
+                                                                </a>
+                                                            </td>
+                                                            <td> ₹ <%= order.products[j].productId.MRP %> </td>
+                                                            <td> <%= order.products[j].quantity %> </td>
+                                                            <td class="text-end"> ₹ <%= order.products[j].productId.MRP * order.products[j].quantity %> </td>
+                                                        </tr>
+                                                    <% } %>
+                                
+                                                    <tr>
+                                                        <td colspan="4">
+                                                            <article class="float-end">
+                                                                <dl class="dlist">
+                                                                    <dt>Subtotal:</dt>
+                                                                    <dd>₹ <%= order.products.reduce((sum, product) => sum + (product.productId.MRP * product.quantity), 0) %></dd>
+                                                                </dl>
+                                                                <dl class="dlist">
+                                                                    <dt>Grand total:</dt>
+                                                                    <dd><b class="h5">₹ <%= order.products.reduce((sum, product) => sum + (product.productId.MRP * product.quantity), 0) %></b></dd>
+                                                                </dl>
+                                                                <dl class="dlist">
+                                                                    <dt class="text-muted">Status:</dt>
+                                                                    <dd>
+                                                                        <span class="badge rounded-pill alert-success text-success">Payment done</span>
+                                                                    </dd>
+                                                                </dl>
+                                                            </article>
+                                                        </td>
+                                                    </tr>
+                                                <% } %>
+                                            </div>
+                                        <% } else { %>
+                                            <div>
+                                                <h2 class="content-title card-title">Order detail</h2>
+                                                <p>No orders found.</p>
+                                            </div>
+                                        <% } %>
                                     </tbody>
                                 </table>
                             </div> <!-- table-responsive// -->
-                            <a class="btn btn-primary" href="page-orders-tracking.html">View Order Tracking</a>
+                            <!-- <a class="btn btn-primary" href="page-orders-tracking.html">View Order Tracking</a> -->
                         </div> <!-- col// -->
                         <div class="col-lg-1"></div>
                         <!-- <div class="col-lg-4">

@@ -479,10 +479,16 @@ const loadOrderDetails=async(req,res)=>{
   // console.log(userDetails,'userDetails---------------------');
 
   console.log(orderDetails,'orderDetails---------------------');
+  let totalSum = orderDetails.products.reduce((sum, product) => {
+    if (product.productId) {
+        return sum + (product.productId.MRP * product.quantity);
+    }
+    return sum;
+}, 0);
 
 
 
-    res.render('orderDetails',{orders:orderDetails})
+    res.render('orderDetails',{orders:orderDetails,totalSum})
 
   } catch (error) {
     

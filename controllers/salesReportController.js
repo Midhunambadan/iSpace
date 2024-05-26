@@ -6,6 +6,7 @@ const loadSalesReport=async(req,res)=>{
     try {
         const {sDate,eDate}=req.body
         const totalOrder=await Order.find({orderStatus:'Delivered',paymentStatus:'Recieved'}).populate('userId')
+        
 
 
         const totalSum = totalOrder.reduce((sum, order) => {
@@ -17,7 +18,6 @@ const loadSalesReport=async(req,res)=>{
         
     }
 }
-
 
 
 

@@ -1,4 +1,3 @@
-
 // const mongoose=require('mongoose')
 // mongoose.connect('mongodb://127.0.0.1:27017/iSpace')
 
@@ -10,6 +9,8 @@ mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
+
+const PDFDocument = require('pdfkit');
 
 
 const createError = require('http-errors');

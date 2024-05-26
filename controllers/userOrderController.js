@@ -16,13 +16,8 @@ var instance = new Razorpay({
 
 
 
-
-
-
 const placeOrder=async(req,res)=>{
     try {
-  
-
   
       const userId=req.session.user_id
       const addressData= await Address.find({_id:req.body.selectedAddress})
@@ -32,14 +27,6 @@ const placeOrder=async(req,res)=>{
       console.log("amount:---------------",req.body.amount)
       console.log('cartdata-----------',cartData.product);
   
-  
-    //   if (!cartData || cartData.products.length == 0) {
-    //     // return res.status(400).json();
-    //     console.log('hiiiiiii-------------------');
-    // }
-  // console.log('hi herer-------------------');
-  
-    // console.log('userId-------------',req.session.userId);
 
 
     function generateOrderId() {
@@ -70,7 +57,6 @@ const placeOrder=async(req,res)=>{
   
   const newOrder=  await orderData.save()
   
-  // console.log(('new order-========-----',newOrder));
   
   
       if(newOrder){
@@ -157,8 +143,6 @@ const placeOrder=async(req,res)=>{
 
         instance.orders.create(options,async function(err, razOrder) {
         
-          // console.log(options.amount,"asssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss")
-
 
           if (err) {
             console.error(err);
@@ -201,24 +185,7 @@ const placeOrder=async(req,res)=>{
           );
     }
   
-    // updateStock()
-  
    
-  
-  // async function updateStock() {
-  //   for (const product of cartData.product) {
-  //       const productInfo = await Product.findById(product.productId);
-  
-  //       if (productInfo) {
-  //           // Update stock based on the quantity in the order
-  //           productInfo.stock -= product.quantity;
-  
-  //           // Save the updated product info
-  //           await productInfo.save();
-  //       }
-  //   }
-  // }
-    // res.status(200).json({message:'success'})
     console.log("last")
     res.status(200).json({ message: "Order placed successfully", razOrder});
 
@@ -230,7 +197,19 @@ const placeOrder=async(req,res)=>{
     }
   }
 
-  
+  const loadInvoice=async(req,res)=>{
+    try {
+
+      const orderId=req.query.id
+      console.log('orderId=========================',orderId);
+
+      const order=await Order.findById(orderId).populate('userId').populate('products.productId')
+      console.log('order----------------',order);
+      res.render('invoice',{order})
+    } catch (error) {
+      
+    }
+  }
 
   
 
@@ -244,6 +223,7 @@ const placeOrder=async(req,res)=>{
   module.exports={
     continueShop,
     placeOrder,
-    paymentRazorpay
+    paymentRazorpay,
+    loadInvoice
 
   }

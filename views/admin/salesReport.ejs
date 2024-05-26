@@ -121,9 +121,8 @@
                                 <thead>
                                     <tr>
                                         <th>Order ID</th>
-                                        <th scope="col">Name</th>
+                                        <th scope="col">User Name</th>
                                         <th scope="col">Payment Method</th>
-                                        <th scope="col">Coupon Discount</th>
                                         <th scope="col">Total</th>
                                         <th scope="col">Date</th>
                                     </tr>
@@ -131,11 +130,10 @@
                                 <tbody>
                                     <% for (let i = 0; i < totalOrder.length; i++) { %>
                                     <tr>
-                                        <td><%= i + 1 %></td>
+                                        <td><%= totalOrder[i].orderId %></td>
                                         <td><b><%= totalOrder[i].userId.name %></b></td>
                                         <td><%= totalOrder[i].paymentMethod %></td>
-                                        <td><%= totalOrder[i].paymentMethod %></td>
-                                        <td><span class="badge rounded-pill alert-warning"><%= totalOrder[i].totalAmount %></span></td>
+                                        <td><span><%= totalOrder[i].totalAmount %></span></td>
                                         <td><%= totalOrder[i].orderDate.toDateString()%></td>
                                     </tr>
                                     <% } %>
@@ -189,11 +187,16 @@
                     </div> -->
                     <div class="card-body">
                         <!-- <p>Here you can add details about total reviews.</p> -->
-                        <button class="btn download-btn">Download report</button>
+                        <a href="" onclick="printPage()"><button class="btn download-btn">Download report</button></a>
+                        
                     </div>
                 </div>
            
-                
+                <script>
+                    function printPage(){
+                        window.print()
+                    }
+                </script>
                 
             </div>
         </section>
