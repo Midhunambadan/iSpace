@@ -188,7 +188,13 @@ const getOtp = async (req, res) => {
 
 const verifyOtp = async (req, res) => {
   try {
+
+    console.log('req.session.otp------------------',req.session.otp);
+    console.log('req.body.otp--------------------',req.body.otp);
+
+
     if (req.session.otp == req.body.otp) {
+      console.log('hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii');
       const { email, name, mobile,password} = req.session.user1;
 
       const user = new User({
@@ -506,7 +512,6 @@ const loadOrderDetails=async(req,res)=>{
 
 const userOrderCancel=async(req,res)=>{
   try {
-    // console.log('userOrdercontroller--------------------------------------------------------------------');
     const userId=req.session.user_id
     console.log("userId------------------------",userId);
     const orderId = req.query.id;
@@ -517,10 +522,16 @@ const userOrderCancel=async(req,res)=>{
         if (!order) {
             return res.status(404).json({ message: "Order not found" });
         }
+        console.log('userOrdercontroller--------------------------------------------------------------------',order);
 
             // Change the order status to "Cancelled"
-            order.orderStatus = 'Cancelled';
-            await order.save();
+          //   order.orderStatus = 'Cancelled';
+          // const orderdata=  await order.save();
+
+            // // Update order status to 'Cancelled'
+        const orderCancelled = await Order.findByIdAndUpdate(orderId, { $set: { orderStatus: 'Cancelled' } });
+
+          console.log('ppppppppppppppppppppppp',orderCancelled);
 
          // Increase the product stock for each item in the canceled order
         const orderItems=order.products
@@ -537,15 +548,12 @@ const userOrderCancel=async(req,res)=>{
           }
       }
 
-        // // Update order status to 'Cancelled'
-        // const orderCancelled = await Order.findByIdAndUpdate(orderId, { $set: { orderStatus: 'Cancelled' } });
+        
 
         // Ensure that the order belongs to the current user
         // if (order.userId.toString() !== userId) {
         //     return res.status(403).json({ message: "Unauthorized access" });
         // }
-
-    
 
         // console.log('order--------------------------------------------------------------------',order,order.paymentMethod);
 
@@ -557,16 +565,16 @@ const userOrderCancel=async(req,res)=>{
             // console.log('wallet--------------------------------------------------------------------',wallet);
             // const new = 
             if (!await Wallet.findOne({ userId: userId })) {
-              console.log('No wallet found, creating a new one...');
+              // console.log('No wallet found, creating a new one...');
              const  wallet2 = new Wallet({
                   userId: userId,
                   balance: 0,
                   transactionHistory: []
               });
 
-              console.log('new .. ',wallet2)
+              // console.log('new .. ',wallet2)
              const newW =  await wallet2.save()
-             console.log('new .. ',newW)
+            //  console.log('new .. ',newW)
           }
           const wallet = await Wallet.findOne({ userId: userId });
 
@@ -574,7 +582,7 @@ const userOrderCancel=async(req,res)=>{
             const totalAmount = parseFloat(order.totalAmount);
             wallet.balance += totalAmount;
 
-            console.log('totalAmount--------------------------------------------------------------------',wallet,totalAmount);
+            // console.log('totalAmount--------------------------------------------------------------------',wallet,totalAmount);
 
             wallet.transactionHistory.push({
                 amount: totalAmount,
@@ -582,7 +590,7 @@ const userOrderCancel=async(req,res)=>{
             });
 
            const walletData= await wallet.save();
-           console.log('walletdata..............',walletData);
+          //  console.log('walletdata..............',walletData);
         }
 
 

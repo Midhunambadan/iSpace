@@ -5,8 +5,7 @@ const User = require("../models/userModel");
 const Category = require("../models/categoryModel");
 const Product=require('../models/productModel')
 const Order=require('../models/orderModel')
-
-const cron = require('node-cron');
+// const cron = require('node-cron');
 const bcrypt = require("bcrypt");
 const randomstring=require('randomstring')
 // // ==================================================================================================================
@@ -132,7 +131,7 @@ const loadAdminDashboard = async (req, res) => {
     orderCountsByMonth[monthIndex]++;
 });
 
-console.log('----------------orderCountsByMonth',orderCountsByMonth);
+// console.log('----------------orderCountsByMonth',orderCountsByMonth);
 
 const productCountsByMonth = Array.from({ length: 12 }, () => 0);
 products.forEach(product => {
@@ -151,7 +150,7 @@ const orderCountsByYearData = await Order.aggregate([
     }
 ]);
 
-console.log('---------------productCountsByMonth',productCountsByMonth);
+// console.log('---------------productCountsByMonth',productCountsByMonth);
 
 
 const orderCountsByYear = [];
@@ -176,7 +175,7 @@ while (currentYear - 5 + currentYearIndex <= currentYear + 6) {
     currentYearIndex++;
 }
 
-console.log('--------------orderCountsByYear',orderCountsByYear);
+// console.log('--------------orderCountsByYear',orderCountsByYear);
 
 const productCountsByYearData = await Product.aggregate([
     {
@@ -211,7 +210,7 @@ while (currentYear1 - 5 + currentYearIndex1 <= currentYear1 + 6) {
     currentYearIndex1++;
 }
 
-console.log('----------------productCountsByYear',productCountsByYear)
+// console.log('----------------productCountsByYear',productCountsByYear)
 
 const totalAmountByYearData = await Order.aggregate([
     {
@@ -248,7 +247,7 @@ while (currentYear2 - 5 + currentYearIndex2 <= currentYear2 + 6) {
 }
 
 
-console.log('---------------totalAmountByYear',totalAmountByYear);
+// console.log('---------------totalAmountByYear',totalAmountByYear);
 
 
 
@@ -274,7 +273,7 @@ for (let i = 0; i < 12; i++) {
     }
 }
 
-console.log('--------------totalAmountByMonth',totalAmountByMonth)
+// console.log('--------------totalAmountByMonth',totalAmountByMonth)
 
 
 
@@ -461,6 +460,25 @@ const addUser=async(req,res)=>{
   }
 }
 
+
+
+
+
+
+
+// const ToggleblockUser = async (req,res)=>{
+//   try{
+//       const userId= req.query.id
+//       console.log('userid-----------',userId)
+//       const updateUser = await User.findOne({_id:userId}); // why new true
+//       updateUser.isActive=!updateUser.isActive
+//       await updateUser.save()
+//       res.redirect('/admin/home')
+//     } catch (error) {
+//       console.error(error);
+//   }
+// }
+
 // ==================================================================================================================
 
 const blockUser = async (req, res) => {
@@ -495,11 +513,12 @@ const unblockUser = async (req, res) => {
     // console.log(userId, "userId got==================================");
 
     const updateUser = await User.findByIdAndUpdate(userId, { isActive: true });
-    res.redirect('/admin/home')
 
     if (!updateUser) {
       return res.status(404).send('User not found');
     }
+   return res.redirect('/admin/home')
+
 
     console.log(updateUser);
   } catch (error) {
@@ -524,6 +543,6 @@ module.exports = {
   addUser,
   blockUser,
   unblockUser,
+  // ToggleblockUser
 
-  // toggleBlockAndUnBolock
 };

@@ -79,6 +79,13 @@ admin_router.get('/block-user',adminAuth.isLogin,adminController.blockUser)
 admin_router.get('/unblock-user',adminAuth.isLogin,adminController.unblockUser)
 
 
+// admin_router.get('/unblock-user',adminAuth.isLogin,adminController.ToggleblockUser)
+
+
+
+
+
+
 // <<<<<<<<<<<<<<<<<<<<<For Products>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 admin_router.get("/products",adminAuth.isLogin, productController.loadProduct);
 admin_router.get('/add-product',adminAuth.isLogin,productController.loadaddProduct)

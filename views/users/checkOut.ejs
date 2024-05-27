@@ -1024,103 +1024,88 @@ if (!orderData) {
         }
     });
 }
-else if(paymentOption==='online gateway'){
-        console.log('online gateway found');
-
-        fetch('/paymentByRazorpay',{
-            method:'POST',
-            headers:{
-                'Content-Type':'application/json'
-            },
-            body:JSON.stringify(orderData)
-        })
-        .then(response=>response.json())
-        // .then(data=>{
-        //     console.log('data',data);
-        //     const orderId= data.razOrder
-        //     id = data.id
-        //     initiatePayment(orderId)
-            
-        // })
-
-        .then(data => {
-    orderId = data.razOrder;
-    console.log(data.razOrder,"ddddddddddd")
-    // Initialize Razorpay checkout with received order details
-    const options = {
-        "key": 'rzp_test_xXZMLhKxCrV7pO', // Replace with your Razorpay key ID
-        "amount": data.razOrder.amount, // Check if the amount is correct based on your totalAmount
-        "currency": 'INR', // Change the currency to match your requirements
-        "name": 'I-SPACE',
-        "description": 'Purchase Description',
-        "image":"/public/productImage/03a48a24-13b9-47d4-9b2b-f6fe6b4cd650.jpg",
-
-        "order_id": data.id,
-        "handler": function (response) {
-            console.log(response, "respossadasd")
-            if (response.razorpay_payment_id) {
 
 
 
+else if (paymentOption === 'online gateway') {
+    console.log('online gateway found');
 
-                // If payment is successful, update payment status to "Received"
-                orderData.paymentStatus = "Received";
-                // Save the order again with updated payment status
-                fetch(`/save-order?id=${orderId}`, { // Pass the orderId as a query parameter
-                    
-                    method: 'PATCH', 
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({orderId}), // Send updated orderData
-                })
-                .then(() => {
-                    Swal.fire({
-                        position: "center",
-                        icon: "success",
-                        title: "Payment successful!",
-                        showConfirmButton: false,
-                        timer: 2000
-                    }).then(() => {
-                        window.location.href = '/continue-shop';
+    fetch('/paymentByRazorpay', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(orderData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        const orderId = data.orderId;
+        const options = {
+            "key": 'rzp_test_xXZMLhKxCrV7pO', // Replace with your Razorpay key ID
+            "amount": data.razOrder.amount,
+            "currency": 'INR',
+            "name": 'I-SPACE',
+            "description": 'Purchase Description',
+            "image": "/public/productImage/03a48a24-13b9-47d4-9b2b-f6fe6b4cd650.jpg",
+            "order_id": data.razOrder.id,
+            "handler": function (response) {
+                if (response.razorpay_payment_id) {
+                    fetch(`/save-order`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ orderId })
+                    })
+                    .then(() => {
+                        Swal.fire({
+                            position: "center",
+                            icon: "success",
+                            title: "Payment successful!",
+                            showConfirmButton: false,
+                            timer: 2000
+                        }).then(() => {
+                            window.location.href = '/continue-shop';
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire({
+                            icon: "error",
+                            title: "Oops...",
+                            text: "Something went wrong!",
+                        });
                     });
-                })
-                .catch(error => {
-                    console.error('Error:', error);
+                } else {
                     Swal.fire({
                         icon: "error",
-                        title: "Oops...",
-                        text: "Something went wrong!",
+                        title: "Payment failed!",
+                        text: "Something went wrong with the payment. Please try again or choose a different payment method.",
                     });
-                });
-            } else {
-                Swal.fire({
-                    icon: "error",
-                    title: "Payment failed!",
-                    text: "Something went wrong with the payment. Please try again or choose a different payment method.",
-                });
-            }
-            removeItem();
-        },
-        "prefill": {
-            "name": 'Midhun',
-            "email": 'Midhun@example.com',
-            "contact": '9999999999',
-        },
-        "theme": {
-            "color": '#8B008B'
-                        ,"profile_picture": "/public/productImage/03a48a24-13b9-47d4-9b2b-f6fe6b4cd650.jpg"
-        },
-    };
-    const razorpayInstance = new Razorpay(options);
-    razorpayInstance.open();
-})
-
-
-
-        
-
- }
+                }
+            },
+            "prefill": {
+                "name": 'Midhun',
+                "email": 'Midhun@example.com',
+                "contact": '9999999999',
+            },
+            "theme": {
+                "color": '#8B008B',
+                "profile_picture": "/public/productImage/03a48a24-13b9-47d4-9b2b-f6fe6b4cd650.jpg"
+            },
+        };
+        const razorpayInstance = new Razorpay(options);
+        razorpayInstance.open();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Something went wrong!",
+        });
+    });
+}
    
 }
 

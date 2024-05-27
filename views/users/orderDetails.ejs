@@ -36,7 +36,7 @@
                         <% if (orders) { %>
                         <div class="col-lg-6 col-md-6 mb-lg-0 mb-15">
                             <span>
-                                <i class="material-icons md-calendar_today"></i> <b><%= new Date(orders.orderDate).toLocaleDateString() %></b>
+                                <i class="material-icons md-calendar_today"></i> <b><%= new Date(orders.orderDate).toString() %></b>
                             </span> <br>
                             <small class="text-muted">Order ID: <%= orders.orderId %></small>
                         </div>

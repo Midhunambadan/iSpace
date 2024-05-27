@@ -47,8 +47,8 @@ router.post('/verify-password-reset',userController.VerifyPasswordReset)
 
 router.get("/home",auth.isLogin, userController.loaduserHome);
 
-
-router.get("/wishlist", auth.isLogin, wishlistController.loaduserWishlist);
+// auth.userBlockLogout,
+router.get("/wishlist",auth.isLogin,wishlistController.loaduserWishlist);
 router.post('/add-to-wishlist',auth.isLogin,wishlistController.addToWishlist)
 router.get('/delete-wishlist',auth.isLogin,wishlistController.deleteWishlist)
 
@@ -116,6 +116,7 @@ router.post('/profile-edit',userController.verifyProfileEdit)
 router.post('/place-order',userOrderController.placeOrder)
 router.get('/continue-shop',auth.isLogin,userOrderController.continueShop)
 router.post('/paymentByRazorpay',userOrderController.paymentRazorpay)
+router.patch("/save-order",auth.isLogin, userOrderController.saveOrder)
 
 router.post('/apply-coupon',userCartController.applyCoupon)
 router.post('/remove-coupon',userCartController.removeCoupon)

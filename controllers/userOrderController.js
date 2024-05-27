@@ -106,96 +106,141 @@ const placeOrder=async(req,res)=>{
   }
 
 
-
-
-  const paymentRazorpay=async(req,res)=>{
+  const paymentRazorpay = async (req, res) => {
     try {
-      console.log("starting razor")
-      const userId=req.session.user_id
-      const addressData= await Address.find({_id:req.body.selectedAddress})
-      const cartData= await Cart.findOne({userId:userId})
+        console.log("starting razor");
+        const userId = req.session.user_id;
+        const addressData = await Address.find({_id: req.body.selectedAddress});
+        const cartData = await Cart.findOne({userId: userId});
 
+        const generateOrderId = () => {
+            const timestamp = Date.now().toString();
+            const randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let orderId = 'ORD';
 
+            while (orderId.length < 6) {
+                const randomIndex = Math.floor(Math.random() * randomChars.length);
+                orderId += randomChars.charAt(randomIndex);
+            }
 
-    function generateOrderId() {
-      const timestamp = Date.now().toString(); 
-      const randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'; 
-      let orderId = 'ORD'; 
-      
-     
-      while (orderId.length < 6) {
-          const randomIndex = Math.floor(Math.random() * randomChars.length);
-          orderId += randomChars.charAt(randomIndex);
-      }
-      
-      return orderId + timestamp.slice(-6); 
-      }
-  
-     const newOrderId = generateOrderId();
+            return orderId + timestamp.slice(-6);
+        }
 
+        const newOrderId = generateOrderId();
 
-        var options = {
-          amount: req.body.amount*100,  // amount in the smallest currency unit
-          
-          currency: "INR",
-          receipt: "order_rcptid_11"
+        const options = {
+            amount: req.body.amount * 100,
+            currency: "INR",
+            receipt: "order_rcptid_11"
         };
 
-        instance.orders.create(options,async function(err, razOrder) {
-        
-
-          if (err) {
-            console.error(err);
-            res.status(500).json({ error: "Failed to create Razorpay order" });
-            return;
-          }
-          console.log(razOrder);
-
-        const orderData= new Order({
-          userId:userId,
-          products:cartData.product,
-          address:addressData[0],
-          paymentMethod:req.body.paymentMethod,
-          paymentStatus:'Recieved',
-          totalAmount:req.body.amount,
-          orderId:newOrderId,
-          razOrderId:razOrder.id
-      })
-
-      console.log(orderData);
-
-      req.session.orderedProductData=cartData.product
-
-      const newOrder=  await orderData.save()
-
-
-      console.log(newOrder);
-
-
-      if(newOrder){
-        console.log('hi-------------------------');
-  
-        const result = await Cart.updateOne(
-            {userId:userId},
-            {
-              $unset: {
-                product: 1,
-              },
+        instance.orders.create(options, async (err, razOrder) => {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: "Failed to create Razorpay order" });
+                return;
             }
-          );
-    }
-  
-   
-    console.log("last")
-    res.status(200).json({ message: "Order placed successfully", razOrder});
+            console.log(razOrder);
 
-  
-        }); 
+            const orderData = new Order({
+                userId: userId,
+                products: cartData.product,
+                address: addressData[0],
+                paymentMethod: req.body.paymentMethod,
+                paymentStatus: 'Pending',  // Set to pending initially
+                totalAmount: req.body.amount,
+                orderId: newOrderId,
+                razOrderId: razOrder.id
+            });
+
+            req.session.orderedProductData = cartData.product;
+
+         const newOrder=  await orderData.save();
+
+
+
+            res.status(200).json({ message: "Order created successfully", razOrder, orderId: newOrderId });
+        });
     } catch (error) {
-      
-      
+        console.log(error);
+        res.status(500).send('Internal Server Error');
     }
-  }
+}
+
+
+
+
+
+  const saveOrder = async (req, res) => {
+    try {
+        const orderId = req.body.orderId;
+        const userId = req.session.user_id;
+
+        const cart = await Cart.findOne({ userId });
+
+        let productDataToSave = cart.product;
+        console.log('productDataToSave============================================',productDataToSave);
+
+        if (!Array.isArray(productDataToSave)) {
+            productDataToSave = [productDataToSave]; // Convert to array if it's not already
+        }
+
+        // Loop through each product in productDataToSave
+        for (const item of productDataToSave) {
+            const product = await Product.findById(item.productId);
+            if (product) {
+                // Update stock of the product
+                product.stock -= item.quantity;
+                await product.save();
+            }
+        }
+
+
+       
+
+        const order = await Order.findOneAndUpdate(
+            { orderId },
+            { $set: { paymentStatus: "Received" } }, 
+            { new: true } 
+        );
+
+
+        if(order){
+          console.log('hi-------------------------');
+    
+          const result = await Cart.updateOne(
+              {userId:userId},
+              {
+                $unset: {
+                  product: 1,
+                },
+              }
+            );
+               }
+
+        if (order) {
+            console.log("Order payment status updated successfully");
+            res.status(200).json({ message: "Order payment status updated successfully" });
+        } else {
+            console.log("Failed to update order payment status");
+            res.status(404).send("Order not found");
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Internal Server Error');
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
 
   const loadInvoice=async(req,res)=>{
     try {
@@ -224,6 +269,7 @@ const placeOrder=async(req,res)=>{
     continueShop,
     placeOrder,
     paymentRazorpay,
+    saveOrder,
     loadInvoice
 
   }

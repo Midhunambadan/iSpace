@@ -38,7 +38,7 @@ const user = mongoose.Schema({
   wishlist:{
     type:mongoose.Schema.Types.ObjectId,
     ref:'Wishlist',
-    required:true
+    
 }
 
   
