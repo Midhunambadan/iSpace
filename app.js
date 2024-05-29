@@ -10,8 +10,8 @@ mongoose.connect(process.env.MONGODB_URI, {
   useUnifiedTopology: true
 });
 
-const PDFDocument = require('pdfkit');
 
+const PDFDocument = require('pdfkit');
 
 const createError = require('http-errors');
 const express = require('express');

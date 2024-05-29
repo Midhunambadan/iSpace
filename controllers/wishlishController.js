@@ -21,7 +21,6 @@ const loaduserWishlist = async (req, res) => {
   
   
 
-
   const addToWishlist = async (req, res) => {
     try {
       const proId = req.body.id; // Assuming the product ID is sent in the request body

@@ -57,36 +57,19 @@ $(document).ready(function() {
             <div class="col-nav">
                 <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i class="material-icons md-apps"></i> </button>
                 <ul class="nav">
-                    <li class="nav-item">
-                        <a class="nav-link btn-icon" href="#">
-                            <i class="material-icons md-notifications animation-shake"></i>
-                            <span class="badge rounded-pill">3</span>
-                        </a>
-                    </li>
+                    
                     <li class="nav-item">
                         <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i> </a>
                     </li>
                     <li class="nav-item">
                         <a href="#" class="requestfullscreen nav-link btn-icon"><i class="material-icons md-cast"></i></a>
                     </li>
-                    <li class="dropdown nav-item">
-                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownLanguage" aria-expanded="false"><i class="material-icons md-public"></i></a>
-                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownLanguage">
-                            <a class="dropdown-item text-brand" href="#"><img src="/adminAssets/imgs/theme/flag-us.png" alt="English">English</a>
-                            <a class="dropdown-item" href="#"><img src="/adminAssets/imgs/theme/flag-fr.png" alt="Français">Français</a>
-                            <a class="dropdown-item" href="#"><img src="/adminAssets/imgs/theme/flag-jp.png" alt="Français">日本語</a>
-                            <a class="dropdown-item" href="#"><img src="/adminAssets/imgs/theme/flag-cn.png" alt="Français">中国人</a>
-                        </div>
-                    </li>
+                   
                     <li class="dropdown nav-item">
                         <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false"> <img class="img-xs rounded-circle" src="/adminAssets/imgs/people/avatar2.jpg" alt="User"></a>
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
-                            <a class="dropdown-item" href="#"><i class="material-icons md-perm_identity"></i>Edit Profile</a>
-                            <a class="dropdown-item" href="#"><i class="material-icons md-settings"></i>Account Settings</a>
-                            <a class="dropdown-item" href="#"><i class="material-icons md-account_balance_wallet"></i>Wallet</a>
-                            <a class="dropdown-item" href="#"><i class="material-icons md-receipt"></i>Billing</a>
-                            <a class="dropdown-item" href="#"><i class="material-icons md-help_outline"></i>Help center</a>
-                            <div class="dropdown-divider"></div>
+                           
+                            
                             <a class="dropdown-item text-danger" href="#"><i class="material-icons md-exit_to_app"></i>Logout</a>
                         </div>
                     </li>
@@ -143,7 +126,8 @@ $(document).ready(function() {
                                         <th scope="col">Name</th>
                                         <th scope="col">Mobile</th>
                                         <th scope="col">Total</th>
-                                        <th scope="col">Status</th>
+                                        <th scope="col">Order Status</th>
+                                        <th scope="col">Payment Status</th>
                                         <th scope="col">Date</th>
                                         <th scope="col">Action</th>
                                         <th scope="col">Details</th>
@@ -160,24 +144,30 @@ $(document).ready(function() {
                                         <td> <%= orders[i].address.mobile %></td>
                                         <td>₹ <%= orders[i].totalAmount %></td>
                                         <td><span class="badge rounded-pill alert-warning"><%= orders[i].orderStatus %></span></td>
+                                        <td class="badge rounded-pill alert-warning"><%= orders[i].paymentStatus %></td>
                                         <td><%= orders[i].orderDate.toLocaleDateString('en-GB') %></td>
 
                                         <td>
                                             
                                             <div class="btn-group" role="group">
+                                               
                                                 <form action="/admin/update-order-status" method="POST">
                                                     <input type="hidden" name="orderId" value="<%= orders[i]._id %>">
-                                                    <select name="orderStatus" class="form-select d-inline-block mb-lg-0 mb-15 mw-200" onchange="this.form.submit()">
+                                                    <select name="orderStatus" class="form-select d-inline-block mb-lg-0 mb-15 mw-200" onchange="this.form.submit()" <%= orders[i].orderStatus === 'Delivered' ? 'disabled' : '' %>>
                                                         <% const statuses = ['Order Placed', 'Confirmed', 'Shipped', 'Delivered', 'Cancelled', 'Returned', 'Pending']; %>
                                                         <% statuses.forEach(status => { %>
                                                             <option value="<%= status %>" <%= orders[i].orderStatus === status ? 'selected' : '' %>><%= status %></option>
                                                         <% }) %>
                                                     </select>
                                                 </form>
+                                                
                                             </div>
                                             
                                        
                                         </td>
+                                        
+
+                                        
                                         <td ><a href="/admin/order-details?id=<%=orders[i]._id%>"class="btn-small d-block"> <i class="fas fa-eye"></i> View</a></td>
 
                                         <!-- <td><a href="/order-details?id=<%=orders[i]._id%>" class="btn-small d-block"><i class="fas fa-eye"></i> View</a></td> -->

@@ -7,7 +7,10 @@ const loadSalesReport=async(req,res)=>{
         const {sDate,eDate}=req.body
         const totalOrder=await Order.find({orderStatus:'Delivered',paymentStatus:'Recieved'}).populate('userId')
         
+        console.log('---------totalOrder------',totalOrder)
 
+        // const productName = totalOrder.products.map(product => product.product_name);
+        // console.log('----------productName----------',productName);
 
         const totalSum = totalOrder.reduce((sum, order) => {
             sum= sum+parseInt(order.totalAmount)
@@ -41,7 +44,7 @@ const searchSalesReportWithDate = async (req, res) => {
             orderDate: { $gte: sDate, $lte: eDate }
         }).populate('userId');
 
-        // console.log('---------------',totalOrder);
+        console.log('---------------',totalOrder);
 
         const totalSum = totalOrder.reduce((sum, order) => {
             sum= sum+parseInt(order.totalAmount)

@@ -3,11 +3,6 @@ const User=require('../models/userModel')
 const Address = require('../models/addressModel');
 
 
-
-
-
-
-
 const insertAddress = async (req, res) => {
     try {
         console.log('----------------------------------------insert address controller');

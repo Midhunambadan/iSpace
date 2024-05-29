@@ -88,7 +88,7 @@
             margin-bottom: 20px;
         }
 
-        .download-button {
+        /* .download-button {
             position: absolute;
             top: 30px;
             right: 30px;
@@ -104,13 +104,19 @@
 
         .download-button:hover {
             background-color: #45a049;
-        }
+        } */
 
     </style>
 </head>
-<body>
+<body id="target">
+ 
+
+
     <div class="invoice-box">
-        <a href="#" class="download-button">Download</a>
+        <button id="cmd" style="position: absolute; top: 20px; right: 20px; padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); transition: background-color 0.3s;">
+            Get PDF
+        </button>
+        <!-- <a  class="download-button">Download</a> -->
         <div class="header">
             <h1>I Space Pvt</h1>
             <p>Your Trusted Partner in eShopping</p>
@@ -216,4 +222,56 @@
         <% } %>
     </div>
 </body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+<script>
+    $(document).ready(function(){
+
+        var specialElementHandler = {
+            "#editor": function(element, renderer){
+                return true;
+            }
+        };
+        
+        $("#cmd").click(function(){
+            var doc = new jsPDF();
+
+            doc.fromHTML($("#target").html(), 15, 15, {
+                "width": 170,
+                "elementHandlers": specialElementHandler // Corrected name here
+            });
+
+            doc.save("invoice-file.pdf");
+        });
+
+    });
+</script>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var cmd = document.getElementById("cmd");
+    cmd.addEventListener("click", function() {
+      // Hide the button
+      cmd.style.display = "none";
+
+      var element = document.getElementById("target");
+      var opt = {
+        margin: 1,
+        filename: 'invoice-file.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait', width: 1, height:1 } // Set width and height here
+      };
+
+      // New Promise-based usage:
+      html2pdf().from(element).set(opt).save().then(function() {
+        // Restore the button after the PDF is generated
+        cmd.style.display = "";
+      });
+    });
+  });
+</script>
 </html>

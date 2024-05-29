@@ -482,6 +482,8 @@ const loadOrderDetails=async(req,res)=>{
   // const userDetails=await User.findById(userId)
   const orderDetails=await Order.findById(Id).populate('userId').populate('products.productId')
 
+  const orderData = await Order.find({ _id: Id })
+
   // console.log(userDetails,'userDetails---------------------');
 
   console.log(orderDetails,'orderDetails---------------------');
@@ -494,7 +496,7 @@ const loadOrderDetails=async(req,res)=>{
 
 
 
-    res.render('orderDetails',{orders:orderDetails,totalSum})
+    res.render('orderDetails',{orders:orderDetails,totalSum,orderData})
 
   } catch (error) {
     
@@ -594,8 +596,6 @@ const userOrderCancel=async(req,res)=>{
         }
 
 
-
-    
         res.redirect('/userDashboard')
 
 
@@ -631,8 +631,6 @@ const useReturnOrder=async(req,res)=>{
              console.log('result-------------',result);
           }
       }
-
-
 
         // Update user's wallet balance
         const wallet = await Wallet.findOne({ userId: userId });
