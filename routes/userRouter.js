@@ -116,6 +116,8 @@ router.post('/profile-edit',userController.verifyProfileEdit)
 router.post('/place-order',userOrderController.placeOrder)
 router.get('/continue-shop',auth.isLogin,userOrderController.continueShop)
 router.post('/paymentByRazorpay',userOrderController.paymentRazorpay)
+router.post('/paymentByWallet',userOrderController.paymentByWallet)
+
 router.patch("/save-order",auth.isLogin, userOrderController.saveOrder)
 
 router.post('/apply-coupon',userCartController.applyCoupon)

@@ -8,6 +8,17 @@ const Order=require('../models/orderModel')
 // const cron = require('node-cron');
 const bcrypt = require("bcrypt");
 const randomstring=require('randomstring')
+
+
+const invalidPage=async(req,res)=>{
+  try {
+    res.render('404')
+  } catch (error) {
+    
+  }
+}
+
+
 // // ==================================================================================================================
 
 
@@ -533,6 +544,8 @@ const unblockUser = async (req, res) => {
 
 
 module.exports = {
+  invalidPage,
+  
   loadAdminform,
   verifyLogin,
   verifySignup,

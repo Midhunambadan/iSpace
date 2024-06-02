@@ -35,8 +35,8 @@ const loaduserHome = async (req, res) => {
 
     const userId=req.session.user_id
 
-    const wishlist = await Wishlist.findOne({ userId });
-      const wishlistProductCount = wishlist.products.length;
+    // const wishlist = await Wishlist.findOne({ userId });
+    //   const wishlistProductCount = wishlist.products.length;
 
 
       const cart = await Cart.findOne({ userId });
@@ -60,7 +60,7 @@ const loaduserHome = async (req, res) => {
   
     const cateData = await Category.find({ isActive: true });
 
-    res.render('userHome', { products:filteredProductData, category: cateData,users:userData,wishlistProductCount,cartProductCount });
+    res.render('userHome', { products:filteredProductData, category: cateData,users:userData,cartProductCount });
 
   } catch (error) {
     console.log(error);

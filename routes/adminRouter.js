@@ -125,9 +125,11 @@ admin_router.post('/search-sales-report',adminAuth.isLogin,salesReportController
 
 
 
+
 admin_router.get("*", function (req, res) {
   res.redirect("/admin/home");
 });
 
+admin_router.get('/404',adminController.invalidPage)
 
 module.exports = admin_router;

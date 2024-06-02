@@ -3,6 +3,7 @@ const Cart=require('../models/cartModel')
 const Product=require('../models/productModel')
 const User=require('../models/userModel')
 const Address=require('../models/addressModel')
+const Wallet=require('../models/walletModel')
 
 const Razorpay = require('razorpay');
 
@@ -168,6 +169,53 @@ const placeOrder=async(req,res)=>{
 }
 
 
+const paymentByWallet=async(req,res)=>{
+  try {
+    
+    console.log('controller is hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
+    // const userId=req.session.user_id
+
+    // const wallet=await Wallet.findOne({userId:userId})
+    // const addressData = await Address.find({_id: req.body.selectedAddress});
+    // const cartData = await Cart.findOne({userId: userId});
+    // console.log('user-===================',wallet.balance)
+
+
+    // function generateOrderId() {
+    //   const timestamp = Date.now().toString(); 
+    //   const randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'; 
+    //   let orderId = 'ORD'; 
+      
+     
+    //   while (orderId.length < 6) {
+    //       const randomIndex = Math.floor(Math.random() * randomChars.length);
+    //       orderId += randomChars.charAt(randomIndex);
+    //   }
+      
+    //   return orderId + timestamp.slice(-6); 
+    //   }
+  
+    //  const newOrderId = generateOrderId();
+
+
+
+  //   const orderData= new Order({
+  //     userId:userId,
+  //     products:cartData.product,
+  //     address:addressData[0],
+  //     paymentMethod:req.body.paymentMethod,
+  //     totalAmount:req.body.amount,
+  //     orderId:newOrderId
+  // })
+
+  // console.log('orderData====================',orderData);
+
+
+  } catch (error) {
+    
+  }
+}
+
 
 
 
@@ -269,6 +317,7 @@ const placeOrder=async(req,res)=>{
     continueShop,
     placeOrder,
     paymentRazorpay,
+    paymentByWallet,
     saveOrder,
     loadInvoice
 
