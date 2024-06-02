@@ -1,5 +1,5 @@
 // const mongoose=require('mongoose')
-// mongoose.connect('mongodb://127.0.0.1:27017/iSpace')
+// mongoose.connect('mongodb+srv://sakhave792:Midhunak@123@cluster0.enj17f9.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
 
 require('dotenv').config();
 
@@ -9,6 +9,7 @@ mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
+
 
 
 const PDFDocument = require('pdfkit');
@@ -24,14 +25,9 @@ require('dotenv').config();
 const sharp = require('sharp');
 
 
-// mongoose.connect(process.env.MONGODBURL)
-// .then((e)=>console.log('Mongo connected sucessfully'));
-
-
 
 const userRouter=require('./routes/userRouter')
 const adminRouter=require('./routes/adminRouter')
-// const categoryRouter=require('./routes/categoryRouter')
 
 const app = express();
 

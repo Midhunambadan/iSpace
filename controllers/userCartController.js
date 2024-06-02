@@ -5,6 +5,7 @@
  const Order=require('../models/orderModel')
  const Wallet=require('../models/walletModel')
  const Coupon=require('../models/couponModel')
+ const Wishlist=require('../models/wishlistModel')
 
 
  // userCart
@@ -14,6 +15,16 @@ const loadUserCart = async (req, res) => {
 
       const userId=req.session.user_id
 
+      
+      const wishlist = await Wishlist.findOne({ userId });
+      const wishlistProductCount = wishlist.products.length;
+
+      
+      const carts = await Cart.findOne({ userId });
+     
+      const cartProductCount = carts.product.length;
+
+
       const loginData = await User.findById(userId)
 
       // console.log(loginData);
@@ -21,7 +32,7 @@ const loadUserCart = async (req, res) => {
     
      const cart = await Cart.findOne({userId:userId})
 
-      res.render("userCart",{cartData:Data,cart});
+      res.render("userCart",{cartData:Data,cart,wishlistProductCount,cartProductCount});
 
     } catch (error) {
       console.log(error.message);

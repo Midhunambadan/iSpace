@@ -267,25 +267,9 @@ a.google span{
                     </div>
                 </div>
 
-                <!-- <div class="line"></div> -->
-
-                <!-- <div class="media-options">
-                    <a href="#" class="field facebook">
-                        <i class='bx bxl-facebook facebook-icon'></i>
-                        <span>Login with Facebook</span>
-                    </a>
-                </div> -->
-<!-- 
-                <div class="media-options">
-                    <a href="#" class="field google">
-                        <img src="https://cdn.iconscout.com/icon/free/png-256/free-google-1772223-1507807.png" alt="" class="google-img">
-                        <span>Login with Google</span>
-                    </a>
-                </div> -->
-
+             
             </div>
 
-            <!-- Signup Form -->
 
             <div class="form signup">
                 <div class="form-content">
@@ -336,84 +320,6 @@ a.google span{
 
 
 
-                  <!-- <script>
-
-document.getElementById('signupForm').addEventListener('submit', function(event) {
-    event.preventDefault(); // Prevent default form submission
-
-    const username = document.getElementById('username').value;
-    const email = document.getElementById('email').value;
-    const mobile = document.getElementById('mobile').value;
-    const password = document.getElementById('password').value;
-    const password2 = document.getElementById('password2').value;
-
-    // Validate password match
-    if (password !== password2) {
-        document.getElementById('password2Error').innerText = 'Passwords do not match';
-        return;
-    }
-
-    // Your fetch request
-    fetch('/verifyOtp', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            email: email,
-            name: username,
-            mobile: mobile,
-            password: password
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.message) {
-            Swal.fire({
-                icon: 'success',
-                title: 'Registration Success',
-                text: data.message,
-                onClose: () => {
-                    window.location.href = '/login'; // Redirect to login page
-                }
-            });
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Registration Failed',
-                text: 'An error occurred during registration'
-            });
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        Swal.fire({
-            icon: 'error',
-            title: 'Registration Failed',
-            text: 'An error occurred during registration'
-        });
-    });
-});
-
-                  </script> -->
-                  
-
-                <!-- <div class="line"></div> -->
-
-                <!-- <div class="media-options">
-                    <a href="#" class="field facebook">
-                        <i class='bx bxl-facebook facebook-icon'></i>
-                        <span>Login with Facebook</span>
-                    </a>
-                </div> -->
-
-                <!-- <div class="media-options">
-                    <a href="#" class="field google">
-                        <img src="https://cdn.iconscout.com/icon/free/png-256/free-google-1772223-1507807.png" alt="" class="google-img">
-                        <span>Login with Google</span>
-                    </a>
-                </div> -->
-
             </div>
         </section>
 
@@ -449,11 +355,7 @@ signupForm.addEventListener('submit', (event) => {
   mobileError.textContent = '';
   passwordError.textContent = '';
 
-  // Username Validation (letters only, minimum 3 characters)
-//   if (!/^[a-zA-Z]+$/.test(usernameInput.value) || usernameInput.value.length < 3) {
-//     usernameError.textContent = 'Username must contain letters only (min. 3 characters).';
-//     isValid = false;
-//   }
+ 
 
   // Username Validation (allow letters, spaces, and some special characters)
 if (!/^[a-zA-Z\s\-\._]+$/.test(usernameInput.value) || usernameInput.value.length < 3) {
@@ -462,19 +364,11 @@ if (!/^[a-zA-Z\s\-\._]+$/.test(usernameInput.value) || usernameInput.value.lengt
 }
 
 
-//   // Email Validation (proper email format)
-//   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value)) {
-//     emailError.textContent = 'Please enter a valid email address.';
-//     isValid = false;
-//   }
-
 // Email Validation (proper email format)
 if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value)) {
   emailError.textContent = 'Please enter a valid email address.';
   isValid = false;
 }
-
-
 
   // Mobile Validation (10 digits, numbers only)
   if (!/^\d{10}$/.test(mobileInput.value)) {
@@ -494,12 +388,6 @@ if (passwordInput.value !== password2Input.value) {
   isValid = false;
 }
 
-// if (passwordInput.value !== password2Input.value) {
-//   passwordError.textContent = 'Password does not match confirmation.';
-//   password2Error.textContent = 'Confirm Password does not match.';
-//   isValid = false;
-// }
-  
 
 
   setTimeout(() => {
