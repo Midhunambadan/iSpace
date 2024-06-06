@@ -69,6 +69,7 @@ const loaduserHome = async (req, res) => {
 
 
 
+
 // ==================================================================================================================
 
 // user LoadReg
@@ -327,6 +328,7 @@ const getForgotOtp= async (req, res) => {
           pass: process.env.USERPASS,
         },
       });
+      
 
       const otp = Math.floor(1000 + Math.random() * 9000).toString();
 

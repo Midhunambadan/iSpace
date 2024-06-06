@@ -10,8 +10,6 @@ mongoose.connect(process.env.MONGODB_URI, {
   useUnifiedTopology: true
 });
 
-
-
 const PDFDocument = require('pdfkit');
 
 const createError = require('http-errors');
@@ -25,7 +23,7 @@ require('dotenv').config();
 const sharp = require('sharp');
 
 
-
+ 
 const userRouter=require('./routes/userRouter')
 const adminRouter=require('./routes/adminRouter')
 
