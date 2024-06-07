@@ -39,12 +39,10 @@ const loaduserHome = async (req, res) => {
     //   const wishlistProductCount = wishlist.products.length;
 
 
-      const cart = await Cart.findOne({ userId });
+      // const cart = await Cart.findOne({ userId });
      
-      const cartProductCount = cart.product.length;
+      // const cartProductCount = cart.product.length;
 
-    
-    console.log('============cartProductCount===========',cartProductCount);
 
     const userData = await User.find({ _id:userId});
     const productData = await Product.find({isActive:true}).populate({
@@ -60,7 +58,7 @@ const loaduserHome = async (req, res) => {
   
     const cateData = await Category.find({ isActive: true });
 
-    res.render('userHome', { products:filteredProductData, category: cateData,users:userData,cartProductCount });
+    res.render('userHome', { products:filteredProductData, category: cateData,users:userData });
 
   } catch (error) {
     console.log(error);
@@ -446,12 +444,11 @@ const loaduserDashboard = async (req, res) => {
     const userId=req.session.user_id
     const wishlist = await Wishlist.findOne({ userId });
    
-    const wishlistProductCount = wishlist.products.length;
+    // const wishlistProductCount = wishlist.products.length;
 
-    const carts = await Cart.findOne({ userId });
-    const cartProductCount = carts.product.length;
+    // const carts = await Cart.findOne({ userId });
+    // const cartProductCount = carts.product.length;
 
-    // const orderDetails= await Order.findById(orderId).populate('userId').populate('product.productId')
 
     const walletData=await Wallet.find({userId:userId})
     const userData = await User.findById({ _id: userId});
@@ -461,11 +458,11 @@ const loaduserDashboard = async (req, res) => {
 
 
 
-    console.log('walletData-----------',walletData);
+   
 
     // console.log('--------------------addressData',addressData.name);
 
-    res.render("userDashboard", { user: userData,address:addressData,orders:orderData,wallet:walletData,wishlistProductCount,cartProductCount });
+    res.render("userDashboard", { user: userData,address:addressData,orders:orderData,wallet:walletData});
   } catch (error) {
     console.log(error.message);
   }
@@ -691,17 +688,14 @@ const showProduct=async(req,res)=>{
     const userId = req.session.user_id;
     const wishlist = await Wishlist.findOne({ userId });
    
-    const wishlistProductCount = wishlist.products.length;
     const proData=await Product.find({_id:id}).populate('categoryId')
+    
+    // const wishlistProductCount = wishlist.products.length;
+    // const carts = await Cart.findOne({ userId });
+    // const cartProductCount = carts.product.length;
 
-    const carts = await Cart.findOne({ userId });
-    const cartProductCount = carts.product.length;
 
-    // const productData = await Product.find({ isActive: true }).populate('categoryId');
-
-
-    // console.log('product dataaaaaaaa',[proData]);
-    res.render('showProduct',{products:proData,wishlistProductCount,cartProductCount})
+    res.render('showProduct',{products:proData})
 
   } catch (error) {
     console.log(error.message);

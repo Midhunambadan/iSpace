@@ -16,13 +16,13 @@ const loadUserCart = async (req, res) => {
       const userId=req.session.user_id
 
       
-      const wishlist = await Wishlist.findOne({ userId });
-      const wishlistProductCount = wishlist.products.length;
+      // const wishlist = await Wishlist.findOne({ userId });
+      // const wishlistProductCount = wishlist.products.length;
 
       
-      const carts = await Cart.findOne({ userId });
+      // const carts = await Cart.findOne({ userId });
      
-      const cartProductCount = carts.product.length;
+      // const cartProductCount = carts.product.length;
 
 
       const loginData = await User.findById(userId)
@@ -32,7 +32,7 @@ const loadUserCart = async (req, res) => {
     
      const cart = await Cart.findOne({userId:userId})
 
-      res.render("userCart",{cartData:Data,cart,wishlistProductCount,cartProductCount});
+      res.render("userCart",{cartData:Data,cart});
 
     } catch (error) {
       console.log(error.message);

@@ -9,8 +9,18 @@ const userOrderController=require('../controllers/userOrderController')
 
 const session = require("express-session");
 const config = require("../config/config");
-router.use(session({ secret: config.sessionSecret })); ///new you can delete
-const auth = require("../middleware/auth");
+router.use(session({ secret: config.sessionSecret,
+    resave: false, // Add this line
+    saveUninitialized: false 
+ })); ///
+ const auth = require("../middleware/auth");
+
+//  const session = require("express-session");
+// const config = require("../config/config");
+// router.use(session({ secret: config.sessionSecret })); ///new you can delete
+// const auth = require("../middleware/auth");
+ 
+
 
 router.set("view engine", "ejs");
 router.set("views", "./views/users");
