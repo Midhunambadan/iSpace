@@ -67,6 +67,14 @@ const loaduserHome = async (req, res) => {
 
 
 
+const loadAbout=async(req,res)=>{
+  try {
+    res.render('userAbout')
+  } catch (error) {
+    
+  }
+}
+
 
 // ==================================================================================================================
 
@@ -964,6 +972,7 @@ const searchProduct = async (req, res) => {
 
 module.exports = {
   loaduserHome,
+  loadAbout,
   loaduserLogin,
   loaduserRegister,
   verifySignup,

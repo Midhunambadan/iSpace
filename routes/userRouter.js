@@ -43,6 +43,7 @@ router.post("/login", auth.isLogout, userController.verifyLogin);
 router.get("/logout", auth.isLogin, userController.userLogout);
 router.get("/", auth.isLogout, userController.loaduserHome);
 
+router.get('/about',userController.loadAbout)
 //-----------------Forgot password----------------------------------------------------
 router.get('/forgot',userController.loadForgotPassword)
 router.post('/forgot',userController.getForgotOtp)
