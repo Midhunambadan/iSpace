@@ -5,15 +5,12 @@ const Address = require('../models/addressModel');
 
 const insertAddress = async (req, res) => {
     try {
-        console.log('----------------------------------------insert address controller');
 
         const userId = req.session.user_id
-        console.log('----------------------',userId)
         const { name, mobile, houseName, street, city, state, pincode } = req.body;
         const user = await User.findById(userId)
 
         if(!user){
-            console.log("User Not found")
             return
         }
         const address = new Address({
@@ -46,7 +43,6 @@ const loadEditAddress=async(req,res)=>{
 
         const addressData=await Address.find({_id:id})
 
-        console.log('--------------------jfsafdj',addressData);
         res.render('addressEdit',{address:addressData})
     } catch (error) {
         
@@ -83,7 +79,6 @@ const deleteAddress=async(req,res)=>{
     try {
         
         const id =req.params.id
-        console.log('--------------------id',id);
       const updateAddress=  await Address.findByIdAndDelete(id);
 
       

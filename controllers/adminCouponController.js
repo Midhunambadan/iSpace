@@ -41,30 +41,6 @@ const addCoupon=async(req,res)=>{
 }
 
 
-// const addCoupon = async (req, res) => {
-//     try {
-//         const { code, discountpercentage, minimumAmount, validUntil } = req.body;
-
-//         const coupon = new Coupon({
-//             code: code,
-//             discountpercentage: discountpercentage,
-//             minimumAmount: minimumAmount,
-//             validUntil: validUntil
-//         });
-
-//         const couponData = await coupon.save();
-//         console.log('couponData:', couponData);
-
-//         // If you want to respond with JSON
-//         res.status(200).json({ success: true, message: "Coupon added successfully!" });
-
-//         // If you want to redirect instead (uncomment the next line)
-//         res.redirect('/admin/load-coupon');
-//     } catch (error) {
-//         console.error('Error adding coupon:', error);
-//         res.status(500).json({ success: false, message: "An error occurred while adding the coupon." });
-//     }
-// };
 
 
 
@@ -74,23 +50,6 @@ const addCoupon=async(req,res)=>{
 
 
 
-// const deleteCoupon=async(req,res)=>{
-//     try {
-        
-//         const id=req.query.id
-
-//         const coupon=await Coupon.findByIdAndDelete(id)
-
-//         if(coupon){
-//             res.status(200).json({success:true,message:"Coupon Deleted"})
-//         }
-
-//         res.redirect('/admin/load-coupon')
-
-//     } catch (error) {
-        
-//     }
-// }
 
 
 const deleteCoupon = async (req, res) => {
@@ -131,10 +90,8 @@ const editCoupon = async (req,res) => {
     try {
 
         const id = req.query.id;
-        // console.log('id-----------------------------------------------------',id);
         const coupon = await Coupon.findById(id); 
 
-        console.log(coupon,'---------------------');
         if (coupon) {
 
             req.session.editCouponId = id;

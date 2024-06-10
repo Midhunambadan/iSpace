@@ -726,11 +726,16 @@ const loadAllProduct = async (req, res) => {
 
     const searchCategory=req.query.category
 
+    const searchCateData=await Category.findById(searchCategory)
+
+    console.log('searchCateData-----------------------------------------------------',searchCateData)
+
     const reqProduct=req.body.searchProduct
 
     const cateData=await Category.find()
 
-    console.log('category',cateData);
+
+
 
     const productData = await Product.find({ isActive: true }).populate({
       path: 'categoryId',
@@ -934,7 +939,6 @@ const searchProduct = async (req, res) => {
 
     const searchProduct = req.body.searchProduct;
 
-    console.log('-----------------searchProduct', searchProduct);
 
     // Use regex with case-insensitive option
     const proData = await Product.find({ product_name: { $regex: new RegExp(searchProduct, 'i') } }).limit(limit*1).skip((page-1)*limit).exec();
@@ -944,7 +948,6 @@ const searchProduct = async (req, res) => {
     // const proData = await Product.find({ product_name: { $regex: new RegExp('^' + searchProduct.trim().split(' ')[0], 'i') } });
 
 
-    // console.log('______proData', proData);
     if (proData.length > 0) {
 
       res.render('showAllProduct',{products:proData,

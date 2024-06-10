@@ -7,7 +7,7 @@ const loadOfferPage=async(req,res)=>{
 
         const cateData=await Category.find({isActive:true})
 
-        // console.log(cateData);
+        
         res.render('offerPage',{cateData})
         
     } catch (error) {
@@ -20,7 +20,7 @@ const addCategoroyOffer=async(req,res)=>{
     try {
         
         
-        // const proData=await Product.find({isActive:true})
+        
         const {name,offerPercentage,category,validity}=req.body
       
 
@@ -127,17 +127,15 @@ const loadProductOffer=async(req,res)=>{
 const addProductOffer=async(req,res)=>{
     try {
         
-        // console.log('produdtcoff------------------------');
+        
 
         // const proData=await Product.find({isActive:true})
         const {name,offerPercentage,product,validity}=req.body
       
-        console.log('req.body------------------------',req.body);
 
       
         const existingProduct = await Product.findOne({ product_name: product });
 
-        // console.log('existingProduct------------------------',existingProduct);
 
         if (existingProduct) {
             existingProduct.productOffer = {
@@ -152,7 +150,6 @@ const addProductOffer=async(req,res)=>{
 
             req.session.proId=proId
             
-            console.log('updatedProduct------------------------',updatedProduct);
 
            
 
@@ -163,7 +160,6 @@ const addProductOffer=async(req,res)=>{
 
 
 
-            //    console.log('newProduct-------=============-----------------',newProduct);
 
 
                res.status(200).json({success:true, message: 'Product Offer applied successfully', products: newProduct });
@@ -209,12 +205,6 @@ const removeProductOffer=async(req,res)=>{
         
     }
 }
-
-
-
-
-
-
 
 
 

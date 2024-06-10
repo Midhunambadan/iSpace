@@ -133,7 +133,6 @@ const insertProduct  =  async (req,res)=>{
     
 
     if(proData){
-      // console.log(proData);
       res.render('editProduct',{products:proData,category:cateData})
     }else{
       res.send('inavalid')
@@ -156,8 +155,7 @@ const updateProduct=async(req,res)=>{
 
   const { pname, pdescription, mrp, category, discount, stock } = req.body;
   
-console.log("gfhg-vvvvvvvvvvvvvvv-------------",req.body)
-// console.log("gfhg-vvvvvvvvvvvvvvv-------------",typeof(req.body.category))
+
 
 
 
@@ -181,7 +179,6 @@ for (const file of req.files) {
         }
     });
 }
-console.log('category ::',category)
 const findProduct  =  await Product.findById(productId)
       findProduct.product_name = pname
       findProduct.discription=pdescription
@@ -214,7 +211,6 @@ const findProduct  =  await Product.findById(productId)
 const deleteProduct=async(req,res)=>{
   try{
     const id=req.query.id
-    console.log(id);
     await Product.deleteOne({_id:id})
 
    
@@ -234,7 +230,6 @@ const deleteProduct=async(req,res)=>{
     
     // const proId=req.query.id
     const proId = req.query.id;
-    console.log('=============================================',proId);
     const updateProduct=await Product.findByIdAndUpdate(proId,{isActive:false})
     // const updateCategory = await Category.findByIdAndUpdate(cateId, { isActive: true });
     res.redirect('/admin/products')
@@ -248,10 +243,8 @@ const deleteProduct=async(req,res)=>{
  const UnBlockProduct=async(req,res)=>{
   try {
 
-    console.log('----------------------------------------idddddddddddgot');
     const proId=req.query.id
     
-    console.log('----------------------------------------------',proId);
     const updateCategory=await Product.findByIdAndUpdate(proId,{isActive:true})
     res.redirect('/admin/products')
 
@@ -259,7 +252,6 @@ const deleteProduct=async(req,res)=>{
     
   }
  }
-
 
 
 module.exports={

@@ -30,7 +30,6 @@ const loaduserWishlist = async (req, res) => {
   
       let wishList = await Wishlist.findOne({ userId });
 
-    //   console.log('--------------------------hi here',userId,wishList,proId);
 
   
       if (!wishList) {
@@ -45,7 +44,6 @@ const loaduserWishlist = async (req, res) => {
       }
   
       await wishList.save();
-    //   console.log('Wishlist updated:', wishList);
 
     // res.status(200).json({message:'Wishlist updated'})
 
@@ -67,14 +65,12 @@ const deleteWishlist=async(req,res)=>{
   
         const userWishlistData = await Wishlist.find({ userId: userId })
   
-        // console.log('=============================================productId',req.query.id);
        const wishlistData= await Wishlist.updateOne(
             { userId:userId },
             { $pull: { products: { productId:productId } } }
         );
         
   
-        // console.log('====================================Cartdata',cartData);
   
         res.redirect('/wishlist');
     } catch (error) {

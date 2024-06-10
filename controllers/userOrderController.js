@@ -24,10 +24,6 @@ const placeOrder=async(req,res)=>{
       const addressData= await Address.find({_id:req.body.selectedAddress})
       const cartData= await Cart.findOne({userId:userId})
   
-      console.log("addressData:--------------------",addressData)
-      console.log("amount:---------------",req.body.amount)
-      console.log('cartdata-----------',cartData.product);
-  
 
 
     function generateOrderId() {
@@ -61,7 +57,6 @@ const placeOrder=async(req,res)=>{
   
   
       if(newOrder){
-        console.log('hi-------------------------');
   
         const result = await Cart.updateOne(
             {userId:userId},
@@ -109,7 +104,6 @@ const placeOrder=async(req,res)=>{
 
   const paymentRazorpay = async (req, res) => {
     try {
-        console.log("starting razor");
         const userId = req.session.user_id;
         const addressData = await Address.find({_id: req.body.selectedAddress});
         const cartData = await Cart.findOne({userId: userId});
@@ -141,7 +135,6 @@ const placeOrder=async(req,res)=>{
                 res.status(500).json({ error: "Failed to create Razorpay order" });
                 return;
             }
-            console.log(razOrder);
 
             const orderData = new Order({
                 userId: userId,
@@ -294,11 +287,9 @@ const paymentByWallet=async(req,res)=>{
     try {
 
       const orderId=req.query.id
-      console.log('orderId=========================',orderId);
 
       const order=await Order.findById(orderId).populate('userId').populate('products.productId')
       console.log('order----------------',order);
-      res.render('invoice',{order})
     } catch (error) {
       
     }

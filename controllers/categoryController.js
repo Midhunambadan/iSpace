@@ -7,7 +7,6 @@ const Admin = require("../models/adminModel");
 const loadcategoryList = async (req, res) => {
   try {
     const cateData= await Category.find().sort({listedDate:-1})
-    // console.log(cateData)
     res.render('categoryPage',{category:cateData})
   } catch (error) {
     console.log(error.message);
@@ -36,7 +35,6 @@ const addcategory = async (req, res) => {
           
               const cateData = await category.save();
               res.redirect("/admin/category?categoryAdd=true",);
-              // res.status(200).send({success:true,message:"Category Data",data:cateData})
 
         }else{
           
@@ -139,33 +137,11 @@ const deleteCategory=async(req,res)=>{
 // ==================================================================================================================
 
 
-// const ToggleblockCategories = async (req,res)=>{
-//   try{
-//       const catid= req.query.catid
-
-//       console.log(catid);
-
-//       const categories = await Category.findOne({_id:catid}); 
-
-//       console.log('--------------------------------------',categories);
-
-//       categories.isActive=!categories.isActive
-
-//       await categories.save()
-
-//       res.redirect('/admin/category');
-//   } catch (error) {
-//       console.error(error);
-//   }
-// }
-
-
 
 const blockCategory=async (req,res)=>{
   try {
     
     const cateId=req.query.id
-    console.log('====================================',cateId);
 
     const updateCategory = await Category.findByIdAndUpdate(cateId, { isActive: false });
 
@@ -185,7 +161,6 @@ const unBlockCategory=async (req,res)=>{
     
     const cateId=req.query.id
 
-    console.log('====================================',cateId);
 
     const updateCategory = await Category.findByIdAndUpdate(cateId, { isActive: true });
   res.redirect('/admin/category')
@@ -207,7 +182,7 @@ module.exports = {
   deleteCategory,
   blockCategory,
   unBlockCategory
-  // ToggleblockCategories
+  
   
 
 };

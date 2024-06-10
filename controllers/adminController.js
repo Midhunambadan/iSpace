@@ -37,7 +37,6 @@ const loadAdminform = async (req, res) => {
   try {
     res.render("adminLogin");
   } catch (error) {
-    console.log("hai");
     console.log(error.message);
   }
 };
@@ -49,8 +48,7 @@ const verifySignup = async (req, res) => {
   try {
     const { username, email, password, mobile } = req.body;
     const spassword = await securePassword(password);
-    // console.log(spassword)
-    // console.log(req.body);
+  
     const adminData = new Admin({
       name: username,
       email: email,
@@ -59,7 +57,6 @@ const verifySignup = async (req, res) => {
     });
 
     const admin = await adminData.save();
-    console.log(admin);
     if (admin) {
       res.render("adminLogin", {
         message: "You registration has been sucessfull.Please Login!",
@@ -85,7 +82,6 @@ const verifyLogin = async (req, res) => {
     const adminData = await Admin.findOne({ email: email});
 
     if (adminData) {
-      // console.log(adminData);
       const matchPassword = await bcrypt.compare(password, adminData.password);
 
       if (matchPassword) {
@@ -142,7 +138,6 @@ const loadAdminDashboard = async (req, res) => {
     orderCountsByMonth[monthIndex]++;
 });
 
-// console.log('----------------orderCountsByMonth',orderCountsByMonth);
 
 const productCountsByMonth = Array.from({ length: 12 }, () => 0);
 products.forEach(product => {
@@ -161,7 +156,7 @@ const orderCountsByYearData = await Order.aggregate([
     }
 ]);
 
-// console.log('---------------productCountsByMonth',productCountsByMonth);
+
 
 
 const orderCountsByYear = [];
@@ -186,7 +181,6 @@ while (currentYear - 5 + currentYearIndex <= currentYear + 6) {
     currentYearIndex++;
 }
 
-// console.log('--------------orderCountsByYear',orderCountsByYear);
 
 const productCountsByYearData = await Product.aggregate([
     {
@@ -221,7 +215,6 @@ while (currentYear1 - 5 + currentYearIndex1 <= currentYear1 + 6) {
     currentYearIndex1++;
 }
 
-// console.log('----------------productCountsByYear',productCountsByYear)
 
 const totalAmountByYearData = await Order.aggregate([
     {
@@ -258,7 +251,6 @@ while (currentYear2 - 5 + currentYearIndex2 <= currentYear2 + 6) {
 }
 
 
-// console.log('---------------totalAmountByYear',totalAmountByYear);
 
 
 
@@ -284,7 +276,6 @@ for (let i = 0; i < 12; i++) {
     }
 }
 
-// console.log('--------------totalAmountByMonth',totalAmountByMonth)
 
 
 
@@ -331,7 +322,6 @@ for (let i = 0; i < 12; i++) {
     }
 ]);
 
-// console.log('............------------------.....bestSellingProduct',bestSellingProduct)
 
 
 const bestSellingCategories = await Order.aggregate([
@@ -376,8 +366,6 @@ const bestSellingCategories = await Order.aggregate([
 ]);
 
 
-// console.log('------------------------bestSellingCategories',bestSellingCategories);
-    // console.log(orders,'==========',product)
 
     
     
@@ -459,7 +447,6 @@ const addUser=async(req,res)=>{
 
 
     if(userData){
-      // console.log(userData);
       res.redirect('/admin/userlist')
     }else{
       res,render('adminAdduser')
@@ -475,29 +462,12 @@ const addUser=async(req,res)=>{
 
 
 
-
-
-// const ToggleblockUser = async (req,res)=>{
-//   try{
-//       const userId= req.query.id
-//       console.log('userid-----------',userId)
-//       const updateUser = await User.findOne({_id:userId}); // why new true
-//       updateUser.isActive=!updateUser.isActive
-//       await updateUser.save()
-//       res.redirect('/admin/home')
-//     } catch (error) {
-//       console.error(error);
-//   }
-// }
-
 // ==================================================================================================================
 
 const blockUser = async (req, res) => {
   try {
-    // console.log("userId got===========================");
 
     const userId = req.query.id;
-    // console.log(userId, "userId got===========================");
 
     const updateUser = await User.findByIdAndUpdate(userId, { isActive: false });
     res.redirect('/admin/home')
@@ -506,7 +476,6 @@ const blockUser = async (req, res) => {
       return res.status(404).send('User not found');
     }
 
-    console.log(updateUser);
   } catch (error) {
     console.log(error.message);
     res.status(500).send('Internal Server Error');
@@ -518,10 +487,8 @@ const blockUser = async (req, res) => {
 
 const unblockUser = async (req, res) => {
   try {
-    // console.log("userId got==================================");
 
     const userId = req.query.id;
-    // console.log(userId, "userId got==================================");
 
     const updateUser = await User.findByIdAndUpdate(userId, { isActive: true });
 
@@ -531,7 +498,6 @@ const unblockUser = async (req, res) => {
    return res.redirect('/admin/home')
 
 
-    console.log(updateUser);
   } catch (error) {
     console.log(error.message);
     res.status(500).send('Internal Server Error');
@@ -556,6 +522,5 @@ module.exports = {
   addUser,
   blockUser,
   unblockUser,
-  // ToggleblockUser
 
 };
