@@ -718,300 +718,163 @@ const showProduct=async(req,res)=>{
 
 
 
-// const loadAllProduct = async (req, res) => {
-//   try {
-
-//     let limit=10
-
-//       let page=1
-//       if(req.query.page){
-//         page=req.query.page
-//       }
-
-//     const searchCategory=req.query.category
-
-//     const searchCateData=await Category.findById(searchCategory)
-
-//     console.log('searchCateData-----------------------------------------------------',searchCateData)
-
-//     const reqProduct=req.body.searchProduct
-
-//     const cateData=await Category.find()
-
-
-
-
-//     const productData = await Product.find({ isActive: true }).populate({
-//       path: 'categoryId',
-//       match: { isActive: true }
-//     }).limit(limit*1).skip((page-1)*limit).exec();;
-
-//     // Filter out products with null categoryId (inactive categories)
-//     const filteredProductData = productData.filter(product => {
-//       return product.categoryId && product.categoryId.isActive === true;
-//     });
-
-//     const count = await Product.find().sort({ listedDate: -1 }).countDocuments()
-
-
-
-//     res.render('showAllProduct', 
-//     { products: filteredProductData,
-//       category:cateData, 
-//       totalPages: Math.ceil(count/limit),
-//       currentPage:page});
-
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
-
-
 const loadAllProduct = async (req, res) => {
   try {
-    let limit = 10;
-    let page = 1;
-    
-    if (req.query.page) {
-      page = req.query.page;
-    }
 
-    const searchCategory = req.query.category;
-    let productData;
+    let limit=10
 
-    // Fetch all categories
-    const cateData = await Category.find();
+      let page=1
+      if(req.query.page){
+        page=req.query.page
+      }
 
-    if (searchCategory) {
-      // Find products based on the selected category
-      productData = await Product.find({ 
-        isActive: true, 
-        categoryId: searchCategory 
-      }).populate({
-        path: 'categoryId',
-        match: { isActive: true }
-      }).limit(limit).skip((page - 1) * limit).exec();
-    } else {
-      // Find all active products if no category is selected
-      productData = await Product.find({ isActive: true }).populate({
-        path: 'categoryId',
-        match: { isActive: true }
-      }).limit(limit).skip((page - 1) * limit).exec();
-    }
+    const searchCategory=req.query.category
+
+    const searchCateData=await Category.findById(searchCategory)
+
+    console.log('searchCateData-----------------------------------------------------',searchCateData)
+
+    const reqProduct=req.body.searchProduct
+
+    const cateData=await Category.find()
+
+
+
+
+    const productData = await Product.find({ isActive: true }).populate({
+      path: 'categoryId',
+      match: { isActive: true }
+    }).limit(limit*1).skip((page-1)*limit).exec();;
 
     // Filter out products with null categoryId (inactive categories)
     const filteredProductData = productData.filter(product => {
       return product.categoryId && product.categoryId.isActive === true;
     });
 
-    // Get the total count of products for pagination
-    const count = await Product.find({ 
-      isActive: true, 
-      ...(searchCategory && { categoryId: searchCategory }) 
-    }).countDocuments();
+    const count = await Product.find().sort({ listedDate: -1 }).countDocuments()
 
-    // Render the template with products and categories
-    res.render('showAllProduct', { 
-      products: filteredProductData,
-      category: cateData, 
-      totalPages: Math.ceil(count / limit),
-      currentPage: page,
-      selectedCategory: searchCategory // Pass selected category for highlighting
-    });
+
+
+    res.render('showAllProduct', 
+    { products: filteredProductData,
+      category:cateData, 
+      totalPages: Math.ceil(count/limit),
+      currentPage:page});
+
   } catch (error) {
     console.log(error);
-    res.status(500).send("Internal Server Error");
   }
 };
 
 
 //-------------------------sort start----------------------------------------------
 
-const priceLowToHigh = async (req, res) => {
+const priceLowToHigh=async(req,res)=>{
   try {
-    const limit = 10;
-    let page = 1;
-    const selectedCategory = req.query.category || '';
-
-    if (req.query.page) {
-      page = req.query.page;
-    }
-
-    const query = { isActive: true };
-    if (selectedCategory) {
-      query.categoryId = selectedCategory;
-    }
-
-    const productData = await Product.find(query).populate({
+    
+    const productData = await Product.find({ isActive: true }).populate({
       path: 'categoryId',
       match: { isActive: true }
-    }).sort({ MRP: 1 }).limit(limit).skip((page - 1) * limit);
+    }).sort({MRP:1});
 
     // Filter out products with null categoryId (inactive categories)
-    const filteredProductData = productData.filter(product => product.categoryId && product.categoryId.isActive === true);
-
-    const count = await Product.countDocuments(query);
-
-    res.render('showAllProduct', { 
-      products: filteredProductData,
-      totalPages: Math.ceil(count / limit),
-      currentPage: page,
-      selectedCategory
+    const filteredProductData = productData.filter(product => {
+      return product.categoryId && product.categoryId.isActive === true;
     });
+
+    res.render('showAllProduct', { products: filteredProductData});
+
   } catch (error) {
-    console.log(error);
-    res.status(500).send("Internal Server Error");
+    
   }
-};
+ }
 
-const priceHighToLow = async (req, res) => {
+
+
+const priceHighToLow=async(req,res)=>{
   try {
-    const limit = 10;
-    let page = 1;
-    const selectedCategory = req.query.category || '';
-
-    if (req.query.page) {
-      page = req.query.page;
-    }
-
-    const query = { isActive: true };
-    if (selectedCategory) {
-      query.categoryId = selectedCategory;
-    }
-
-    const productData = await Product.find(query).populate({
+    
+    const productData = await Product.find({ isActive: true }).populate({
       path: 'categoryId',
       match: { isActive: true }
-    }).sort({ MRP: -1 }).limit(limit).skip((page - 1) * limit);
+    }).sort({MRP:-1});
 
     // Filter out products with null categoryId (inactive categories)
-    const filteredProductData = productData.filter(product => product.categoryId && product.categoryId.isActive === true);
-
-    const count = await Product.countDocuments(query);
-
-    res.render('showAllProduct', { 
-      products: filteredProductData,
-      totalPages: Math.ceil(count / limit),
-      currentPage: page,
-      selectedCategory
+    const filteredProductData = productData.filter(product => {
+      return product.categoryId && product.categoryId.isActive === true;
     });
+
+    res.render('showAllProduct', { products: filteredProductData });
+
   } catch (error) {
-    console.log(error);
-    res.status(500).send("Internal Server Error");
+    
   }
-};
+ }
 
-const sortAtoZ = async (req, res) => {
+
+ const sortAtoZ=async(req,res)=>{
   try {
-    const limit = 10;
-    let page = 1;
-    const selectedCategory = req.query.category || '';
-
-    if (req.query.page) {
-      page = req.query.page;
-    }
-
-    const query = { isActive: true };
-    if (selectedCategory) {
-      query.categoryId = selectedCategory;
-    }
-
-    const productData = await Product.find(query).populate({
+    
+    const productData = await Product.find({ isActive: true }).populate({
       path: 'categoryId',
       match: { isActive: true }
-    }).sort({ product_name: 1 }).limit(limit).skip((page - 1) * limit);
+    }).sort({product_name:1});
 
     // Filter out products with null categoryId (inactive categories)
-    const filteredProductData = productData.filter(product => product.categoryId && product.categoryId.isActive === true);
-
-    const count = await Product.countDocuments(query);
-
-    res.render('showAllProduct', { 
-      products: filteredProductData,
-      totalPages: Math.ceil(count / limit),
-      currentPage: page,
-      selectedCategory
+    const filteredProductData = productData.filter(product => {
+      return product.categoryId && product.categoryId.isActive === true;
     });
+
+    res.render('showAllProduct', { products: filteredProductData });
+
   } catch (error) {
-    console.log(error);
-    res.status(500).send("Internal Server Error");
+    
   }
-};
+ }
 
-const sortZtoA = async (req, res) => {
+
+
+
+ const sortZtoA=async(req,res)=>{
   try {
-    const limit = 10;
-    let page = 1;
-    const selectedCategory = req.query.category || '';
-
-    if (req.query.page) {
-      page = req.query.page;
-    }
-
-    const query = { isActive: true };
-    if (selectedCategory) {
-      query.categoryId = selectedCategory;
-    }
-
-    const productData = await Product.find(query).populate({
+    
+    const productData = await Product.find({ isActive: true }).populate({
       path: 'categoryId',
       match: { isActive: true }
-    }).sort({ product_name: -1 }).limit(limit).skip((page - 1) * limit);
+    }).sort({product_name:-1});
 
     // Filter out products with null categoryId (inactive categories)
-    const filteredProductData = productData.filter(product => product.categoryId && product.categoryId.isActive === true);
-
-    const count = await Product.countDocuments(query);
-
-    res.render('showAllProduct', { 
-      products: filteredProductData,
-      totalPages: Math.ceil(count / limit),
-      currentPage: page,
-      selectedCategory
+    const filteredProductData = productData.filter(product => {
+      return product.categoryId && product.categoryId.isActive === true;
     });
+
+    res.render('showAllProduct', { products: filteredProductData });
+
   } catch (error) {
-    console.log(error);
-    res.status(500).send("Internal Server Error");
+    
   }
-};
+ }
 
-const newArrivals = async (req, res) => {
+
+ const newArrivals=async(req,res)=>{
   try {
-    const limit = 10;
-    let page = 1;
-    const selectedCategory = req.query.category || '';
-
-    if (req.query.page) {
-      page = req.query.page;
-    }
-
-    const query = { isActive: true };
-    if (selectedCategory) {
-      query.categoryId = selectedCategory;
-    }
-
-    const productData = await Product.find(query).populate({
+    
+    const productData = await Product.find({ isActive: true }).populate({
       path: 'categoryId',
       match: { isActive: true }
-    }).sort({ listedDate: -1 }).limit(limit).skip((page - 1) * limit);
+    }).sort({listedDate:-1});
 
     // Filter out products with null categoryId (inactive categories)
-    const filteredProductData = productData.filter(product => product.categoryId && product.categoryId.isActive === true);
-
-    const count = await Product.countDocuments(query);
-
-    res.render('showAllProduct', { 
-      products: filteredProductData,
-      totalPages: Math.ceil(count / limit),
-      currentPage: page,
-      selectedCategory
+    const filteredProductData = productData.filter(product => {
+      return product.categoryId && product.categoryId.isActive === true;
     });
+
+    res.render('showAllProduct', { products: filteredProductData });
+
   } catch (error) {
-    console.log(error);
-    res.status(500).send("Internal Server Error");
+    
   }
-};
-//-------------------------sort start----------------------------------------------
+ }
 
 
  const loadChangePassword=async(req,res)=>{
@@ -1068,50 +931,49 @@ const verifyProfileEdit=async(req,res)=>{
   }
 }
 
-
 const searchProduct = async (req, res) => {
   try {
-    const limit = 10;
-    let page = 1;
 
-    if (req.query.page) {
-      page = req.query.page;
+    let limit=10
+
+    let page=1
+    if(req.query.page){
+      page=req.query.page
     }
 
-    const searchProduct = req.body.searchProduct || req.query.searchProduct || '';
-    const selectedCategory = req.query.category || '';
+    const searchProduct = req.body.searchProduct;
+
 
     // Use regex with case-insensitive option
-    const query = { 
-      isActive: true, 
-      product_name: { $regex: new RegExp(searchProduct, 'i') }
-    };
+    const proData = await Product.find({ product_name: { $regex: new RegExp(searchProduct, 'i') } }).limit(limit*1).skip((page-1)*limit).exec();
 
-    if (selectedCategory) {
-      query.categoryId = selectedCategory;
+    const count = await Product.find().sort({ listedDate: -1 }).countDocuments()
+
+    // const proData = await Product.find({ product_name: { $regex: new RegExp('^' + searchProduct.trim().split(' ')[0], 'i') } });
+
+
+    if (proData.length > 0) {
+
+      res.render('showAllProduct',{products:proData,
+        totalPages: Math.ceil(count/limit),
+        currentPage:page
+      })
+    // res.status(200).send({success:true,message:"Product Found",data:proData})
+
+    } else {
+
+      res.render('showAllProduct',{mesg:"Product not found"})
+
+      // res.status(200).send({success:true,message:"Product Not  Found"})
+
     }
 
-    const proData = await Product.find(query)
-      .limit(limit)
-      .skip((page - 1) * limit)
-      .exec();
-
-    const count = await Product.countDocuments(query);
-    const categories = await Category.find({ isActive: true });
-
-    res.render('showAllProduct', {
-      products: proData,
-      totalPages: Math.ceil(count / limit),
-      currentPage: page,
-      searchProduct,
-      selectedCategory,
-      category: categories
-    });
   } catch (error) {
     console.error('Error searching for product:', error);
     res.status(500).send('Internal Server Error');
   }
 };
+
 
 
 
