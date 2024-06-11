@@ -697,13 +697,17 @@ const showProduct=async(req,res)=>{
     const wishlist = await Wishlist.findOne({ userId });
    
     const proData=await Product.find({_id:id}).populate('categoryId')
+
+    const productsData=await Product.find().limit(4)
+
+    // console.log('prodatattttttttttttttttttttttttttt',productsData);
     
     // const wishlistProductCount = wishlist.products.length;
     // const carts = await Cart.findOne({ userId });
     // const cartProductCount = carts.product.length;
 
 
-    res.render('showProduct',{products:proData})
+    res.render('showProduct',{products:proData,productsData})
 
   } catch (error) {
     console.log(error.message);
