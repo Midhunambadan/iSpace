@@ -1067,6 +1067,8 @@ const verifyProfileEdit=async(req,res)=>{
     
   }
 }
+
+
 const searchProduct = async (req, res) => {
   try {
     const limit = 10;
@@ -1077,12 +1079,17 @@ const searchProduct = async (req, res) => {
     }
 
     const searchProduct = req.body.searchProduct || req.query.searchProduct || '';
+    const selectedCategory = req.query.category || '';
 
     // Use regex with case-insensitive option
     const query = { 
       isActive: true, 
-      product_name: { $regex: new RegExp(searchProduct, 'i') } 
+      product_name: { $regex: new RegExp(searchProduct, 'i') }
     };
+
+    if (selectedCategory) {
+      query.categoryId = selectedCategory;
+    }
 
     const proData = await Product.find(query)
       .limit(limit)
@@ -1090,29 +1097,21 @@ const searchProduct = async (req, res) => {
       .exec();
 
     const count = await Product.countDocuments(query);
+    const categories = await Category.find({ isActive: true });
 
-    if (proData.length > 0) {
-      res.render('showAllProduct', {
-        products: proData,
-        totalPages: Math.ceil(count / limit),
-        currentPage: page,
-        searchProduct // Pass search term to preserve it in the query string
-      });
-    } else {
-      res.render('showAllProduct', {
-        products: [],
-        mesg: "Product not found",
-        totalPages: 0,
-        currentPage: page,
-        searchProduct
-      });
-    }
+    res.render('showAllProduct', {
+      products: proData,
+      totalPages: Math.ceil(count / limit),
+      currentPage: page,
+      searchProduct,
+      selectedCategory,
+      category: categories
+    });
   } catch (error) {
     console.error('Error searching for product:', error);
     res.status(500).send('Internal Server Error');
   }
 };
-
 
 
 

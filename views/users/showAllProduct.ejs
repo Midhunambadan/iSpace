@@ -143,30 +143,31 @@
                 </div> -->
 
 
-              <% if (locals.category) { %>
-  <div class="sort-by-cover mr-10">
-    <div class="sort-by-product-wrap">
-      <div class="sort-by">
-        <span><i class="fi-rs-apps"></i>Select Category</span>
-      </div>
-      <div class="sort-by-dropdown-wrap">
-        <span>:All <i class="fi-rs-angle-small-down"></i></span>
-      </div>
-    </div>
-    <div class="sort-by-dropdown">
-      <ul>
-        <% for (let i = 0; i < category.length; i++) { %>
-          <li>
-            <a href="?category=<%= category[i]._id %>&page=1" 
-              class="<%= selectedCategory == category[i]._id ? 'active' : '' %>">
-              <%= category[i].category %>
-            </a>
-          </li>
-        <% } %>
-      </ul>
-    </div>
-  </div>
-<% } %>
+                <% if (locals.category) { %>
+                  <div class="sort-by-cover mr-10">
+                    <div class="sort-by-product-wrap">
+                      <div class="sort-by">
+                        <span><i class="fi-rs-apps"></i>Select Category</span>
+                      </div>
+                      <div class="sort-by-dropdown-wrap">
+                        <span>:All <i class="fi-rs-angle-small-down"></i></span>
+                      </div>
+                    </div>
+                    <div class="sort-by-dropdown">
+                      <ul>
+                        <% for (let i = 0; i < category.length; i++) { %>
+                          <li>
+                            <a href="?category=<%= category[i]._id %>&page=1" 
+                              class="<%= locals.selectedCategory == category[i]._id ? 'active' : '' %>">
+                              <%= category[i].category %>
+                            </a>
+                          </li>
+                        <% } %>
+                      </ul>
+                    </div>
+                  </div>
+                <% } %>
+                
 
 
 
