@@ -640,7 +640,7 @@ const cashOnDeliveryRadio = document.getElementById('cashOnDelivery');
 
 const walletPayRadio=document.getElementById('walletPay')
 
-console.log('walletPayRadio',walletPayRadio);
+// console.log('walletPayRadio',walletPayRadio);
 
 // console.log('cashOnDeliveryRadio',cashOnDeliveryRadio);
 
@@ -847,7 +847,7 @@ else if (paymentOption === 'online gateway') {
         });
     });
 }else {
-    console.log('paymentOption', paymentOption);
+    console.log('paymentOption-------------', paymentOption);
 
     fetch('/paymentByWallet', {
         method: 'POST',

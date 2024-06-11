@@ -162,24 +162,28 @@ const placeOrder=async(req,res)=>{
 }
 
 
+
+
+
+
 const paymentByWallet=async(req,res)=>{
   try {
-    
-    console.log('controller is hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
+
     // const userId=req.session.user_id
 
-    // const wallet=await Wallet.findOne({userId:userId})
+    // let id = req.query.id
+    // req.session.buyNowProductId = id 
+    
+
     // const addressData = await Address.find({_id: req.body.selectedAddress});
     // const cartData = await Cart.findOne({userId: userId});
-    // console.log('user-===================',wallet.balance)
 
 
-    // function generateOrderId() {
+    //     function generateOrderId() {
     //   const timestamp = Date.now().toString(); 
     //   const randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'; 
     //   let orderId = 'ORD'; 
       
-     
     //   while (orderId.length < 6) {
     //       const randomIndex = Math.floor(Math.random() * randomChars.length);
     //       orderId += randomChars.charAt(randomIndex);
@@ -190,26 +194,38 @@ const paymentByWallet=async(req,res)=>{
   
     //  const newOrderId = generateOrderId();
 
+    //  console.log('newOrderId----------------------',newOrderId)
 
 
-  //   const orderData= new Order({
-  //     userId:userId,
-  //     products:cartData.product,
-  //     address:addressData[0],
-  //     paymentMethod:req.body.paymentMethod,
-  //     totalAmount:req.body.amount,
-  //     orderId:newOrderId
-  // })
+    // if (req.body.paymentMethod === "Wallet") {
+    //   paymentStatus = "Received";
+    //   console.log('paymentStatus----------------------',paymentStatus);
 
-  // console.log('orderData====================',orderData);
+    //    // Update the wallet balance and history
+    //    const wallet=await Wallet.findOne({userId:userId})
+    //    if (wallet && wallet.balance >= req.body.amount) {
+    //     wallet.balance -= req.body.amount;
+    //     wallet.transactionHistory.push({
+    //            amount: req.body.amount,
+    //            type: 'Debit'
+    //        });
+    //       const wallData= await wallet.save();
+    //       console.log(wallData)
+    //    } else {
+    //        return res.json({ message: "Insufficient wallet balance" });
+    //    }
 
 
+
+
+
+
+    // }
+    
   } catch (error) {
     
   }
 }
-
-
 
 
   const saveOrder = async (req, res) => {
