@@ -12,6 +12,7 @@ const Order=require('../../models/orderModel')
 const Wishlist=require('../../models/wishlistModel')
 const Wallet=require('../../models/walletModel')
 const Cart=require('../../models/cartModel')
+const Coupon=require('../../models/couponModel')
 
 
 
@@ -451,6 +452,7 @@ const loaduserDashboard = async (req, res) => {
     
     const userId=req.session.user_id
     const wishlist = await Wishlist.findOne({ userId });
+    const coupon=await Coupon.find()
    
     // const wishlistProductCount = wishlist.products.length;
 
@@ -470,7 +472,7 @@ const loaduserDashboard = async (req, res) => {
 
     // console.log('--------------------addressData',addressData.name);
 
-    res.render("userDashboard", { user: userData,address:addressData,orders:orderData,wallet:walletData});
+    res.render("userDashboard", { user: userData,address:addressData,orders:orderData,wallet:walletData,coupon});
   } catch (error) {
     console.log(error.message);
   }

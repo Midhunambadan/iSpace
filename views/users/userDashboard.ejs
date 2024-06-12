@@ -26,6 +26,9 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
 
+
+
+
 <body>
     <%- include('../partials/user/navbar.ejs') %>
 
@@ -63,8 +66,17 @@
                                             <a class="nav-link" id="address-tab" data-bs-toggle="tab" href="#address" role="tab" aria-controls="address" aria-selected="true"><i class="fi-rs-marker mr-10"></i>My Address</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" id="address-tab" data-bs-toggle="tab" href="#wallet" role="tab" aria-controls="address" aria-selected="true"><i class="fi-rs-marker mr-10"></i>Wallet</a>
+                                            <a class="nav-link" id="wallet-tab" data-bs-toggle="tab" href="#wallet" role="tab" aria-controls="wallet" aria-selected="true">
+                                                <i class="fas fa-wallet mr-10"></i>Wallet
+                                            </a>
                                         </li>
+                                        
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="coupon-tab" data-bs-toggle="tab" href="#coupon" role="tab" aria-controls="coupon" aria-selected="true">
+                                                <i class="fas fa-ticket-alt mr-10"></i>Coupons
+                                            </a>
+                                        </li>
+                                        
                                        
                                         <li class="nav-item">
                                             <a class='nav-link' href='/logout'><i class="fi-rs-sign-out mr-10"></i>Logout</a>
@@ -472,10 +484,100 @@
                                             </div>
                                             
                                         </div>
-                                     
                                     </div>
 
 
+
+                                    <style>
+                                        .coupon-item {
+                                            border: 1px solid #ddd;
+                                            border-radius: 8px;
+                                            padding: 20px;
+                                            background-color: #fff;
+                                            margin-bottom: 20px;
+                                            display: flex;
+                                            align-items: center;
+                                            justify-content: space-between;
+                                            transition: background-color 0.3s ease-in-out;
+                                        }
+                                        .coupon-item h4 {
+                                            font-size: 1.25rem;
+                                            color: #007bff;
+                                            margin: 0;
+                                        }
+                                        .coupon-item p {
+                                            margin: 0;
+                                        }
+                                        .copy-btn {
+                                            margin-left: 20px;
+                                        }
+                                        .copied-animation {
+                                            animation: fadeOut 2s forwards;
+                                        }
+                                        @keyframes fadeOut {
+                                            0% { opacity: 1; }
+                                            100% { opacity: 0; }
+                                        }
+                                    </style>
+
+<div class="tab-pane fade" id="coupon" role="tabpanel" aria-labelledby="coupon-tab">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="mb-0">Available Coupons</h3>
+        </div>
+        <div class="card-body contact-from-area">
+            <p>Here are the available coupons you can use on your next purchase:</p>
+
+            <div class="row">
+                <%if(locals.coupon){%>
+                    <%for(let i=0;i< coupon.length;i++){%>
+                    
+                <div class="col-lg-6">
+                    <div class="coupon-item mb-20 card">
+                        <div class="card-body d-flex align-items-center justify-content-between">
+                            <div>
+                                <h4>Coupon Code: <span class="coupon-code"><%=coupon[i].code%></span></h4>
+                                <p>Get <%=coupon[i].discountpercentage%>% off on <br> orders above ₹ <%=coupon[i].minimumAmount%>. <br> Valid until: <%=coupon[i].validUntil.toLocaleDateString('en-GB')%>.</p>
+                            </div>
+                            <button class="btn btn-primary copy-btn">Copy</button>
+                        </div>
+                    </div>
+                </div>
+                <%}%>
+                <%}%>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    // Copy coupon code to clipboard with animation
+    document.querySelectorAll('.copy-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const code = this.previousElementSibling.querySelector('.coupon-code').innerText;
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = this.innerText;
+                this.innerText = 'Copied!';
+                this.classList.add('copied-animation');
+                setTimeout(() => {
+                    this.innerText = originalText;
+                    this.classList.remove('copied-animation');
+                }, 2000);
+            });
+        });
+    });
+</script>
+
+
+                                   
+
+
+
+                                    
 
 
 
