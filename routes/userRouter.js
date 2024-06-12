@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express();
-const userController = require("../controllers/userController");
-const userCartController=require('../controllers/userCartController')
-const addressController=require('../controllers/addressController')
-const productController=require('../controllers/productController')
-const wishlistController=require('../controllers/wishlishController')
-const userOrderController=require('../controllers/userOrderController')
+const userController = require("../controllers/userController/userController");
+const userCartController=require('../controllers/userController/userCartController')
+const addressController=require('../controllers/userController/addressController')
+const productController=require('../controllers/adminController/productController')
+const wishlistController=require('../controllers/userController/wishlishController')
+const userOrderController=require('../controllers/userController/userOrderController')
 
 const session = require("express-session");
 const config = require("../config/config");

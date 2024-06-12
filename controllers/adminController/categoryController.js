@@ -1,6 +1,6 @@
-const Category = require("../models/categoryModel");
-const User = require("../models/userModel");
-const Admin = require("../models/adminModel");
+const Category = require("../../models/categoryModel");
+const User = require("../../models/userModel");
+const Admin = require("../../models/adminModel");
 
 
 // ==================================================================================================================

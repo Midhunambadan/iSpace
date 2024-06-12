@@ -1,10 +1,10 @@
-const { render } = require("../app");
-const Admin = require("../models/adminModel");
-const { findByIdAndUpdate } = require("../models/categoryModel");
-const User = require("../models/userModel");
-const Category = require("../models/categoryModel");
-const Product=require('../models/productModel')
-const Order=require('../models/orderModel')
+const { render } = require("../../app");
+const Admin = require("../../models/adminModel");
+const { findByIdAndUpdate } = require("../../models/categoryModel");
+const User = require("../../models/userModel");
+const Category = require("../../models/categoryModel");
+const Product=require('../../models/productModel')
+const Order=require('../../models/orderModel')
 // const cron = require('node-cron');
 const bcrypt = require("bcrypt");
 const randomstring=require('randomstring')

@@ -1,17 +1,17 @@
 const express = require("express");
-const User = require("../models/userModel");
+const User = require("../../models/userModel");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const randomstring=require('randomstring')
 const otpGenerator = require("otp-generator");
-const Admin = require("../models/adminModel");
-const Product=require('../models/productModel')
-const Category=require('../models/categoryModel')
-const Address=require('../models/addressModel')
-const Order=require('../models/orderModel')
-const Wishlist=require('../models/wishlistModel')
-const Wallet=require('../models/walletModel')
-const Cart=require('../models/cartModel')
+const Admin = require("../../models/adminModel");
+const Product=require('../../models/productModel')
+const Category=require('../../models/categoryModel')
+const Address=require('../../models/addressModel')
+const Order=require('../../models/orderModel')
+const Wishlist=require('../../models/wishlistModel')
+const Wallet=require('../../models/walletModel')
+const Cart=require('../../models/cartModel')
 
 
 

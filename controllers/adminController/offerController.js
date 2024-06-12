@@ -1,5 +1,5 @@
-const Category=require('../models/categoryModel')
-const Product=require('../models/productModel')
+const Category=require('../../models/categoryModel')
+const Product=require('../../models/productModel')
 
 
 const loadOfferPage=async(req,res)=>{

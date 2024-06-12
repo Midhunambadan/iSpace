@@ -1,9 +1,9 @@
-const Order=require('../models/orderModel')
-const Cart=require('../models/cartModel')
-const Product=require('../models/productModel')
-const User=require('../models/userModel')
-const Address=require('../models/addressModel')
-const Wallet=require('../models/walletModel')
+const Order=require('../../models/orderModel')
+const Cart=require('../../models/cartModel')
+const Product=require('../../models/productModel')
+const User=require('../../models/userModel')
+const Address=require('../../models/addressModel')
+const Wallet=require('../../models/walletModel')
 
 const Razorpay = require('razorpay');
 

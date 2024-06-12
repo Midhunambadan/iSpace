@@ -3,14 +3,14 @@ const admin_router = express();
 
 const path=require('path')
 
-const adminController = require("../controllers/adminController");
-const categoryController=require("../controllers/categoryController")
-const userController=require('../controllers/userController')
-const productController=require('../controllers/productController')
-const adminOrderController=require('../controllers/adminOrderController')
-const adminCouponController=require('../controllers/adminCouponController')
-const offerController=require('../controllers/offerController')
-const salesReportController=require('../controllers/salesReportController')
+const adminController = require("../controllers/adminController/adminController");
+const categoryController=require("../controllers/adminController/categoryController")
+const userController=require('../controllers/userController/userController')
+const productController=require('../controllers/adminController/productController')
+const adminOrderController=require('../controllers/adminController/adminOrderController')
+const adminCouponController=require('../controllers/adminController/adminCouponController')
+const offerController=require('../controllers/adminController/offerController')
+const salesReportController=require('../controllers/adminController/salesReportController')
 
 const config = require("../config/config");
 const session = require("express-session");

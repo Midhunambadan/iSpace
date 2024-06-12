@@ -1,5 +1,5 @@
 
-const Coupon=require('../models/couponModel')
+const Coupon=require('../../models/couponModel')
 
 const loadCoupon=async(req,res)=>{
     try {

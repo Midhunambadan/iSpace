@@ -1,6 +1,6 @@
 
-const Wishlist=require('../models/wishlistModel')
-const Product=require('../models/productModel')
+const Wishlist=require('../../models/wishlistModel')
+const Product=require('../../models/productModel')
 
 
 

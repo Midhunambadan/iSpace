@@ -1,11 +1,11 @@
- const Cart=require('../models/cartModel')
- const Product=require('../models/productModel')
- const User=require('../models/userModel')
- const Address=require('../models/addressModel')
- const Order=require('../models/orderModel')
- const Wallet=require('../models/walletModel')
- const Coupon=require('../models/couponModel')
- const Wishlist=require('../models/wishlistModel')
+ const Cart=require('../../models/cartModel')
+ const Product=require('../../models/productModel')
+ const User=require('../../models/userModel')
+ const Address=require('../../models/addressModel')
+ const Order=require('../../models/orderModel')
+ const Wallet=require('../../models/walletModel')
+ const Coupon=require('../../models/couponModel')
+ const Wishlist=require('../../models/wishlistModel')
 
 
  // userCart
