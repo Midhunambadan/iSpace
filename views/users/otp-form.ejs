@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OTP Verification Form</title>
+<link rel="shortcut icon" type="image/x-icon" href="https://www.edigitalagency.com.au/wp-content/uploads/Apple-logo-white-png.png">
+
 <style>
     body {
         font-family: Arial, sans-serif;
@@ -67,85 +69,98 @@
 </style>
 </head>
 <body>
-  
-
-<div class="container">
-    <h2>OTP Verification</h2>
-
-    <% if (locals.message) { %>
-        <p id="message"><%= message %></p>
-    <% } %>
+    <div class="container">
+        <h2>OTP Verification</h2>
     
-   
-    <form action="/verifyOtp" method="post">
-        <label for="otp">Enter OTP:</label>
-        <input type="text" id="otp" name="otp" maxlength="4" pattern="\d{4}" required><br>
-        <input type="submit" value="Verify OTP"  >
-        <a href="/getOtp"><button type="button" id="resend-btn" onclick="resendOTP()" hidden>Resend OTP</button></a>
-        <!-- <button type="button" id="resend-btn" onclick="resendOTP()" hidden>Resend OTP</button> -->
-        <p id="timer">Time remaining: <span id="time">30</span> seconds</p>
-        <span id="otpExpired" class="text-danger"></span>
-        <span class="text-danger" id="incorrectOtp"></span>
+        <% if (locals.message) { %>
+            <p id="message"><%= message %></p>
+        <% } %>
         
-    </form>
-</div>
-
-<script>
-    // Hide the message after 5 seconds
-    setTimeout(() => {
-        const messageElement = document.getElementById('message');
-        if (messageElement) {
-            messageElement.style.display = 'none';
-        }
-    }, 3000); // 5000 milliseconds = 5 seconds
-</script>
-
-<script>
-    // Function to handle OTP resend and timer
-    function startTimer() {
-        // Set the timer for 60 seconds
-        let seconds = 30;
-        const timerElement = document.getElementById('time');
-        const timerInterval = setInterval(function () {
-            seconds--;
-            timerElement.textContent = seconds;
-
-            if (seconds <= 0) {
-                // Timer expired, call the specified function
-                timerExpired();
-                clearInterval(timerInterval);
+        <form id="otpForm" action="/verifyOtp" method="post">
+            <label for="otp">Enter OTP:</label>
+            <input type="text" id="otp" name="otp" maxlength="4" pattern="\d{4}" required><br>
+            <input type="submit" value="Verify OTP">
+            <a href="/getOtp"><button type="button" id="resend-btn" onclick="resendOTP()" hidden>Resend OTP</button></a>
+            <p id="timer">Time remaining: <span id="time">60</span> seconds</p>
+            <span id="otpExpired" class="text-danger"></span>
+            <span class="text-danger" id="incorrectOtp"><%= message == "Please Enter correct OTP !!!" ? "Incorrect OTP" : "" %></span>
+        </form>
+    </div>
+    
+    <script>
+        // Hide the message after 5 seconds
+        setTimeout(() => {
+            const messageElement = document.getElementById('message');
+            if (messageElement) {
+                messageElement.style.display = 'none';
             }
-        }, 1000);
-    }
-
-    // Function to handle what happens when the timer expires
-    function timerExpired() {
-        document.getElementById('otpExpired').innerText = "OTP Expired";
-        document.getElementById('resend-btn').hidden = false;
-    }
-
-    // Function to handle OTP resend
-    function resendOTP() {
-        document.getElementById('otpExpired').innerText = "";
-        document.getElementById('resend-btn').hidden = true;
-
-        // Perform OTP resend logic here (e.g., make an API call)
-        // Start the 60-second timer
-        startTimer();
-    }
-
-    var incorrectOtpDiv = document.getElementById('incorrectOtp');
-    var message = incorrectOtpDiv.innerText.trim();
-
-    if (message) {
-        // Set a timeout to clear the content after 10 seconds
-        setTimeout(function () {
-            incorrectOtpDiv.innerHTML = ''; // Clear the content
-        }, 10000);
-    }
-
-    startTimer();
-</script>
+        }, 5000); // 5000 milliseconds = 5 seconds
+    
+        let timerInterval;
+    
+        function startTimer() {
+            let remainingTime = parseInt(localStorage.getItem('otpTimer')) || 60;
+            const endTime = localStorage.getItem('otpEndTime') || (Date.now() + remainingTime * 1000);
+    
+            document.getElementById('time').textContent = remainingTime;
+    
+            timerInterval = setInterval(function () {
+                remainingTime = Math.ceil((endTime - Date.now()) / 1000);
+                if (remainingTime <= 0) {
+                    timerExpired();
+                    clearInterval(timerInterval);
+                    localStorage.removeItem('otpTimer');
+                    localStorage.removeItem('otpEndTime');
+                    document.getElementById('time').textContent = 0; // Ensure the display shows 0 when time is up
+                } else {
+                    document.getElementById('time').textContent = remainingTime;
+                    localStorage.setItem('otpTimer', remainingTime);
+                }
+            }, 1000);
+        }
+    
+        function timerExpired() {
+            document.getElementById('otpExpired').innerText = "OTP Expired";
+            document.getElementById('resend-btn').hidden = false;
+        }
+    
+        function resendOTP() {
+            document.getElementById('otpExpired').innerText = "";
+            document.getElementById('resend-btn').hidden = true;
+    
+            // Perform OTP resend logic here (e.g., make an API call)
+            // Reset the timer
+            const newEndTime = Date.now() + 60 * 1000;
+            localStorage.setItem('otpTimer', 60);
+            localStorage.setItem('otpEndTime', newEndTime);
+            startTimer();
+        }
+    
+        document.addEventListener("DOMContentLoaded", function() {
+            var incorrectOtpDiv = document.getElementById('incorrectOtp');
+            var message = incorrectOtpDiv.innerText.trim();
+    
+            if (message) {
+                // Set a timeout to clear the content after 10 seconds
+                setTimeout(function () {
+                    incorrectOtpDiv.innerHTML = ''; // Clear the content
+                }, 10000);
+            }
+    
+            startTimer(); // Start the timer when the page loads
+        });
+    
+        document.getElementById('otpForm').addEventListener('submit', function(event) {
+            // If the OTP is incorrect, prevent form submission
+            var incorrectOtpMessage = document.getElementById('incorrectOtp').innerText.trim();
+            if (incorrectOtpMessage === 'Incorrect OTP') {
+                event.preventDefault();
+                // Display an error message
+                document.getElementById('incorrectOtp').innerText = "Incorrect OTP, please try again.";
+            }
+        });
+    </script>
+    
 
 </body>
 </html>
