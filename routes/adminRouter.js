@@ -99,7 +99,8 @@ admin_router.get('/product-unblock',adminAuth.isLogin,productController.UnBlockP
 
 
 admin_router.get('/load-coupon',adminAuth.isLogin,adminCouponController.loadCoupon)
-admin_router.post('/add-coupon',adminCouponController.addCoupon)
+admin_router.post('/add-coupon',adminAuth.isLogin,adminCouponController.addCoupon)
+// admin_router.post('/add-coupon',adminCouponController.addCoupon)
 admin_router.get('/delete-coupon',adminAuth.isLogin,adminCouponController.deleteCoupon)
 admin_router.get('/block-coupon',adminAuth.isLogin,adminCouponController.couponBlock)
 

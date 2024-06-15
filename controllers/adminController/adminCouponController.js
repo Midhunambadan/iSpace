@@ -15,6 +15,7 @@ const loadCoupon=async(req,res)=>{
 
 const addCoupon=async(req,res)=>{
     try {
+        console.log("workedd add coupon....................")
         const {code,discountpercentage,minimumAmount,validUntil}=req.body
         console.log("body :",req.body)
         const coupon = new Coupon({
