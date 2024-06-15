@@ -3,10 +3,7 @@ const mongoose = require('mongoose');
 
 const couponModel = new mongoose.Schema({
 
-    name:{type:String,
-        required:true,
-        unique:true
-    },
+   
     code: { type: String,
          required: true, 
          unique: true  

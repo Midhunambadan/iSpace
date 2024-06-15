@@ -18,7 +18,7 @@ const addCoupon=async(req,res)=>{
         const {code,discountpercentage,minimumAmount,validUntil}=req.body
 
         const coupon = new Coupon({
-           name:"jjdfd",
+        
             code: code,
             discountpercentage:discountpercentage,
             minimumAmount:minimumAmount,
