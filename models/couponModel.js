@@ -8,15 +8,15 @@ const couponModel = new mongoose.Schema({
          required: true, 
          unique: true  
         },
-    discountpercentage: { 
+     discountpercentage: { 
         type: Number, 
         required: true 
      },
-    minimumAmount: { 
+     minimumAmount: { 
         type: Number,
         required: true 
         },
-    validUntil: { 
+        validUntil: { 
         type: Date,
         required: true 
          },

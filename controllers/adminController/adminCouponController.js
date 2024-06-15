@@ -16,7 +16,7 @@ const loadCoupon=async(req,res)=>{
 const addCoupon=async(req,res)=>{
     try {
         const {code,discountpercentage,minimumAmount,validUntil}=req.body
-
+        console.log("body :",req.body)
         const coupon = new Coupon({
         
             code: code,
@@ -25,8 +25,11 @@ const addCoupon=async(req,res)=>{
             validUntil:validUntil
 
           });
+          console.log("coupon  :",coupon)
+
 
           const couponData=await coupon.save();
+          console.log("COupon data :",couponData)
 
         //   if(couponData){
         //     res.status(200).json({success:true,message:"Coupon added successful!"})
