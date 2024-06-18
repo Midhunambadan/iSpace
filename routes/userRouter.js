@@ -99,6 +99,9 @@ router.get('/checkout',auth.isLogin,userCartController.userCheckout)
 
 router.post('/insert-checkout-address',userCartController.insertCheckoutAddress)
 router.get('/delete-checkout-address/:id',auth.isLogin,userCartController.deleteCheckoutAddress)
+
+router.get('/edit-checkout-address',auth.isLogin,userCartController.editCheckoutAddress)
+router.post('/edit-checkout-address',auth.isLogin,userCartController.verifyEditCheckoutAddress)
 // router.post('/edit-Address',addressController.verifyEditAddress)
 
 

@@ -489,9 +489,7 @@ const loadOrderDetails=async(req,res)=>{
 
   const orderData = await Order.find({ _id: Id })
 
-  // console.log(userDetails,'userDetails---------------------');
 
-  // console.log(orderDetails,'orderDetails---------------------');
   let totalSum = orderDetails.products.reduce((sum, product) => {
     if (product.productId) {
         return sum + (product.productId.MRP * product.quantity);
@@ -507,13 +505,8 @@ const loadOrderDetails=async(req,res)=>{
     
   }
 }
-// console.log("user Order details")
 
-//         const orderId= req.query.id
 
-//         const orderDetails= await Order.findById(orderId).populate('userId').populate('products.productId')
-
-//         res.render("userOrderDetails",{orderDetails})
 
 
 

@@ -98,7 +98,7 @@
                                                 <th width="20%">Unit Price</th>
                                                 <th width="20%">Quantity</th>
                                                 <th width="20%">Total</th>
-                                                <th width="20%" class="text-end">Action</th>
+                                                <!-- <th width="20%" class="text-end">Action</th> -->
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -121,7 +121,6 @@
                                                     <td>₹<%= orders.products[i].productId.MRP %></td>
                                                     <td><%= orders.products[i].quantity %></td>
                                                     <td>₹ <%= productTotal %></td>
-                                                    <td class="badge bg-secondary"><%= orders.products[i].status || 'Status' %></td>
                                                 </tr>
                                             <% 
                                                 } else { 
@@ -166,7 +165,7 @@
                 <div class="col-sm-6">
                     <script>
                     document.write(new Date().getFullYear())
-                    </script> ©, Evara - HTML Ecommerce Template .
+                    </script> ©,iSpace Ltd .
                 </div>
                 <div class="col-sm-6">
                     <div class="text-sm-end">

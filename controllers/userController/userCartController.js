@@ -239,6 +239,64 @@ const deleteCheckoutAddress=async(req,res)=>{
 }
 
 
+const editCheckoutAddress = async (req, res) => {
+  try {
+    const id = req.query.id;
+    console.log('hiiiiiiiiiiiiiiiiiiiiiiiiiiii', id);
+
+    const address = await Address.findById(id);
+
+    if (!address) {
+      return res.status(404).send('Address not found');
+    }
+
+    console.log("nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn", address);
+
+    res.render('editCheckOutAddress', { address });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+}
+
+
+const verifyEditCheckoutAddress=async(req,res)=>{
+  try {
+
+    const userId = req.session.user_id
+    const { name, mobile, houseName, street, city, state, pincode } = req.body;
+    const user = await User.findById(userId)
+
+    // console.log('req.body---------------',req.body,user);
+
+    if(!user){
+        return
+    }
+    const address = new Address({
+        user: userId, 
+        name: name,
+        mobile: mobile,
+        houseName: houseName,
+        street: street,
+        city: city,
+        state: state,
+        pincode: pincode
+    });
+
+    console.log('addresssssssss',address);
+    // Save the address to the database
+    await address.save();
+    
+    res.redirect('/checkout')
+  } catch (error) {
+    
+  }
+}
+
+
+
+
+
 const applyCoupon=async(req,res)=>{
   try {
     
@@ -342,6 +400,8 @@ res.redirect('/checkout');
 
     insertCheckoutAddress,
     deleteCheckoutAddress,
+    editCheckoutAddress,
+    verifyEditCheckoutAddress,
 
     applyCoupon,
     removeCoupon

@@ -334,6 +334,14 @@ document.getElementById('removeCouponBtn').addEventListener('click', async funct
                                                     <button type="button" class="btn btn-danger" onclick="deleteAddress('<%= locals.address[j]._id %>')">
                                                         <i class="bi bi-trash"></i> <!-- Trash icon for delete -->
                                                     </button>
+
+
+                                                    <a href="/edit-checkout-address?id=<%=address[j]._id%>">
+                                                        <i class="bi bi-pencil" ></i> 
+                                                    </a>
+
+                                                   
+                                                    
                                                     
                                                 </div>
                                                 
