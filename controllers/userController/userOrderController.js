@@ -225,12 +225,15 @@ const paymentByWallet=async(req,res)=>{
         userId:userId,
         products:cartData.product,
         address:addressData[0],
+        paymentStatus : "Recieved",
         paymentMethod:req.body.paymentMethod,
         totalAmount:req.body.amount,
         orderId:newOrderId
     })
     
     const newOrder=  await orderData.save()
+
+    console.log('newOrder-----------',newOrder)
     
     
 
