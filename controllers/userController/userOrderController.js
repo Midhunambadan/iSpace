@@ -348,19 +348,19 @@ res.status(200).json({ message: 'success' });
 
 
 
-
-
-
-
-
-
   const loadInvoice=async(req,res)=>{
     try {
 
       const orderId=req.query.id
+      // console.log('herrrrrrrrrrrrrrrrrrrrrrrre',orderId);
+
+     
 
       const order=await Order.findById(orderId).populate('userId').populate('products.productId')
-      console.log('order----------------',order);
+      // console.log('order----------------',order);
+
+      res.render('invoice',{order})
+
     } catch (error) {
       
     }

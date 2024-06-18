@@ -491,7 +491,7 @@ const loadOrderDetails=async(req,res)=>{
 
   // console.log(userDetails,'userDetails---------------------');
 
-  console.log(orderDetails,'orderDetails---------------------');
+  // console.log(orderDetails,'orderDetails---------------------');
   let totalSum = orderDetails.products.reduce((sum, product) => {
     if (product.productId) {
         return sum + (product.productId.MRP * product.quantity);
@@ -529,7 +529,7 @@ const userOrderCancel=async(req,res)=>{
         if (!order) {
             return res.status(404).json({ message: "Order not found" });
         }
-        console.log('userOrdercontroller--------------------------------------------------------------------',order);
+        // console.log('userOrdercontroller--------------------------------------------------------------------',order);
 
             // Change the order status to "Cancelled"
           //   order.orderStatus = 'Cancelled';
@@ -538,7 +538,7 @@ const userOrderCancel=async(req,res)=>{
             // // Update order status to 'Cancelled'
         const orderCancelled = await Order.findByIdAndUpdate(orderId, { $set: { orderStatus: 'Cancelled' } });
 
-          console.log('ppppppppppppppppppppppp',orderCancelled);
+          // console.log('ppppppppppppppppppppppp',orderCancelled);
 
          // Increase the product stock for each item in the canceled order
         const orderItems=order.products

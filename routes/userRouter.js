@@ -134,7 +134,7 @@ router.patch("/save-order",auth.isLogin, userOrderController.saveOrder)
 router.post('/apply-coupon',userCartController.applyCoupon)
 router.post('/remove-coupon',userCartController.removeCoupon)
 
-router.get('/invoice',userOrderController.loadInvoice)
+router.get('/loadInvoice',userOrderController.loadInvoice)
 
 
 module.exports = router;
