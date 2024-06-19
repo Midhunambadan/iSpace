@@ -712,54 +712,96 @@ const showProduct=async(req,res)=>{
 // ==================================================================================================================
 
 
-
 const loadAllProduct = async (req, res) => {
   try {
+    let limit = 10;
+    let page = req.query.page ? parseInt(req.query.page) : 1;
 
-    let limit=10
+    const searchCategory = req.query.category;
+    const searchProduct = req.body.searchProduct;
 
-      let page=1
-      if(req.query.page){
-        page=req.query.page
-      }
+    const categoryQuery = searchCategory ? { categoryId: searchCategory, isActive: true } : { isActive: true };
+    const productQuery = searchProduct ? { ...categoryQuery, product_name: { $regex: searchProduct, $options: 'i' } } : categoryQuery;
 
-    const searchCategory=req.query.category
+    const cateData = await Category.find();
 
-    const searchCateData=await Category.findById(searchCategory)
-
-    console.log('searchCateData-----------------------------------------------------',searchCateData)
-
-    const reqProduct=req.body.searchProduct
-
-    const cateData=await Category.find()
-
-
-
-
-    const productData = await Product.find({ isActive: true }).populate({
-      path: 'categoryId',
-      match: { isActive: true }
-    }).limit(limit*1).skip((page-1)*limit).exec();;
+    const productData = await Product.find(productQuery)
+      .populate({
+        path: 'categoryId',
+        match: { isActive: true }
+      })
+      .limit(limit)
+      .skip((page - 1) * limit)
+      .exec();
 
     // Filter out products with null categoryId (inactive categories)
-    const filteredProductData = productData.filter(product => {
-      return product.categoryId && product.categoryId.isActive === true;
+    const filteredProductData = productData.filter(product => product.categoryId && product.categoryId.isActive === true);
+
+    const count = await Product.find(categoryQuery).countDocuments();
+
+    res.render('showAllProduct', {
+      products: filteredProductData,
+      category: cateData,
+      totalPages: Math.ceil(count / limit),
+      currentPage: page
     });
-
-    const count = await Product.find().sort({ listedDate: -1 }).countDocuments()
-
-
-
-    res.render('showAllProduct', 
-    { products: filteredProductData,
-      category:cateData, 
-      totalPages: Math.ceil(count/limit),
-      currentPage:page});
-
   } catch (error) {
     console.log(error);
   }
 };
+
+
+
+
+
+
+
+
+
+// const loadAllProduct = async (req, res) => {
+//   try {
+
+//     let limit=10
+
+//       let page=1
+//       if(req.query.page){
+//         page=req.query.page
+//       }
+
+//     const searchCategory=req.query.category
+
+//     const searchCateData=await Category.findById(searchCategory)
+
+
+//     const reqProduct=req.body.searchProduct
+
+//     const cateData=await Category.find()
+
+
+//     const productData = await Product.find({ isActive: true }).populate({
+//       path: 'categoryId',
+//       match: { isActive: true }
+//     }).limit(limit*1).skip((page-1)*limit).exec();;
+
+//     // Filter out products with null categoryId (inactive categories)
+//     const filteredProductData = productData.filter(product => {
+//       return product.categoryId && product.categoryId.isActive === true;
+//     });
+
+//     const count = await Product.find().sort({ listedDate: -1 }).countDocuments()
+
+
+
+//     res.render('showAllProduct', 
+//     { products: filteredProductData,
+//       category:cateData, 
+//       totalPages: Math.ceil(count/limit),
+//       currentPage:page});
+
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
 
 
 //-------------------------sort start----------------------------------------------
