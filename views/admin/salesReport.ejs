@@ -116,7 +116,7 @@
 
                     <div class="card-body">
                         <div class="table-responsive">
-                            <% if (totalOrder) { %>
+                            <% if (locals.totalOrder) { %>
                             <table class="table table-hover" id="">
                                 <thead>
                                     <tr>
@@ -130,11 +130,11 @@
                                 <tbody>
                                     <% for (let i = 0; i < totalOrder.length; i++) { %>
                                     <tr>
-                                        <td><%= totalOrder[i].orderId %></td>
-                                        <td><b><%= totalOrder[i].userId.name %></b></td>
-                                        <td><%= totalOrder[i].paymentMethod %></td>
-                                        <td><span><%= totalOrder[i].totalAmount %></span></td>
-                                        <td><%= totalOrder[i].orderDate.toDateString()%></td>
+                                        <td><%=totalOrder[i].orderId%></td>
+                                        <td><b><%=totalOrder[i].userId.name%></b></td>
+                                        <td><%=totalOrder[i].paymentMethod%></td>
+                                        <td><span><%=totalOrder[i].totalAmount%></span></td>
+                                        <td><%=totalOrder[i].orderDate.toDateString()%></td>
                                     </tr>
                                     <% } %>
                                 </tbody>

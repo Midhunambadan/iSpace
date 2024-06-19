@@ -7,7 +7,7 @@ const loadSalesReport=async(req,res)=>{
         const {sDate,eDate}=req.body
         const totalOrder=await Order.find({orderStatus:'Delivered',paymentStatus:'Recieved'}).populate('userId')
         
-
+console.log('totalorders',totalOrder);
 
         const totalSum = totalOrder.reduce((sum, order) => {
             sum= sum+parseInt(order.totalAmount)
