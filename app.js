@@ -4,6 +4,7 @@
 require('dotenv').config();
 
 // Now you can access the MongoDB URI from the environment variable
+
 const mongoose = require('mongoose');
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
@@ -48,9 +49,7 @@ app.use('/',userRouter)
 app.use('/admin',adminRouter)
 
 
-// app.use('*',(req,res)=>{
-//   res.render('error')
-// })
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
