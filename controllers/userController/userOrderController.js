@@ -9,11 +9,11 @@ const Razorpay = require('razorpay');
 
 
 
-var instance = new Razorpay({
-  key_id:process.env.KEYID,
-  key_secret:process.env.KEYSECRET
+// var instance = new Razorpay({
+//   key_id:process.env.KEYID,
+//   key_secret:process.env.KEYSECRET
 
-});
+// });
 
 
 

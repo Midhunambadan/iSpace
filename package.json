@@ -37,5 +37,15 @@
   "main": "app.js",
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Midhunambadan/iSpace.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/Midhunambadan/iSpace/issues"
+  },
+  "homepage": "https://github.com/Midhunambadan/iSpace#readme"
 }
