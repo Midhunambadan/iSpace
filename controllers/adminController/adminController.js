@@ -3,24 +3,18 @@ const Admin = require("../../models/adminModel");
 const { findByIdAndUpdate } = require("../../models/categoryModel");
 const User = require("../../models/userModel");
 const Category = require("../../models/categoryModel");
-const Product=require('../../models/productModel')
-const Order=require('../../models/orderModel')
+const Product = require("../../models/productModel");
+const Order = require("../../models/orderModel");
 // const cron = require('node-cron');
 const bcrypt = require("bcrypt");
-const randomstring=require('randomstring')
 
-
-const invalidPage=async(req,res)=>{
+const invalidPage = async (req, res) => {
   try {
-    res.render('404')
-  } catch (error) {
-    
-  }
-}
-
+    res.render("404");
+  } catch (error) {}
+};
 
 // // ==================================================================================================================
-
 
 const securePassword = async (password) => {
   try {
@@ -48,7 +42,7 @@ const verifySignup = async (req, res) => {
   try {
     const { username, email, password, mobile } = req.body;
     const spassword = await securePassword(password);
-  
+
     const adminData = new Admin({
       name: username,
       email: email,
@@ -75,11 +69,10 @@ const verifySignup = async (req, res) => {
 
 const verifyLogin = async (req, res) => {
   try {
-   
     const email = req.body.email;
     const password = req.body.password;
 
-    const adminData = await Admin.findOne({ email: email});
+    const adminData = await Admin.findOne({ email: email });
 
     if (adminData) {
       const matchPassword = await bcrypt.compare(password, adminData.password);
@@ -90,7 +83,6 @@ const verifyLogin = async (req, res) => {
         } else {
           req.session.admin_id = adminData._id;
           res.redirect("/admin/home");
-          // res.render('home')
         }
       } else {
         res.render("adminLogin", {
@@ -109,269 +101,240 @@ const verifyLogin = async (req, res) => {
 
 const loadAdminDashboard = async (req, res) => {
   try {
-    const orders=await Order.find({ paymentStatus: 'Recieved',
-    orderStatus: 'Delivered',}).countDocuments()
-    const product=await Product.find().countDocuments()
-    const category=await Category.find().countDocuments()
-    const products=await Product.find()
+    const orders = await Order.find({
+      paymentStatus: "Recieved",
+      orderStatus: "Delivered",
+    }).countDocuments();
+    const product = await Product.find().countDocuments();
+    const category = await Category.find().countDocuments();
+    const products = await Product.find();
 
     const totalOrder = await Order.find({
-      paymentStatus: 'Recieved',
-      orderStatus: 'Delivered',
-  }).populate('userId');
+      paymentStatus: "Recieved",
+      orderStatus: "Delivered",
+    }).populate("userId");
 
-  const totalSum = totalOrder.reduce((sum, order) => {
-      sum= sum+parseInt(order.totalAmount)
-      return sum
-  },0);
+    const totalSum = totalOrder.reduce((sum, order) => {
+      sum = sum + parseInt(order.totalAmount);
+      return sum;
+    }, 0);
 
+    const order = await Order.find({
+      paymentStatus: "Recieved",
+      orderStatus: "Delivered",
+    });
 
-  const order = await Order.find({ 
-    paymentStatus: 'Recieved',
-    orderStatus: 'Delivered'});
+    const orderCountsByMonth = Array.from({ length: 12 }, () => 0);
 
+    order.forEach((order) => {
+      const monthIndex = order.orderDate.getMonth();
+      orderCountsByMonth[monthIndex]++;
+    });
 
-  const orderCountsByMonth = Array.from({ length: 12 }, () => 0);
-
-  order.forEach(order => {
-    const monthIndex = order.orderDate.getMonth();
-    orderCountsByMonth[monthIndex]++;
-});
-
-
-const productCountsByMonth = Array.from({ length: 12 }, () => 0);
-products.forEach(product => {
-    const monthIndex = product.listedDate.getMonth();
-    productCountsByMonth[monthIndex]++;
-});
-const orderCountsByYearData = await Order.aggregate([
-    {
+    const productCountsByMonth = Array.from({ length: 12 }, () => 0);
+    products.forEach((product) => {
+      const monthIndex = product.listedDate.getMonth();
+      productCountsByMonth[monthIndex]++;
+    });
+    const orderCountsByYearData = await Order.aggregate([
+      {
         $group: {
-            _id: { $year: "$orderDate" },
-            orderCount: { $sum: 1 }
-        }
-    },
-    {
-        $sort: { "_id": 1 }
-    }
-]);
+          _id: { $year: "$orderDate" },
+          orderCount: { $sum: 1 },
+        },
+      },
+      {
+        $sort: { _id: 1 },
+      },
+    ]);
 
+    const orderCountsByYear = [];
+    let currentYearIndex = 0;
+    const currentYear = new Date().getFullYear();
 
+    for (let i = 0; i < orderCountsByYearData.length; i++) {
+      const year = orderCountsByYearData[i]._id;
+      const orderCount = orderCountsByYearData[i].orderCount;
 
-
-const orderCountsByYear = [];
-let currentYearIndex = 0;
-const currentYear = new Date().getFullYear();
-
-for (let i = 0; i < orderCountsByYearData.length; i++) {
-    const year = orderCountsByYearData[i]._id;
-    const orderCount = orderCountsByYearData[i].orderCount;
-
-    while (currentYear - 5 + currentYearIndex < year) {
+      while (currentYear - 5 + currentYearIndex < year) {
         orderCountsByYear.push(0);
         currentYearIndex++;
+      }
+
+      orderCountsByYear.push(orderCount);
+      currentYearIndex++;
     }
 
-    orderCountsByYear.push(orderCount);
-    currentYearIndex++;
-}
+    while (currentYear - 5 + currentYearIndex <= currentYear + 6) {
+      orderCountsByYear.push(0);
+      currentYearIndex++;
+    }
 
-while (currentYear - 5 + currentYearIndex <= currentYear + 6) {
-    orderCountsByYear.push(0);
-    currentYearIndex++;
-}
-
-
-const productCountsByYearData = await Product.aggregate([
-    {
+    const productCountsByYearData = await Product.aggregate([
+      {
         $group: {
-            _id: { $year: "$listedDate" },
-            productCount: { $sum: 1 }
-        }
-    },
-    {
-        $sort: { "_id": 1 }
-    }
-]);
-const productCountsByYear = [];
-let currentYearIndex1 = 0;
-const currentYear1 = new Date().getFullYear();
+          _id: { $year: "$listedDate" },
+          productCount: { $sum: 1 },
+        },
+      },
+      {
+        $sort: { _id: 1 },
+      },
+    ]);
+    const productCountsByYear = [];
+    let currentYearIndex1 = 0;
+    const currentYear1 = new Date().getFullYear();
 
-for (let i = 0; i < productCountsByYearData.length; i++) {
-    const year = productCountsByYearData[i]._id;
-    const productCount = productCountsByYearData[i].productCount;
+    for (let i = 0; i < productCountsByYearData.length; i++) {
+      const year = productCountsByYearData[i]._id;
+      const productCount = productCountsByYearData[i].productCount;
 
-    while (currentYear1 - 5 + currentYearIndex1 < year) {
+      while (currentYear1 - 5 + currentYearIndex1 < year) {
         productCountsByYear.push(0);
         currentYearIndex1++;
+      }
+
+      productCountsByYear.push(productCount);
+      currentYearIndex1++;
     }
 
-    productCountsByYear.push(productCount);
-    currentYearIndex1++;
-}
+    while (currentYear1 - 5 + currentYearIndex1 <= currentYear1 + 6) {
+      productCountsByYear.push(0);
+      currentYearIndex1++;
+    }
 
-while (currentYear1 - 5 + currentYearIndex1 <= currentYear1 + 6) {
-    productCountsByYear.push(0);
-    currentYearIndex1++;
-}
-
-
-const totalAmountByYearData = await Order.aggregate([
-    {
+    const totalAmountByYearData = await Order.aggregate([
+      {
         $group: {
-            _id: { $year: "$orderDate" },
-            totalAmount: { $sum: { $toDouble: "$totalAmount" } }
-        }
-    },
-    {
-        $sort: { "_id": 1 }
-    }
-]);
+          _id: { $year: "$orderDate" },
+          totalAmount: { $sum: { $toDouble: "$totalAmount" } },
+        },
+      },
+      {
+        $sort: { _id: 1 },
+      },
+    ]);
 
-const totalAmountByYear = [];
-let currentYearIndex2 = 0;
-const currentYear2 = new Date().getFullYear();
+    const totalAmountByYear = [];
+    let currentYearIndex2 = 0;
+    const currentYear2 = new Date().getFullYear();
 
-for (let i = 0; i < totalAmountByYearData.length; i++) {
-    const year = totalAmountByYearData[i]._id;
-    const totalAmount = totalAmountByYearData[i].totalAmount;
+    for (let i = 0; i < totalAmountByYearData.length; i++) {
+      const year = totalAmountByYearData[i]._id;
+      const totalAmount = totalAmountByYearData[i].totalAmount;
 
-    while (currentYear2 - 5 + currentYearIndex2 < year) {
+      while (currentYear2 - 5 + currentYearIndex2 < year) {
         totalAmountByYear.push(0);
         currentYearIndex2++;
+      }
+
+      totalAmountByYear.push(totalAmount);
+      currentYearIndex2++;
     }
 
-    totalAmountByYear.push(totalAmount);
-    currentYearIndex2++;
-}
+    while (currentYear2 - 5 + currentYearIndex2 <= currentYear2 + 6) {
+      totalAmountByYear.push(0);
+      currentYearIndex2++;
+    }
 
-while (currentYear2 - 5 + currentYearIndex2 <= currentYear2 + 6) {
-    totalAmountByYear.push(0);
-    currentYearIndex2++;
-}
+    const totalAmountByMonth = [];
+    let currentMonthIndex = 0;
+    const currentYear123 = new Date().getFullYear();
 
+    for (let i = 0; i < 12; i++) {
+      totalAmountByMonth.push(0);
+    }
 
+    order.forEach((order) => {
+      const monthIndex = order.orderDate.getMonth();
+      const totalAmount = parseFloat(order.totalAmount);
 
+      totalAmountByMonth[monthIndex] += totalAmount;
+    });
 
-
-
-const totalAmountByMonth = [];
-let currentMonthIndex = 0;
-const currentYear123 = new Date().getFullYear();
-
-for (let i = 0; i < 12; i++) {
-    totalAmountByMonth.push(0);
-}
-
-order.forEach(order => {
-    const monthIndex = order.orderDate.getMonth();
-    const totalAmount = parseFloat(order.totalAmount);
-
-    totalAmountByMonth[monthIndex] += totalAmount;
-});
-
-for (let i = 0; i < 12; i++) {
-    if (totalAmountByMonth[i] === 0) {
+    for (let i = 0; i < 12; i++) {
+      if (totalAmountByMonth[i] === 0) {
         totalAmountByMonth[i] = 0;
+      }
     }
-}
 
-
-
-
-
-
-
-
-
-
-
-
-  const bestSellingProduct = await Order.aggregate([
-    {
-        $unwind: "$products"
-    },
-    {
+    const bestSellingProduct = await Order.aggregate([
+      {
+        $unwind: "$products",
+      },
+      {
         $group: {
-            _id: "$products.productId",
-            totalSales: { $sum: "$products.quantity" }
-        }
-    },
-    {
-        $sort: { totalSales: -1 }
-    },
-    {
-        $limit: 10
-    },
-    {
+          _id: "$products.productId",
+          totalSales: { $sum: "$products.quantity" },
+        },
+      },
+      {
+        $sort: { totalSales: -1 },
+      },
+      {
+        $limit: 10,
+      },
+      {
         $lookup: {
-            from: "products",
-            localField: "_id",
-            foreignField: "_id",
-            as: "product"
-        }
-    },
-    {
-        $unwind: "$product"
-    },
-    {
+          from: "products",
+          localField: "_id",
+          foreignField: "_id",
+          as: "product",
+        },
+      },
+      {
+        $unwind: "$product",
+      },
+      {
         $project: {
-            productName: "$product.product_name",
-            totalSales: 1
-        }
-    }
-]);
+          productName: "$product.product_name",
+          totalSales: 1,
+        },
+      },
+    ]);
 
-
-
-const bestSellingCategories = await Order.aggregate([
-  {
-      $unwind: "$products"
-  },
-  {
-      $lookup: {
+    const bestSellingCategories = await Order.aggregate([
+      {
+        $unwind: "$products",
+      },
+      {
+        $lookup: {
           from: "products",
           localField: "products.productId",
           foreignField: "_id",
-          as: "productInfo"
-      }
-  },
-  {
-      $unwind: "$productInfo"
-  },
-  {
-      $lookup: {
+          as: "productInfo",
+        },
+      },
+      {
+        $unwind: "$productInfo",
+      },
+      {
+        $lookup: {
           from: "categories",
           localField: "productInfo.categoryId",
           foreignField: "_id",
-          as: "category"
-      }
-  },
-  {
-      $unwind: "$category"
-  },
-  {
-      $group: {
+          as: "category",
+        },
+      },
+      {
+        $unwind: "$category",
+      },
+      {
+        $group: {
           _id: "$category._id",
           name: { $first: "$category.category" },
-          totalSales: { $sum: "$products.quantity" }
-      }
-  },
-  {
-      $sort: { totalSales: -1 }
-  },
-  {
-      $limit: 10
-  }
-]);
+          totalSales: { $sum: "$products.quantity" },
+        },
+      },
+      {
+        $sort: { totalSales: -1 },
+      },
+      {
+        $limit: 10,
+      },
+    ]);
 
-
-
-    
-    
-
-    res.render("home",
-    {
+    res.render("home", {
       orders,
       product,
       category,
@@ -380,21 +343,18 @@ const bestSellingCategories = await Order.aggregate([
       bestSellingCategories,
 
       orderCountsByMonth,
-      productCountsByMonth, 
-      orderCountsByYear, 
-      productCountsByYear, 
+      productCountsByMonth,
+      orderCountsByYear,
+      productCountsByYear,
       totalAmountByMonth,
-      totalAmountByYear
-
+      totalAmountByYear,
     });
-
   } catch (error) {
     console.log(error.message);
   }
 };
 
 // ==================================================================================================================
-
 
 const adminLogout = async (req, res) => {
   try {
@@ -409,7 +369,7 @@ const adminLogout = async (req, res) => {
 
 const userList = async (req, res) => {
   try {
-    const usersData = await User.find().sort({registerDate:-1})
+    const usersData = await User.find().sort({ registerDate: -1 });
 
     res.render("userList", { users: usersData });
   } catch (error) {
@@ -419,99 +379,83 @@ const userList = async (req, res) => {
 
 // ==================================================================================================================
 
-const loadAddUser=async(req,res)=>{
-
+const loadAddUser = async (req, res) => {
   try {
-    res.render('adminAdduser')
+    res.render("adminAdduser");
   } catch (error) {
     console.log(error.message);
   }
-}
+};
 
-const addUser=async(req,res)=>{
+const addUser = async (req, res) => {
   try {
-    
-    const name=req.body.name
-    const mobile=req.body.mobile
-    const email=req.body.email
-    const password=req.body.password
+    const name = req.body.name;
+    const mobile = req.body.mobile;
+    const email = req.body.email;
+    const password = req.body.password;
 
-    const spassword=await securePassword(password)
-    const user= new User({
-      name:name,
-      mobile:mobile,
-      email:email,
-      password:spassword
-    })
-    const userData=await user.save()
+    const spassword = await securePassword(password);
+    const user = new User({
+      name: name,
+      mobile: mobile,
+      email: email,
+      password: spassword,
+    });
+    const userData = await user.save();
 
-
-    if(userData){
-      res.redirect('/admin/userlist')
-    }else{
-      res,render('adminAdduser')
+    if (userData) {
+      res.redirect("/admin/userlist");
+    } else {
+      res, render("adminAdduser");
     }
-
-
   } catch (error) {
     console.log(error.message);
   }
-}
-
-
-
-
+};
 
 // ==================================================================================================================
 
 const blockUser = async (req, res) => {
   try {
-
     const userId = req.query.id;
 
-    const updateUser = await User.findByIdAndUpdate(userId, { isActive: false });
-    res.redirect('/admin/home')
+    const updateUser = await User.findByIdAndUpdate(userId, {
+      isActive: false,
+    });
+    res.redirect("/admin/home");
 
     if (!updateUser) {
-      return res.status(404).send('User not found');
+      return res.status(404).send("User not found");
     }
-
   } catch (error) {
     console.log(error.message);
-    res.status(500).send('Internal Server Error');
+    res.status(500).send("Internal Server Error");
   }
 };
-
 
 // ==================================================================================================================
 
 const unblockUser = async (req, res) => {
   try {
-
     const userId = req.query.id;
 
     const updateUser = await User.findByIdAndUpdate(userId, { isActive: true });
 
     if (!updateUser) {
-      return res.status(404).send('User not found');
+      return res.status(404).send("User not found");
     }
-   return res.redirect('/admin/home')
-
-
+    return res.redirect("/admin/home");
   } catch (error) {
     console.log(error.message);
-    res.status(500).send('Internal Server Error');
+    res.status(500).send("Internal Server Error");
   }
 };
 
 // ==================================================================================================================
- 
-
-
 
 module.exports = {
   invalidPage,
-  
+
   loadAdminform,
   verifyLogin,
   verifySignup,
@@ -522,5 +466,4 @@ module.exports = {
   addUser,
   blockUser,
   unblockUser,
-
 };

@@ -3,7 +3,6 @@ const router = express();
 const userController = require("../controllers/userController/userController");
 const userCartController=require('../controllers/userController/userCartController')
 const addressController=require('../controllers/userController/addressController')
-const productController=require('../controllers/adminController/productController')
 const wishlistController=require('../controllers/userController/wishlishController')
 const userOrderController=require('../controllers/userController/userOrderController')
 
@@ -14,13 +13,7 @@ router.use(session({ secret: config.sessionSecret,
     saveUninitialized: false 
  })); ///
  const auth = require("../middleware/auth");
-
-//  const session = require("express-session");
-// const config = require("../config/config");
-// router.use(session({ secret: config.sessionSecret })); ///new you can delete
-// const auth = require("../middleware/auth");
  
-
 
 router.set("view engine", "ejs");
 router.set("views", "./views/users");
@@ -38,7 +31,6 @@ router.get("/login", auth.isLogout, userController.loaduserLogin);
 router.post("/verifySignup", userController.verifySignup,userController.getOtp);
 router.get("/getOtp", auth.isLogout, userController.getOtp);
 router.post("/verifyOtp", auth.isLogout, userController.verifyOtp);
-// router.get("/", auth.isLogout, userController.loaduserLogin);
 router.post("/login", auth.isLogout, userController.verifyLogin);
 router.get("/logout", auth.isLogin, userController.userLogout);
 router.get("/", auth.isLogout, userController.loaduserHome);
@@ -69,7 +61,6 @@ router.get("/show-product",auth.isLogin,userController.showProduct)
 router.get("/all-product",userController.loadAllProduct)
 router.post('/all-product',userController.loadAllProduct)
 
-// router.get('/search-category',userController.searchCategory)
 
 // ------------------User Cart------------------------------------------------------
 router.get("/user-cart",auth.isLogin, userCartController.loadUserCart);
@@ -102,8 +93,6 @@ router.get('/delete-checkout-address/:id',auth.isLogin,userCartController.delete
 
 router.get('/edit-checkout-address',auth.isLogin,userCartController.editCheckoutAddress)
 router.post('/edit-checkout-address',auth.isLogin,userCartController.verifyEditCheckoutAddress)
-// router.post('/edit-Address',addressController.verifyEditAddress)
-
 
 
 // /------------------------Sort Start----------------------------------------------

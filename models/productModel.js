@@ -1,55 +1,47 @@
-const mongoose=require('mongoose')
-const {ObjectId}=require('mongodb')
+const mongoose = require("mongoose");
 
-// mongoose.connect("mongodb://127.0.0.1:27017/iSpace")
-
-
-const product= new mongoose.Schema({
-
-    product_name: String,
-    discription:String,
-    MRP:Number,
-    stock: {
-        type:Number,
-        required:true
+const product = new mongoose.Schema({
+  product_name: String,
+  discription: String,
+  MRP: Number,
+  stock: {
+    type: Number,
+    required: true,
+  },
+  productImages: {
+    type: Array,
+  },
+  discount: Number,
+  isActive: {
+    type: Boolean,
+    required: true,
+    default: true,
+  },
+  listedDate: {
+    type: Date,
+    default: Date.now,
+  },
+  categoryId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Category",
+    required: true,
+  },
+  productOffer: {
+    name: {
+      type: String,
     },
-    productImages:{
-        type:Array
-    }, 
-    discount:Number,
-    isActive:{
-        type:Boolean,
-        required:true,
-        default:true
-
+    offerPercentage: {
+      type: Number,
+      default: 0,
     },
-    listedDate:{
-        type:Date,
-        default:Date.now
+    validity: {
+      type: Date,
     },
-    categoryId:{
-        type:mongoose.Schema.Types.ObjectId,ref:'Category',
-        required:true
+    isActive: {
+      type: Boolean,
+      default: true,
     },
-    productOffer:{
-        name:{
-            type:String,
-            
-        },
-        offerPercentage:{
-           type:Number,
-           default:0
-        },
-        validity:{
-            type: Date   
-        },
-        isActive:{
-            type:Boolean,
-            default:true
+  },
+});
 
-        }
-    }
-})
-
-
-module.exports=mongoose.model('Product',product)
+module.exports = mongoose.model("Product", product);

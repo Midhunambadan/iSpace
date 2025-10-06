@@ -1,7 +1,4 @@
 const mongoose = require("mongoose");
-const { stringify } = require("uuid");
-
-
 
 const user = mongoose.Schema({
   name: {
@@ -10,39 +7,35 @@ const user = mongoose.Schema({
   },
   email: {
     type: String,
-    unique:true,
+    unique: true,
     required: true,
   },
   mobile: {
     type: Number,
-    unique:true,
+    unique: true,
     required: true,
   },
   password: {
     type: String,
     required: true,
   },
-  isActive:{
-    type:Boolean,
-    default:true,
-    
+  isActive: {
+    type: Boolean,
+    default: true,
   },
   isAdmin: {
-    type:Boolean,default:false,
+    type: Boolean,
+    default: false,
     required: true,
   },
-  registerDate:{
-    type:Date,
-    default:Date.now
+  registerDate: {
+    type: Date,
+    default: Date.now,
   },
-  wishlist:{
-    type:mongoose.Schema.Types.ObjectId,
-    ref:'Wishlist',
-    
-}
-
-  
+  wishlist: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Wishlist",
+  },
 });
-
 
 module.exports = mongoose.model("User", user);

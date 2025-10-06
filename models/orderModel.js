@@ -1,26 +1,25 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
+const orderModel = mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
+  products: [
+    {
+      productId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
+        required: true,
+      },
+      quantity: {
+        type: Number,
+        required: true,
+      },
+    },
+  ],
 
-const orderModel= mongoose.Schema({
-
-    userId:{
-            type:mongoose.Schema.Types.ObjectId,
-            ref:'User'
-        },
-    products:[ {
-        productId:{
-            type:mongoose.Schema.Types.ObjectId,
-            ref:"Product",
-            required:true
-        },
-        quantity:{
-            type:Number,
-            required:true
-        }
-    }],
-
-
-    address:{
+  address: {
     name: String,
     mobile: String,
     houseName: String,
@@ -31,22 +30,33 @@ const orderModel= mongoose.Schema({
     createdDate: {
       type: Date,
       default: Date.now,
-    }
     },
+  },
 
-    orderId:{type:String},
-    totalAmount:{type:String},
-    orderDate:{type:Date,default:Date.now},
-    paymentMethod:{type:String,required:true},
-    razOrderId:{type:String},
+  orderId: { type: String },
+  totalAmount: { type: String },
+  orderDate: { type: Date, default: Date.now },
+  paymentMethod: { type: String, required: true },
+  razOrderId: { type: String },
 
-    paymentStatus:{type:String,enum:['Pending','Recieved','Failed','Refund'],default:"Pending"},
-    orderStatus:{type:String,enum:['Order Placed','Confirmed','Shipped','Delivered','Cancelled','Returned','Pending'],default:"Order Placed"},
+  paymentStatus: {
+    type: String,
+    enum: ["Pending", "Recieved", "Failed", "Refund"],
+    default: "Pending",
+  },
+  orderStatus: {
+    type: String,
+    enum: [
+      "Order Placed",
+      "Confirmed",
+      "Shipped",
+      "Delivered",
+      "Cancelled",
+      "Returned",
+      "Pending",
+    ],
+    default: "Order Placed",
+  },
+});
 
-})
-
-
-module.exports = mongoose.model('Order', orderModel);
-
-
-
+module.exports = mongoose.model("Order", orderModel);

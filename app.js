@@ -1,28 +1,19 @@
-// const mongoose=require('mongoose')
-// mongoose.connect('mongodb+srv://sakhave792:Midhunak@123@cluster0.enj17f9.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
-
+const mongoose=require('mongoose')
 require('dotenv').config();
 
-// Now you can access the MongoDB URI from the environment variable
-
-const mongoose = require('mongoose');
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
 
-const PDFDocument = require('pdfkit');
 
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const multer=require('multer')
 const nocache=require('nocache')
 require('dotenv').config();
-const sharp = require('sharp');
-
 
  
 const userRouter=require('./routes/userRouter')
@@ -36,6 +27,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -45,6 +37,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(nocache()) 
 
 app.use('/',userRouter)
+
 
 app.use('/admin',adminRouter)
 

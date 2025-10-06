@@ -1,6 +1,5 @@
 const express = require("express");
 const admin_router = express();
-
 const path=require('path')
 
 const adminController = require("../controllers/adminController/adminController");
@@ -22,7 +21,6 @@ admin_router.use(session({
   saveUninitialized:true
 }))
 
-// admin_router.use(session({ secret: config.sessionSecret }));
 const adminAuth = require("../middleware/adminAuth");
 const { default: mongoose } = require("mongoose");
 
