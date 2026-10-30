@@ -1,0 +1,187 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>My Apple Space</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="">
+    <meta property="og:type" content="">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="https://www.edigitalagency.com.au/wp-content/uploads/Apple-logo-white-png.png">
+    <!-- Template CSS -->
+    <link href="/adminAssets/css/main.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+   
+    <main class="main-wrap">
+
+        <section class="content-main" >
+            <div class="content-header">
+                <% if (orders) { %>
+                <div>
+                    <h2 class="content-title card-title">Order detail</h2>
+                    <p>Details for Order ID: <%= orders.orderId %></p>
+                </div>
+                <% } %>
+            </div>
+            <div class="card">
+                <header class="card-header">
+                    <div class="row align-items-center">
+                        <% if (orders) { %>
+                        <div class="col-lg-6 col-md-6 mb-lg-0 mb-15">
+                            <span>
+                                <i class="material-icons md-calendar_today"></i> <b><%= new Date(orders.orderDate).toString() %></b>
+                            </span> <br>
+                            <small class="text-muted">Order ID: <%= orders.orderId %></small>
+                        </div>
+                        <% } %>
+                        <div class="col-lg-6 col-md-6 ms-auto text-md-end">
+                            <a class="btn " style="background-color: #3bb77e; color: white;" href="/loadInvoice?id=<%= orders._id %>">Invoice</a>
+                            <a class="btn btn-secondary print ms-2" href="#" onclick="printPage()"><i class="icon material-icons md-print"></i></a>
+                        </div>
+                        <script>
+                            function printPage(){
+                                window.print()
+                            }
+                        </script>
+                    </div>
+                </header> <!-- card-header end// -->
+                <div class="card-body">
+                    <div class="row mb-50 mt-20 order-info-wrap">
+                        <div class="col-md-4">
+                            <% if (orders) { %>
+                            <article class="icontext align-items-start">
+                                <span class="icon icon-sm rounded-circle bg-primary-light">
+                                    <i class="text-primary material-icons md-person"></i>
+                                </span>
+                                <div class="text">
+                                    <h6 class="mb-1">Customer</h6>
+                                    <p class="mb-1">
+                                        <%= orders.userId.name %> <br> <%= orders.userId.email %> <br> <%= orders.userId.mobile %>
+                                    </p>
+                                </div>
+                            </article>
+                            <% } %>
+                        </div> <!-- col// -->
+                        <div class="col-md-4"></div> <!-- col// -->
+                        <div class="col-md-4">
+                            <% if (orders) { %>
+                            <article class="icontext align-items-start">
+                                <span class="icon icon-sm rounded-circle bg-primary-light">
+                                    <i class="text-primary material-icons md-place"></i>
+                                </span>
+                                <div class="text">
+                                    <h6 class="mb-1">Deliver to</h6>
+                                    <p class="mb-1">
+                                        Name: <%= orders.address.name %> <br> House Name: <%= orders.address.houseName %> <br> Mobile: <%= orders.address.mobile %> <br> City: <%= orders.address.city %> <br> Pincode: <%= orders.address.pincode %>
+                                    </p>
+                                    <a href="#">View profile</a>
+                                </div>
+                            </article>
+                            <% } %>
+                        </div> <!-- col// -->
+                    </div> <!-- row // -->
+                    <div class="row">
+                        <div class="col-lg-7">
+                            <div class="table-responsive">
+                                <% if (locals.orders) { %>
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th width="40%">Product</th>
+                                                <th width="20%">Unit Price</th>
+                                                <th width="20%">Quantity</th>
+                                                <th width="20%">Total</th>
+                                                <!-- <th width="20%" class="text-end">Action</th> -->
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% 
+                                            let totalSum = 0;
+                                            for (let i = 0; i < orders.products.length; i++) { 
+                                                if (orders.products[i].productId) { 
+                                                    let productTotal = orders.products[i].quantity * orders.products[i].productId.MRP;
+                                                    totalSum += productTotal;
+                                            %>
+                                                <tr>
+                                                    <td>
+                                                        <a class="itemside" href="#">
+                                                            <div class="left">
+                                                                <img src="/productImage/<%= orders.products[i].productId.productImages[0] %>" width="40" height="40" class="img-xs" alt="Item">
+                                                            </div>
+                                                            <div class="info"><%= orders.products[i].productId.product_name %></div>
+                                                        </a>
+                                                    </td>
+                                                    <td>₹<%= orders.products[i].productId.MRP %></td>
+                                                    <td><%= orders.products[i].quantity %></td>
+                                                    <td>₹ <%= productTotal %></td>
+                                                </tr>
+                                            <% 
+                                                } else { 
+                                            %>
+                                                <tr>
+                                                    <td colspan="5">Product information not available.</td>
+                                                </tr>
+                                            <% 
+                                                } 
+                                            } 
+                                            %>
+                                        </tbody>
+                                    </table>
+                                <% } %>
+                            </div> <!-- table-responsive// -->
+
+                            <div class="row">
+                                <div class="col-lg-11">
+                                    <h3 class="text-end">Total: ₹<%= totalSum %></h3>
+                                </div>
+                            </div>
+
+                        </div> <!-- col// -->
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-4">
+                            <div class="box shadow-sm bg-light">
+                                <h6 class="mb-15">Payment info</h6>
+                                <% if (orders) { %>
+                                <p style="color: green;">
+                                    Payment Method: <%= orders.paymentMethod %> <br>
+                                    Payment Status: <%= orders.paymentStatus %>
+                                </p>
+                                <% } %>
+                            </div>
+                        </div> <!-- col// -->
+                    </div>
+                </div> <!-- card-body end// -->
+            </div> <!-- card end// -->
+        </section> <!-- content-main end// -->
+        <footer class="main-footer font-xs">
+            <div class="row pb-30 pt-15">
+                <div class="col-sm-6">
+                    <script>
+                    document.write(new Date().getFullYear())
+                    </script> ©,iSpace Ltd .
+                </div>
+                <div class="col-sm-6">
+                    <div class="text-sm-end">
+                        All rights reserved
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </main>
+    <script src="/adminAssets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="/adminAssets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="/adminAssets/js/vendors/select2.min.js"></script>
+    <script src="/adminAssets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="/adminAssets/js/vendors/jquery.fullscreen.min.js"></script>
+    <!-- Main Script -->
+    <script src="/adminAssets/js/main.js" type="text/javascript"></script>
+</body>
+
+</html>

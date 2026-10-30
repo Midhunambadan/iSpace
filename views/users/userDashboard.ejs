@@ -1,0 +1,757 @@
+<%- include('../layouts/user/header.ejs') %>
+
+<style>
+    #profileForm {
+        display: none;
+    }
+
+   
+</style>
+
+<style>
+    .error {
+        color: red;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+    .status-processing {
+    color: blue; /* Choose your desired color */
+}
+
+</style>
+
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/2.0.2/css/dataTables.dataTables.min.css">
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+
+
+
+
+<body>
+    <%- include('../partials/user/navbar.ejs') %>
+
+    <!--End header-->
+    <main class="main pages">
+        <div class="page-header breadcrumb-wrap">
+            <div class="container">
+                <div class="breadcrumb">
+                    <a href='index.html' rel='nofollow'><i class="fi-rs-home mr-5"></i>Home</a>
+                    <span></span> Pages <span></span> My Account
+                </div>
+            </div>
+        </div>
+        <div class="page-content pt-150 pb-150">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-10 m-auto">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="dashboard-menu">
+                                    <ul class="nav flex-column" role="tablist">￼
+                                        <li class="nav-item">
+                                            <a class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" href="#dashboard" role="tab" aria-controls="dashboard" aria-selected="false"><i class="fi-rs-settings-sliders mr-10"></i>Dashboard</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="account-detail-tab" data-bs-toggle="tab" href="#account-detail" role="tab" aria-controls="account-detail" aria-selected="true"><i class="fi-rs-user mr-10"></i>Account details</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="orders-tab" data-bs-toggle="tab" href="#orders" role="tab" aria-controls="orders" aria-selected="false"><i class="fi-rs-shopping-bag mr-10"></i>Orders</a>
+                                        </li>
+                                        <!-- <li class="nav-item">
+                                            <a class="nav-link" id="track-orders-tab" data-bs-toggle="tab" href="#track-orders" role="tab" aria-controls="track-orders" aria-selected="false"><i class="fi-rs-shopping-cart-check mr-10"></i>Track Your Order</a>
+                                        </li> -->
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="address-tab" data-bs-toggle="tab" href="#address" role="tab" aria-controls="address" aria-selected="true"><i class="fi-rs-marker mr-10"></i>My Address</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="wallet-tab" data-bs-toggle="tab" href="#wallet" role="tab" aria-controls="wallet" aria-selected="true">
+                                                <i class="fas fa-wallet mr-10"></i>Wallet
+                                            </a>
+                                        </li>
+                                        
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="coupon-tab" data-bs-toggle="tab" href="#coupon" role="tab" aria-controls="coupon" aria-selected="true">
+                                                <i class="fas fa-ticket-alt mr-10"></i>Coupons
+                                            </a>
+                                        </li>
+                                        
+                                       
+                                        <li class="nav-item">
+                                            <a class='nav-link' href='/logout'><i class="fi-rs-sign-out mr-10"></i>Logout</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="tab-content account dashboard-content pl-50">
+                                    <div class="tab-pane fade active show" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h3 class="mb-0">Hello  <%= user.name %></h3>
+                                            </div>
+                                            <div class="card-body">
+                                                <p>
+                                                    From your account dashboard. you can easily check &amp; view your <a href="#">recent orders</a>,<br />
+                                                    manage your <a href="#">shipping and billing addresses</a> and <a href="#">edit your password and account details.</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <style>
+                                        .status-processing{
+                                                        color: blue; /* Choose your desired color */
+                                                    }
+                                    </style>
+
+
+                                    <% if(orders && orders.length > 0) { %>
+                                        <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab" >
+                                            <div class="card" >
+                                                <div class="card-header">
+                                                    <h3 class="mb-0">Your Orders</h3>
+                                                </div>
+                                                <div class="card-body" >
+                                                    <div class="table-responsive" >
+                                                        <table class="table" id="myTable" >
+                                                            <thead>
+                                                                <tr>
+                                                                    <!-- <th>No</th> -->
+                                                                    <th>Order ID</th>
+                                                                    <th>Date</th>
+                                                                    <th>Status</th>
+                                                                    <th>Total</th>
+                                                                    <th>Payment</th>
+                                                                    <th>Actions</th>
+                                                                    <th>Details</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <% for(let i=0; i < orders.length; i++) { %>
+                                                                    <tr>
+                                                                        <!-- <td><%= i+1 %></td> -->
+                                                                        <td>
+                                                                            <%= orders[i].orderId %><br>    
+                                                                        </td>
+                                                                        <td><%= orders[i].orderDate.toLocaleDateString('en-GB') %></td>
+                                                                        <td class="status-processing" style="color: #3bb77e;"><%= orders[i].orderStatus%></td>
+                                                                        <td>₹ <%= orders[i].totalAmount %> for <%= orders[i].products.length %> items</td>
+                                                                        <td><%= orders[i].paymentMethod %></td>
+                                                                        <td>
+                                                                            <div class="btn-group" role="group">
+                                                                                <% if(orders[i].orderStatus=='Delivered'){ %>
+                                                                                    <a href="/return-order?id=<%= orders[i]._id %>" class="btn btn-sm btn-outline-dark btn-cancel">Return</a>
+                                                                                <% } else if(orders[i].orderStatus=='Returned'){ %>
+                                                                                    <span class="badge bg-secondary">Returned</span>
+                                                                                <% } else if (orders[i].orderStatus=="Cancelled"){%>
+                                                                                    <span class="badge bg-secondary">Cancelled</span>
+
+                                                                                <% }else {%>
+                                                                                    <!-- <a href="#" class="btn btn-sm btn-outline-danger btn-cancel" data-order-id="<%= orders[i]._id %>">Cancel</a> -->
+
+                                                                                    <a href="/cancel-order?id=<%= orders[i]._id %>" class="btn btn-sm btn-outline-danger btn-cancel">Cancel</a>
+
+                                                                               <% } %>
+                                                                                   
+                                                                            </div>
+                                                                        </td>
+
+                                                                        <!-- <td><a href="#" class="btn-small d-block">Cancel</a></td> -->
+                                                                        <td><a href="/order-details?id=<%=orders[i]._id%>" class="btn-small d-block"><i class="fas fa-eye"></i> View</a></td>
+
+                                                                    </tr> 
+                                                                <% } %>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <% } %>
+                                    
+                                  
+
+                                <!-- this below sciptt code have doubt future i will edit   -->
+
+                                      
+                                    
+
+                                    <div class="tab-pane fade" id="track-orders" role="tabpanel" aria-labelledby="track-orders-tab">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h3 class="mb-0">Orders tracking</h3>
+                                            </div>
+                                            <div class="card-body contact-from-area">
+                                                <p>To track your order please enter your OrderID in the box below and press "Track" button. This was given to you on your receipt and in the confirmation email you should have received.</p>
+                                                <div class="row">
+                                                    <div class="col-lg-8">
+                                                        <form class="contact-form-style mt-30 mb-50" action="#" method="post">
+                                                            <div class="input-style mb-20">
+                                                                <label>Order ID</label>
+                                                                <input name="order-id" placeholder="Found in your order confirmation email" type="text" />
+                                                            </div>
+                                                            <div class="input-style mb-20">
+                                                                <label>Billing email</label>
+                                                                <input name="billing-email" placeholder="Email you used during checkout" type="email" />
+                                                            </div>
+                                                            <button class="submit submit-auto-width" type="submit">Track</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="address-tab">
+                                        <div class="row">
+                                            <% if (locals.address && locals.address.length > 0) { %>
+                                                <% for (let i = 0; i < locals.address.length; i++) { %>
+                                                    <div class="col-lg-6">
+                                                        <div class="card mb-3 mb-lg-0">
+                                                            <div class="card-header">
+                                                                <h3 class="mb-0">Address <%= i + 1 %></h3>
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <address>
+                                                                    <a><%= locals.address[i].name %></a>
+                                                                    <p><%= locals.address[i].houseName %></p>
+                                                                    <p><%= locals.address[i].street %></p>
+                                                                    <p><%= locals.address[i].city %></p>
+                                                                    <p><%= locals.address[i].state %></p>
+                                                                    <p><%= locals.address[i].mobile %></p>
+                                                                    <p><%= locals.address[i].pincode %></p>
+                                                                </address>
+                                                                <a href="/edit-Address?id=<%= locals.address[i]._id %>" class="btn-small">Edit</a>
+                                                                <span style="margin-left: 6px; margin-right: 10px;">&nbsp;</span>
+                                                                <!-- <a href="/delete-address?id=<%= locals.address[i]._id %>" class="btn-small" style="color: red;">Delete</a> -->
+                                                                <a onclick="deleteAddress('<%= locals.address[i]._id %>')" class="btn-small" style="color: red;">Delete</a>
+                                                                
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                <% } %>
+                                            <% } %>
+                                            
+
+                                            <div class="card col-lg-12">
+                                                <div class="card-header">
+                                                    <h5>Add Address</h5>
+                                                </div>
+                                                <div class="card-body">    
+                                                    <!-- <p>Already have an account? <a href='page-login.html'>Log in instead!</a></p> -->
+    
+    
+                                                    <!-- <form method="post" action="/insert-Address" name="enq">
+                                                        <div class="row">
+                                                            <div class="form-group col-md-12">
+                                                                <label>Full Name <span class="required">*</span></label>
+                                                                <input required="" class="form-control" name="name" type="text" />
+                                                            </div> <br>
+                                                            <div class="form-group col-md-6">
+                                                                <label>Mobile Number <span class="required">*</span></label>
+                                                                <input required="" class="form-control" name="mobile" />
+                                                            </div>
+                                                            <div class="form-group col-md-12">
+                                                                <label>House Name <span class="required">*</span></label>
+                                                                <input required="" class="form-control" name="houseName" type="text" />
+                                                            </div>
+                                                            <div class="form-group col-md-6">
+                                                                <label>Street <span class="required">*</span></label>
+                                                                <input required="" class="form-control" name="street" type="text" />
+                                                            </div>
+                                                            <div class="form-group col-md-6">
+                                                                <label>City <span class="required">*</span></label>
+                                                                <input required="" class="form-control" name="city" type="text" />
+                                                            </div>
+                                                            <div class="form-group col-md-6">
+                                                                <label>State <span class="required">*</span></label>
+                                                                <input required="" class="form-control" name="state" type="text" />
+                                                            </div>
+                                                            <div class="form-group col-md-6">
+                                                                <label>Pin code <span class="required">*</span></label>
+                                                                <input required="" class="form-control" name="pincode" type="text" />
+                                                            </div>
+                                                            <div class="col-md-12">
+                                                                <button type="submit" class="btn btn-fill-out submit font-weight-bold" name="submit" value="Submit">Save Address </button>
+                                                            </div>
+                                                        </div>
+                                                    </form> -->
+
+                                                    <form method="post" action="/insert-Address" name="enq" onsubmit="return validateForm()">
+                                                        <div class="row">
+                                                            <div class="form-group col-md-12">
+                                                                <label>Full Name <span class="required">*</span></label>
+                                                                <input required="" class="form-control" name="name" id="name" type="text" />
+                                                                <div id="name-error" class="error"></div>
+                                                            </div> <br>
+                                                            <div class="form-group col-md-6">
+                                                                <label>Mobile Number <span class="required">*</span></label>
+                                                                <input required="" class="form-control" name="mobile" id="mobile" />
+                                                                <div id="mobile-error" class="error"></div>
+                                                            </div>
+                                                            <!-- Add other form fields here -->
+
+                                                            <div class="form-group col-md-12">
+                                                                <label>House Name <span class="required">*</span></label>
+                                                                <input required="" class="form-control" name="houseName" type="text" />
+                                                                <div id="houseName-error" class="error"></div>
+                                                            </div>
+
+                                
+
+                                                            <div class="form-group col-md-6">
+                                                                <label>Street <span class="required">*</span></label>
+                                                                <input required="" class="form-control" name="street" type="text" />
+                                                                <div id="street-error" class="error"></div>
+
+                                                            </div>
+                                                            <div class="form-group col-md-6">
+                                                                <label>City <span class="required">*</span></label>
+                                                                <input required="" class="form-control" name="city" type="text" />
+                                                                <div id="city-error" class="error"></div>
+
+                                                            </div>
+                                                            <div class="form-group col-md-6">
+                                                                <label>State <span class="required">*</span></label>
+                                                                <input required="" class="form-control" name="state" type="text" />
+                                                                <div id="state-error" class="error"></div>
+
+                                                            </div>
+                                                            <div class="form-group col-md-6">
+                                                                <label>Pin code <span class="required">*</span></label>
+                                                                <input required="" class="form-control" name="pincode" type="text" />
+                                                                <div id="pincode-error" class="error"></div>
+
+                                                            </div>
+                                                            <div class="col-md-12">
+                                                                <button type="submit" class="btn btn-fill-out submit font-weight-bold" name="submit" value="Submit">Save Address</button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                    
+                                                    <script>
+                                                        function validateForm() {
+                                                            var name = document.getElementById('name').value;
+                                                            var mobile = document.getElementById('mobile').value;
+                                                            var houseName = document.getElementsByName('houseName')[0].value;
+                                                            var street = document.getElementsByName('street')[0].value;
+                                                            var city = document.getElementsByName('city')[0].value;
+                                                            var state = document.getElementsByName('state')[0].value;
+                                                            var pincode = document.getElementsByName('pincode')[0].value;
+                                                    
+                                                            // var namePattern = /^[a-zA-Z]*$/;
+                                                            var namePattern = /^[a-zA-Z\s]+$/;
+
+                                                            var mobilePattern = /^[0-9]+$/;
+                                                            var alphaPattern = /^[a-zA-Z]*$/;
+                                                            var pincodePattern = /^[0-9]+$/;
+                                                    
+                                                            var isValid = true;
+                                                    
+                                                            if (!namePattern.test(name)) {
+                                                                document.getElementById('name-error').innerHTML = 'Name must contain only alphabets';
+                                                                isValid = false;
+                                                            } else {
+                                                                document.getElementById('name-error').innerHTML = '';
+                                                            }
+                                                    
+                                                            if (!mobilePattern.test(mobile)) {
+                                                                document.getElementById('mobile-error').innerHTML = 'Mobile number must contain only numbers';
+                                                                isValid = false;
+                                                            } else {
+                                                                document.getElementById('mobile-error').innerHTML = '';
+                                                            }
+                                                    
+                                                            if (!alphaPattern.test(houseName)) {
+                                                                document.getElementById('houseName-error').innerHTML = 'House name must contain only alphabets';
+                                                                isValid = false;
+                                                            } else {
+                                                                document.getElementById('houseName-error').innerHTML = '';
+                                                            }
+                                                    
+                                                            if (!alphaPattern.test(street)) {
+                                                                document.getElementById('street-error').innerHTML = 'Street must contain only alphabets';
+                                                                isValid = false;
+                                                            } else {
+                                                                document.getElementById('street-error').innerHTML = '';
+                                                            }
+                                                    
+                                                            if (!alphaPattern.test(city)) {
+                                                                document.getElementById('city-error').innerHTML = 'City must contain only alphabets';
+                                                                isValid = false;
+                                                            } else {
+                                                                document.getElementById('city-error').innerHTML = '';
+                                                            }
+                                                    
+                                                            if (!alphaPattern.test(state)) {
+                                                                document.getElementById('state-error').innerHTML = 'State must contain only alphabets';
+                                                                isValid = false;
+                                                            } else {
+                                                                document.getElementById('state-error').innerHTML = '';
+                                                            }
+                                                    
+                                                            if (!pincodePattern.test(pincode)) {
+                                                                document.getElementById('pincode-error').innerHTML = 'Pin code must contain only numbers';
+                                                                isValid = false;
+                                                            } else {
+                                                                document.getElementById('pincode-error').innerHTML = '';
+                                                            }
+                                                    
+                                                            return isValid;
+                                                        }
+                                                    </script>
+                                                    
+                                                    
+    
+    
+    
+                                                </div>
+                                            </div>
+
+
+                                            
+                                        </div>
+                                    </div>
+
+
+                                     
+
+                                        <!-- wallet start -->
+                                    <div class="tab-pane fade" id="wallet" role="tabpanel" aria-labelledby="orders-tab">
+
+
+                                        <div class="col-md-4">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h3 class="mb-0">Wallet Balance</h3>
+                                                </div>
+                                                <div class="card-body">
+                                                    <% for(let i=0; i < wallet.length; i++) { %>
+                                                    <%if(locals.wallet.length>0 ){%>
+                                                         <h5>Your current balance is:</h5><h5 style="color: #3bb77e;">₹ <%=wallet[i].balance%></h5>
+                                                         <% } %>
+                                                         <% } %>
+                                                  
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h3 class="mb-0">Your Wallet Transcations</h3>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="table-responsive">
+                                                    <% if (wallet.length > 0) { %>
+                                                        <table class="table" id="">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Transaction ID</th>
+                                                                    <th>Date</th>
+                                                                    <th>Amount</th>
+                                                                    <th>Status</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <% for (let i = 0; i < wallet.length; i++) { %>
+                                                                    <% for (let j = 0; j < wallet[i].transactionHistory.length; j++) { %>
+                                                                        <tr>
+                                                                            <td><%= wallet[i].transactionHistory[j]._id %></td>
+                                                                            <td>
+                                                                                <% 
+                                                                                    const date = new Date(wallet[i].transactionHistory[j].date);
+                                                                                    const formattedDate = date.toLocaleDateString('en-GB'); // Format as dd/mm/yyyy
+                                                                                %>
+                                                                                <%= formattedDate %>
+                                                                            </td>
+                                                                            <td class="status-processing" style="color: #3bb77e;">₹<%= wallet[i].transactionHistory[j].amount %></td>
+                                                                            <td><%= wallet[i].transactionHistory[j].type %></td>
+                                                                        </tr>
+                                                                    <% } %>
+                                                                <% } %>
+                                                            </tbody>
+                                                        </table>
+                                                    <% } %>
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+
+
+
+                                    <style>
+                                        .coupon-item {
+                                            border: 1px solid #ddd;
+                                            border-radius: 8px;
+                                            padding: 20px;
+                                            background-color: #fff;
+                                            margin-bottom: 20px;
+                                            display: flex;
+                                            align-items: center;
+                                            justify-content: space-between;
+                                            transition: background-color 0.3s ease-in-out;
+                                        }
+                                        .coupon-item h4 {
+                                            font-size: 1.25rem;
+                                            color: #007bff;
+                                            margin: 0;
+                                        }
+                                        .coupon-item p {
+                                            margin: 0;
+                                        }
+                                        .copy-btn {
+                                            margin-left: 20px;
+                                        }
+                                        .copied-animation {
+                                            animation: fadeOut 2s forwards;
+                                        }
+                                        @keyframes fadeOut {
+                                            0% { opacity: 1; }
+                                            100% { opacity: 0; }
+                                        }
+                                    </style>
+
+<div class="tab-pane fade" id="coupon" role="tabpanel" aria-labelledby="coupon-tab">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="mb-0">Available Coupons</h3>
+        </div>
+        <div class="card-body contact-from-area">
+            <p>Here are the available coupons you can use on your next purchase:</p>
+
+            <div class="row">
+                <%if(locals.coupon){%>
+                    <%for(let i=0;i< coupon.length;i++){%>
+                    
+                <div class="col-lg-6">
+                    <div class="coupon-item mb-20 card">
+                        <div class="card-body d-flex align-items-center justify-content-between">
+                            <div>
+                                <h4>Coupon Code: <span class="coupon-code"><%=coupon[i].code%></span></h4>
+                                <p>Get <%=coupon[i].discountpercentage%>% off on <br> orders above ₹ <%=coupon[i].minimumAmount%>. <br> Valid until: <%=coupon[i].validUntil.toLocaleDateString('en-GB')%>.</p>
+                            </div>
+                            <button class="btn btn-primary copy-btn">Copy</button>
+                        </div>
+                    </div>
+                </div>
+                <%}%>
+                <%}%>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    // Copy coupon code to clipboard with animation
+    document.querySelectorAll('.copy-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const code = this.previousElementSibling.querySelector('.coupon-code').innerText;
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = this.innerText;
+                this.innerText = 'Copied!';
+                this.classList.add('copied-animation');
+                setTimeout(() => {
+                    this.innerText = originalText;
+                    this.classList.remove('copied-animation');
+                }, 2000);
+            });
+        });
+    });
+</script>
+
+
+                                   
+
+
+
+                                    
+
+
+
+                                    <div class="tab-pane fade" id="account-detail" role="tabpanel" aria-labelledby="account-detail-tab">
+                                        <% if(locals.user) { %>
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h5>Account Details </h5>
+                                            </div>
+                                          
+                                            <div class="card-body">    
+                                                <p><%=user.name%></p>
+                                                <p><%=user.mobile%></p>
+                                                <p><%=user.email%></p>
+                                                <!-- <a href="/profile-edit">Edit profile?</a> -->
+                                                <a href="#" id="editProfileBtn">Edit Profile?</a>
+
+                                                <!-- <p>Already have an account? <a href='page-login.html'>Log in instead!</a></p> -->
+                                                <br><br>
+                                                <a href="/change-password">Edit Password?</a>
+
+
+                                                <br>
+                                             
+                                                    <form method="post" action="/profile-edit"  name="enq" id="profileForm">
+                                                        <div class="row">
+                                                            <div class="form-group col-md-12">
+                                                                <label>Full Name <span class="required" ></span></span></label>
+                                                                <input required="" class="form-control" name="name" type="text" value="<%=user.name%>" />
+                                                            </div>
+                                                            <div class="form-group col-md-6">
+                                                                <label>Mobile Number <span class="required"></span></label>
+                                                                <input required="" class="form-control" name="mobile" value="<%=user.mobile%>" />
+                                                            </div>
+                                                            <div class="form-group col-md-12">
+                                                                <label>Email <span class="required"></span></label>
+                                                                <input required="" class="form-control" name="email" type="text" value="<%=user.email%>" />
+                                                            </div>
+                                                            <!-- <div class="form-group col-md-12">
+                                                                <label>Password <span class="required"></span></label>
+                                                                <input required="" class="form-control" name="password" type="text" value="**********" />
+                                                            </div> -->
+                                                            <div class="col-md-12">
+                                                                <button type="submit" class="btn btn-fill-out submit font-weight-bold" name="submit" value="Submit">Save</button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                               
+                                                
+                                                <hr>
+                                               
+
+                                            </div>
+                                            
+                                        </div>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <%- include('../layouts/user/footer.ejs') %>
+
+   
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="//cdn.datatables.net/2.0.7/js/dataTables.min.js"></script>
+
+
+    <script>
+    let table = new DataTable('#myTable');
+    
+    
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const editProfileBtn = document.getElementById('editProfileBtn');
+            const profileForm = document.getElementById('profileForm');
+    
+            editProfileBtn.addEventListener('click', function(event) {
+                event.preventDefault();
+                if (profileForm.style.display === 'none') {
+                    profileForm.style.display = 'block'; // Show the form
+                } else {
+                    profileForm.style.display = 'none'; // Hide the form
+                }
+            });
+        });
+    </script>
+    
+
+    
+    <!-- Vendor JS-->
+    <script src="user-assets/js/vendor/modernizr-3.6.0.min.js"></script>
+    <script src="user-assets/js/vendor/jquery-3.6.0.min.js"></script>
+    <script src="user-assets/js/vendor/jquery-migrate-3.3.0.min.js"></script>
+    <script src="user-assets/js/vendor/bootstrap.bundle.min.js"></script>
+    <script src="user-assets/js/plugins/slick.js"></script>
+    <script src="user-assets/js/plugins/jquery.syotimer.min.js"></script>
+    <script src="user-assets/js/plugins/wow.js"></script>
+    <script src="user-assets/js/plugins/perfect-scrollbar.js"></script>
+    <script src="user-assets/js/plugins/magnific-popup.js"></script>
+    <script src="user-assets/js/plugins/select2.min.js"></script>
+    <script src="user-assets/js/plugins/waypoints.js"></script>
+    <script src="user-assets/js/plugins/counterup.js"></script>
+    <script src="user-assets/js/plugins/jquery.countdown.min.js"></script>
+    <script src="user-assets/js/plugins/images-loaded.js"></script>
+    <script src="user-assets/js/plugins/isotope.js"></script>
+    <script src="user-assets/js/plugins/scrollup.js"></script>
+    <script src="user-assets/js/plugins/jquery.vticker-min.js"></script>
+    <script src="user-assets/js/plugins/jquery.theia.sticky.js"></script>
+    <script src="user-assets/js/plugins/jquery.elevatezoom.js"></script>
+    <!-- Template  JS -->
+    <script src="user-assets/js/main5103.js?v=6.0"></script>
+    <script src="user-assets/js/shop5103.js?v=6.0"></script>
+
+    
+    <script>
+       
+        function deleteAddress(addressId) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You will not be able to recover this address!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, cancel',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/delete-address/${addressId}`, {
+                        method: 'GET'
+                    })
+                    .then(response => response.json())
+                    .then((data) => {
+                        console.log(data);
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Address Deleted',
+                                text: 'The address has been deleted successfully!',
+                                showConfirmButton: false,
+                                timer: 2000
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            throw new Error('Failed to delete the address. Please try again.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Delete Failed',
+                            text: error.message,
+                        });
+                    });
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    // Swal.fire(
+                    //     'Cancelled',
+                    //     'The address deletion has been cancelled.',
+                    //     'error'
+                    // );
+                }
+            });
+        }
+    </script>
+    
+    
+</body>
+
+
+<!-- Mirrored from nest-frontend-v6.netlify.app/page-account by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 21 Mar 2024 08:32:13 GMT -->
+</html>

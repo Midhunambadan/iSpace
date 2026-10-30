@@ -1,0 +1,819 @@
+const User = require("../../models/userModel");
+const bcrypt = require("bcrypt");
+const nodemailer = require("nodemailer");
+const Product = require("../../models/productModel");
+const Category = require("../../models/categoryModel");
+const Address = require("../../models/addressModel");
+const Order = require("../../models/orderModel");
+const Wishlist = require("../../models/wishlistModel");
+const Wallet = require("../../models/walletModel");
+const Coupon = require("../../models/couponModel");
+
+// ==================================================================================================================
+
+const securePassword = async (password) => {
+  try {
+    const passwordHash = await bcrypt.hash(password, 10);
+    return passwordHash;
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+// ==================================================================================================================
+
+//loadHome
+
+const loaduserHome = async (req, res) => {
+  try {
+    const userId = req.session.user_id;
+
+    const userData = await User.find({ _id: userId });
+    const productData = await Product.find({ isActive: true }).populate({
+      path: "categoryId",
+      match: { isActive: true },
+    });
+
+    const filteredProductData = productData.filter((product) => {
+      return product.categoryId && product.categoryId.isActive === true;
+    });
+
+    const cateData = await Category.find({ isActive: true });
+
+    res.render("userHome", {
+      products: filteredProductData,
+      category: cateData,
+      users: userData,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const loadAbout = async (req, res) => {
+  try {
+    res.render("userAbout");
+  } catch (error) {}
+};
+
+// ==================================================================================================================
+
+const loaduserRegister = async (req, res) => {
+  try {
+    res.render("signup");
+  } catch (error) {}
+};
+
+// ==================================================================================================================
+
+const verifySignup = async (req, res, next) => {
+  try {
+    const userExist = await User.findOne({ email: req.body.email });
+    const mobileExist = await User.findOne({ mobile: req.body.mobile });
+    console.log("lll====================================", mobileExist);
+
+    if (userExist) {
+      res.render("login", {
+        message: "Email already exist! Please choose another email",
+      });
+    }
+
+    if (mobileExist) {
+      res.render("login", {
+        message: "mobile already exist! Please choose another mobile",
+      });
+    }
+
+    const { username, email, mobile, password, password2 } = req.body;
+
+    const spassword = await securePassword(password);
+
+    const userData = new User({
+      name: username,
+      email: email,
+      mobile: mobile,
+      password: spassword,
+      password2: password2,
+    });
+    const user = userData;
+
+    req.session.user1 = user;
+
+    next();
+
+    // }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// ==================================================================================================================
+
+// otp start
+
+const getOtp = async (req, res) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      service: "Gmail",
+      auth: {
+        user: process.env.USEREMAIL,
+        pass: process.env.USERPASS,
+      },
+    });
+
+    const { email } = req.session.user1;
+
+    const otp = Math.floor(1000 + Math.random() * 9000).toString();
+
+    req.session.otp = otp;
+
+    const mailOptions = {
+      from: process.env.USEREMAIL,
+      to: email,
+      subject: "Your OTP for verification",
+      text: `Your OTP is ${otp}`,
+    };
+
+    console.log("otp----------", +otp);
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log("Error sending email:", error);
+      } else {
+        console.log("Email sent:", info.response);
+      }
+    });
+
+    res.render("otp-form", {
+      message: "OTP send Your mail.Please verify OTP!!",
+    });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+// ==================================================================================================================
+
+const verifyOtp = async (req, res) => {
+  try {
+    console.log("req.session.otp------------------", req.session.otp);
+    console.log("req.body.otp--------------------", req.body.otp);
+
+    if (req.session.otp == req.body.otp) {
+      const { email, name, mobile, password } = req.session.user1;
+
+      const user = new User({
+        name: name,
+        email: email,
+        mobile: mobile,
+        password: password,
+      });
+
+      const userData = await user.save();
+
+      if (userData) {
+        req.session.user1 = userData._id;
+
+        res.redirect("/home");
+      }
+    } else {
+      res.render("otp-form", { message: "Please Enter correct OTP !!!" });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+//otp end
+
+// ==================================================================================================================
+
+// loadUserLogin
+
+const loaduserLogin = async (req, res) => {
+  try {
+    res.render("login", { message: "Please Login!!!" });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+// ==================================================================================================================
+// verifyLogin
+
+const verifyLogin = async (req, res) => {
+  try {
+    const email = req.body.loginemail;
+    const pass = req.body.loginpassword;
+
+    const userData = await User.findOne({ email: email }); //this password i have doubt
+
+    if (userData) {
+      const matchPasswords = await bcrypt.compare(pass, userData.password);
+
+      if (matchPasswords) {
+        if (userData.isActive == false) {
+          console.log("midhun ambadan");
+          res.render("login", {
+            message:
+              "Your accouct has been blocked! Please Contact customer care",
+          });
+        } else {
+          console.log("akr");
+          req.session.user_id = userData._id;
+          res.redirect("/");
+        }
+      } else {
+        console.log("joel francis");
+        res.render("login", { message: "Username or password is incorrect" });
+      }
+    } else {
+      res.render("login", { message: "Username or password is incorrect" });
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+// ==================================================================================================================
+
+// userLogout
+
+const userLogout = async (req, res) => {
+  try {
+    req.session.destroy();
+    res.redirect("/");
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+// ==================================================================================================================
+
+// ---------------Forgot password----------------------------
+
+const loadForgotPassword = async (req, res) => {
+  try {
+    res.render("forgotPage");
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+const getForgotOtp = async (req, res) => {
+  try {
+    const email = req.body.email;
+
+    const userData = await User.findOne({ email: email });
+    const user = req.session.userData; //this code no user
+
+    req.session.userId = userData._id;
+
+    if (userData) {
+      const transporter = nodemailer.createTransport({
+        service: "Gmail",
+        auth: {
+          user: process.env.USEREMAIL,
+          pass: process.env.USERPASS,
+        },
+      });
+
+      const otp = Math.floor(1000 + Math.random() * 9000).toString();
+
+      // Email content
+      const mailOptions = {
+        from: process.env.USEREMAIL,
+        to: userData.email, // Use userData.email instead of req.session.userData.email
+        subject: "Your OTP for verification",
+        text: `Your OTP is ${otp}`,
+      };
+
+      req.session.otp = otp;
+
+      console.log("otp--------------------", [otp]);
+
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.log("Error sending email:", error);
+        } else {
+          console.log("Email sent:", info.response);
+        }
+      });
+
+      res.render("forgotOtpPage", {
+        message: "OTP sent to email, please verify!",
+      });
+    } else {
+      res.redirect("/forgot");
+    }
+  } catch (error) {
+    console.error("Error in verifyForgotPassword:", error);
+    res.status(500).send("Email not registered");
+  }
+};
+
+const verifyForgotOtp = async (req, res) => {
+  try {
+    const sessionOtp = req.session.otp;
+    const bodyOtp = req.body.otp;
+
+    console.log("-------------session", sessionOtp);
+    console.log("-----------------body", bodyOtp);
+
+    if (sessionOtp === bodyOtp) {
+      res.render("passwordReset");
+    } else {
+      res.redirect("/forgot");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const loadPasswordReset = async (req, res) => {
+  try {
+    const userId = req.session.userId;
+
+    const userData = await User.findById({ _id: userId });
+
+    res.render("passwordReset", {
+      user: userData,
+      message: "Please enter new Password!",
+    });
+  } catch (error) {}
+};
+
+const VerifyPasswordReset = async (req, res) => {
+  try {
+    const userId = req.session.userId;
+
+    const password = req.body.password;
+
+    const spassword = await securePassword(password);
+
+    const userData = await User.findByIdAndUpdate(userId, {
+      password: spassword,
+    });
+
+    res.render("passwordReset", { message: "Password successfully changed!" });
+  } catch (error) {}
+};
+
+/---------------------------Forgot password code end------------------------------/;
+
+// userDashboard
+
+const loaduserDashboard = async (req, res) => {
+  try {
+    const userId = req.session.user_id;
+    const wishlist = await Wishlist.findOne({ userId });
+    const coupon = await Coupon.find();
+
+    const walletData = await Wallet.find({ userId: userId });
+    const userData = await User.findById({ _id: userId });
+    const addressData = await Address.find({ user: userId });
+
+    const orderData = await Order.find({ userId: userId }).sort({
+      orderDate: -1,
+    });
+
+    res.render("userDashboard", {
+      user: userData,
+      address: addressData,
+      orders: orderData,
+      wallet: walletData,
+      coupon,
+    });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+const loadOrderDetails = async (req, res) => {
+  try {
+    const Id = req.query.id;
+    const userId = req.session.user_id;
+
+    const orderDetails = await Order.findById(Id)
+      .populate("userId")
+      .populate("products.productId");
+
+    const orderData = await Order.find({ _id: Id });
+
+    let totalSum = orderDetails.products.reduce((sum, product) => {
+      if (product.productId) {
+        return sum + product.productId.MRP * product.quantity;
+      }
+      return sum;
+    }, 0);
+
+    res.render("orderDetails", { orders: orderDetails, totalSum, orderData });
+  } catch (error) {}
+};
+
+const userOrderCancel = async (req, res) => {
+  try {
+    const userId = req.session.user_id;
+    console.log("userId------------------------", userId);
+    const orderId = req.query.id;
+
+    // Fetch the order to be canceled
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    const orderCancelled = await Order.findByIdAndUpdate(orderId, {
+      $set: { orderStatus: "Cancelled" },
+    });
+
+    const orderItems = order.products;
+
+    for (const item of orderItems) {
+      const product = await Product.findById(item.productId);
+
+      if (product) {
+        product.stock += item.quantity; // Increase product stock
+        await product.save();
+      }
+    }
+
+    // Check payment method
+    if (order.paymentMethod !== "cash on delivery") {
+      if (!(await Wallet.findOne({ userId: userId }))) {
+        const wallet2 = new Wallet({
+          userId: userId,
+          balance: 0,
+          transactionHistory: [],
+        });
+
+        const newW = await wallet2.save();
+      }
+      const wallet = await Wallet.findOne({ userId: userId });
+
+      const totalAmount = parseFloat(order.totalAmount);
+      wallet.balance += totalAmount;
+
+      wallet.transactionHistory.push({
+        amount: totalAmount,
+        type: "Credit",
+      });
+
+      const walletData = await wallet.save();
+    }
+
+    res.redirect("/userDashboard");
+  } catch (error) {}
+};
+
+const useReturnOrder = async (req, res) => {
+  try {
+    const userId = req.session.user_id;
+    const orderId = req.query.id;
+
+    const order = await Order.findById(orderId).populate("products.productId");
+
+    if (!order || order.userId.toString() !== userId) {
+      return res.status(404).send("Order not found");
+    }
+
+    let refundedAmount = 0;
+    for (const item of order.products) {
+      const product = await Product.findById(item.productId);
+      if (product) {
+        console.log("product----------------", product);
+        product.stock += item.quantity;
+        refundedAmount += item.quantity * product.MRP; // Assuming salesprice is used for calculation
+        const result = await product.save();
+
+        console.log("result-------------", result);
+      }
+    }
+
+    // Update user's wallet balance
+    const wallet = await Wallet.findOne({ userId: userId });
+    if (wallet) {
+      console.log("------------------wallet", wallet);
+      wallet.balance += refundedAmount;
+
+      // Add transaction to transaction history
+      wallet.transactionHistory.push({
+        date: new Date(),
+        type: "Credit",
+        amount: refundedAmount,
+      });
+
+      await wallet.save();
+    } else {
+      console.log("------------------nowallet");
+
+      wallet = await Wallet.create({
+        userId: userId,
+        balance: refundedAmount,
+        currency: "INR", // You may want to change this based on your currency system
+        transactionHistory: [
+          {
+            date: new Date(),
+            type: "Credit",
+            amount: refundedAmount,
+          },
+        ],
+      });
+    }
+
+    // Change order status to "Returned"
+    const orderReturn = await Order.findByIdAndUpdate(orderId, {
+      $set: { orderStatus: "Returned" },
+    });
+
+    console.log("------------------------------", orderReturn);
+
+    res.redirect("/userDashboard");
+  } catch (error) {}
+};
+
+// ==================================================================================================================
+
+//show product
+
+const showProduct = async (req, res) => {
+  try {
+    const id = req.query.id;
+    const userId = req.session.user_id;
+    const wishlist = await Wishlist.findOne({ userId });
+
+    const proData = await Product.find({ _id: id }).populate("categoryId");
+
+    const productsData = await Product.find().limit(4);
+
+    res.render("showProduct", { products: proData, productsData });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+// ==================================================================================================================
+
+const loadAllProduct = async (req, res) => {
+  try {
+    let limit = 10;
+    let page = req.query.page ? parseInt(req.query.page) : 1;
+
+    const searchCategory = req.query.category;
+    const searchProduct = req.body.searchProduct;
+
+    const categoryQuery = searchCategory
+      ? { categoryId: searchCategory, isActive: true }
+      : { isActive: true };
+    const productQuery = searchProduct
+      ? {
+          ...categoryQuery,
+          product_name: { $regex: searchProduct, $options: "i" },
+        }
+      : categoryQuery;
+
+    const cateData = await Category.find();
+
+    const productData = await Product.find(productQuery)
+      .populate({
+        path: "categoryId",
+        match: { isActive: true },
+      })
+      .limit(limit)
+      .skip((page - 1) * limit)
+      .exec();
+
+    // Filter out products with null categoryId (inactive categories)
+    const filteredProductData = productData.filter(
+      (product) => product.categoryId && product.categoryId.isActive === true
+    );
+
+    const count = await Product.find(categoryQuery).countDocuments();
+
+    res.render("showAllProduct", {
+      products: filteredProductData,
+      category: cateData,
+      totalPages: Math.ceil(count / limit),
+      currentPage: page,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+//-------------------------sort start----------------------------------------------
+
+const priceLowToHigh = async (req, res) => {
+  try {
+    const productData = await Product.find({ isActive: true })
+      .populate({
+        path: "categoryId",
+        match: { isActive: true },
+      })
+      .sort({ MRP: 1 });
+
+    const filteredProductData = productData.filter((product) => {
+      return product.categoryId && product.categoryId.isActive === true;
+    });
+
+    res.render("showAllProduct", { products: filteredProductData });
+  } catch (error) {}
+};
+
+const priceHighToLow = async (req, res) => {
+  try {
+    const productData = await Product.find({ isActive: true })
+      .populate({
+        path: "categoryId",
+        match: { isActive: true },
+      })
+      .sort({ MRP: -1 });
+
+    const filteredProductData = productData.filter((product) => {
+      return product.categoryId && product.categoryId.isActive === true;
+    });
+
+    res.render("showAllProduct", { products: filteredProductData });
+  } catch (error) {}
+};
+
+const sortAtoZ = async (req, res) => {
+  try {
+    const productData = await Product.find({ isActive: true })
+      .populate({
+        path: "categoryId",
+        match: { isActive: true },
+      })
+      .sort({ product_name: 1 });
+
+    const filteredProductData = productData.filter((product) => {
+      return product.categoryId && product.categoryId.isActive === true;
+    });
+
+    res.render("showAllProduct", { products: filteredProductData });
+  } catch (error) {}
+};
+
+const sortZtoA = async (req, res) => {
+  try {
+    const productData = await Product.find({ isActive: true })
+      .populate({
+        path: "categoryId",
+        match: { isActive: true },
+      })
+      .sort({ product_name: -1 });
+
+    // Filter out products with null categoryId (inactive categories)
+    const filteredProductData = productData.filter((product) => {
+      return product.categoryId && product.categoryId.isActive === true;
+    });
+
+    res.render("showAllProduct", { products: filteredProductData });
+  } catch (error) {}
+};
+
+const newArrivals = async (req, res) => {
+  try {
+    const productData = await Product.find({ isActive: true })
+      .populate({
+        path: "categoryId",
+        match: { isActive: true },
+      })
+      .sort({ listedDate: -1 });
+
+    // Filter out products with null categoryId (inactive categories)
+    const filteredProductData = productData.filter((product) => {
+      return product.categoryId && product.categoryId.isActive === true;
+    });
+
+    res.render("showAllProduct", { products: filteredProductData });
+  } catch (error) {}
+};
+
+const loadChangePassword = async (req, res) => {
+  try {
+    res.render("changePassword", {
+      message: "Enter Your Current password and Reset!!!",
+    });
+  } catch (error) {}
+};
+
+const verifyChangePassword = async (req, res) => {
+  try {
+    const userId = req.session.user_id;
+    const password = req.body.currentPassword;
+    const newPassword = req.body.password;
+
+    const userData = await User.findById(userId);
+    const isMatch = await bcrypt.compare(password, userData.password);
+
+    if (isMatch) {
+      const spassword = await bcrypt.hash(newPassword, 10);
+      await User.findByIdAndUpdate(userId, { password: spassword });
+      res
+        .status(200)
+        .json({ success: true, message: "Password changed successfully!" });
+    } else {
+      res
+        .status(400)
+        .json({ success: false, message: "Current password is incorrect" });
+    }
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ success: false, message: "An error occurred" });
+  }
+};
+
+const verifyProfileEdit = async (req, res) => {
+  try {
+    const userId = req.session.user_id;
+    const { name, mobile, email } = req.body;
+
+    const update = await User.findByIdAndUpdate(userId, {
+      name: name,
+      mobile: mobile,
+      email: email,
+    });
+    if (update) {
+      res.redirect("/userDashboard");
+    }
+
+    res.redirect("/admin/category?categoryAdd=true");
+  } catch (error) {}
+};
+
+const searchProduct = async (req, res) => {
+  try {
+    let limit = 10;
+
+    let page = 1;
+    if (req.query.page) {
+      page = req.query.page;
+    }
+
+    const searchProduct = req.body.searchProduct;
+
+    // Use regex with case-insensitive option
+    const proData = await Product.find({
+      product_name: { $regex: new RegExp(searchProduct, "i") },
+    })
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .exec();
+
+    const count = await Product.find()
+      .sort({ listedDate: -1 })
+      .countDocuments();
+
+    if (proData.length > 0) {
+      res.render("showAllProduct", {
+        products: proData,
+        totalPages: Math.ceil(count / limit),
+        currentPage: page,
+      });
+    } else {
+      res.render("showAllProduct", { mesg: "Product not found" });
+    }
+  } catch (error) {
+    console.error("Error searching for product:", error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+module.exports = {
+  loaduserHome,
+  loadAbout,
+  loaduserLogin,
+  loaduserRegister,
+  verifySignup,
+  verifyLogin,
+  userLogout,
+  loadForgotPassword,
+  getForgotOtp,
+  verifyForgotOtp,
+  loadPasswordReset,
+  VerifyPasswordReset,
+
+  loaduserDashboard,
+  loadOrderDetails,
+  userOrderCancel,
+  useReturnOrder,
+
+  getOtp,
+  verifyOtp,
+  showProduct,
+  loadAllProduct,
+
+  priceLowToHigh,
+  priceHighToLow,
+  sortAtoZ,
+  sortZtoA,
+  newArrivals,
+
+  loadChangePassword,
+  verifyChangePassword,
+  verifyProfileEdit,
+
+  searchProduct,
+};
